@@ -23,11 +23,10 @@
   /* Typography */
   --font-family-primary: 'Space Grotesk', sans-serif;
   --font-family-secondary: 'Inter', sans-serif;
-  --text-xl: 3.25rem;
-  --text-lg: 3rem;
-  --text-md: 2.625rem;
-  --text-sm: 1.5rem;
-  --skills-title: 1.5rem;
+  --text-xl: 3.625rem;
+  --text-lg: 2.8rem;
+  --text-md: 2.2rem;
+  --text-sm: 1.13rem;
 
   /* Icons */
   --icons: 1.5rem;

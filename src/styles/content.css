@@ -41,7 +41,7 @@
 
     &__title {
       position: relative;
-      font-size: var(--skills-title);
+      font-size: var(--text-md);
       font-weight: bold;
       margin-bottom: 0.625rem;
       font-family: var(--font-family-primary);
@@ -79,7 +79,7 @@
     }
 
     &__title {
-      font-size: var(--text-md);
+      font-size: clamp(var(--text-lg), 5vw, var(--text-xl));
       color: var(--text-primary);
       font-family: var(--font-family-primary);
       margin-bottom: 3.125rem;
@@ -145,7 +145,8 @@
       text-transform: uppercase;
       letter-spacing: 0.14rem;
       font-family: var(--font-family-secondary);
-      height: 2.5rem;
+      font-size: var(--text-sm);
+      height: 3.0rem;
       text-decoration: none;
       color: var(--text-primary);
       opacity: 0;
@@ -199,7 +200,7 @@
     &__title {
       color: var(--text-primary);
       margin-bottom: 0.625rem;
-      font-size: var(--text-md);
+      font-size: clamp(var(--text-lg), 5vw, var(--text-xl));
     }
 
     &__subtitle {
@@ -279,6 +280,7 @@
       top: 1.25rem;
       font-weight: bold;
       transition: transform 0.3s ease;
+      font-size: var(--text-md);
 
       &:hover {
         background-color: var(--hover-states);
@@ -306,10 +308,6 @@
     }
 
     @media (min-width: 1024px) {
-      &__title {
-        font-size: var(--text-md);
-      }
-
       &__info {
         margin-left: auto;
       }
@@ -323,10 +321,6 @@
         padding: 1.875rem;
         margin-right: auto;
       }
-
-      &__submit-button {
-        font-size: var(--text-sm);
-      }
     }
   }
 
@@ -339,7 +333,7 @@
     margin-top: 3.125rem;
 
     &__title {
-      font-size: var(--text-md);
+      font-size: clamp(var(--text-lg), 5vw, var(--text-xl));
       font-weight: bold;
       letter-spacing: 0.125rem;
       color: var(--text-primary);
@@ -398,6 +392,7 @@
       justify-content: space-between;
       color: var(--text-primary);
       flex: 1;
+      font-size: 18px;
     }
 
     &__icon {
@@ -426,6 +421,7 @@
       overflow: hidden;
       transition: max-height 1.5s ease, opacity 1.5s ease;
       opacity: 0;
+      font-size: 18px;
     }
   }
 

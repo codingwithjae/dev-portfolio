@@ -25,7 +25,7 @@
     color: var(--text-primary);
     font-family: var(--font-family-primary);
     min-width: 20.25rem;
-    max-width: 37.5rem;
+    max-width: 50.5rem;
     margin-top: 1.25rem;
 
     &-container {
@@ -48,7 +48,7 @@
   }
 
   &__title {
-    font-size: var(--text-md);
+    font-size: clamp(var(--text-lg), 5vw, var(--text-xl));
   }
 
   &__paragraph-container {
@@ -56,6 +56,11 @@
     text-align: center;
     line-height: 2.3rem;
     margin: auto;
+    max-width: 40rem;
+  }
+
+  &__paragraph {
+    font-size: 18px;
   }
 
   &__social {
