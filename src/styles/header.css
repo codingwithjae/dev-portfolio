@@ -98,7 +98,7 @@
 
   &__button {
     font-weight: 400;
-    width: 9.6875rem;
+    width: 11.6875rem;
     height: 3.75rem;
     padding: 0 1.25rem;
     color: var(--button-text-color);
@@ -109,6 +109,7 @@
     cursor: pointer;
     transition: transform 0.3s ease;
     font-family: var(--font-family-primary);
+    font-size: var(--text-sm);
 
     &:hover {
       background-color: var(--hover-states);

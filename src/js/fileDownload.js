@@ -3,7 +3,7 @@ import { showMessage } from '../utils/showMessage.js';
 const downloadButton = document.querySelector('.header__button');
 
 downloadButton.addEventListener('click', async () => {
-  const fileId = '1Mhn-344feVR2aZkViR0NKBZFr4MA_vVx';
+  const fileId = '19VztvpXXoDmiCYehy0xenuqowLVIWNYa';
 
   try {
     await downloadFile(fileId);
@@ -19,7 +19,9 @@ async function downloadFile(fileId) {
     link.href = `https://drive.google.com/uc?export=download&id=${fileId}`;
     link.download = '';
 
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   } catch (error) {
     throw new Error('Failed to download the file');
   }
