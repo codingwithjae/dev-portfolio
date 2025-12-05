@@ -1,0 +1,59 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  title: string;
+  thumbnail: string | ImageMetadata;
+  technologies: string;
+  demoUrl: string;
+  codeUrl: string;
+}
+
+const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
+---
+
+<article
+  class="glassmorphism group relative rounded-[0.9375rem] max-w-[37.5rem] cursor-pointer overflow-hidden"
+>
+  <figure class="relative overflow-hidden rounded-t-[0.9375rem]">
+    <Image
+      class="w-full h-auto rounded-t-[0.9375rem] transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.4]"
+      src={thumbnail as any}
+      width={600}
+      height={340}
+      widths={[400, 600, 800]}
+      sizes="(max-width: 768px) 400px, 600px"
+      alt={title}
+      loading="lazy"
+      decoding="async"
+    />
+
+    <div
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300"
+    >
+      <a
+        href={demoUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent transition-colors mt-4"
+      >
+        View project
+      </a>
+      <a
+        href={codeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent transition-colors mt-4"
+      >
+        View code
+      </a>
+    </div>
+  </figure>
+
+  <div
+    class="flex flex-col gap-[1.125rem] p-[0.625rem] font-display text-text-base transition-colors duration-300"
+  >
+    <h2 class="text-[1.13rem] font-bold text-heading-accent">{title}</h2>
+    <span class="text-text-muted text-[1rem]">{technologies}</span>
+  </div>
+</article>

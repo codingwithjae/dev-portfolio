@@ -1,0 +1,130 @@
+<div
+    id="toast-container"
+    class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"
+>
+</div>
+
+<template id="toast-template">
+    <div
+        class="toast-item pointer-events-auto px-6 py-4 rounded-xl border border-border-base shadow-2xl flex items-center gap-4 min-w-[20rem] backdrop-blur-md opacity-0 translate-x-10 transition-all duration-400"
+    >
+        <div
+            class="toast-icon-wrapper w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+        >
+        </div>
+        <div class="flex-1">
+            <p class="toast-title font-display font-bold text-text-base"></p>
+            <p class="toast-message font-sans text-sm text-text-muted"></p>
+        </div>
+        <button
+            class="toast-close text-text-muted hover:text-text-base transition-colors"
+            aria-label="Close notification"
+        >
+            <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+</template>
+
+<style is:global>
+    .toast-item.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-item.success {
+        background: linear-gradient(
+            to right,
+            rgba(214, 234, 46, 0.2),
+            rgba(214, 234, 46, 0.05)
+        );
+    }
+
+    .toast-item.error {
+        background: linear-gradient(
+            to right,
+            rgba(239, 68, 68, 0.2),
+            rgba(239, 68, 68, 0.05)
+        );
+    }
+
+    .toast-icon-wrapper.success {
+        background-color: var(--color-accent);
+        color: var(--color-primary);
+    }
+
+    .toast-icon-wrapper.error {
+        background-color: #ef4444;
+        color: white;
+    }
+
+    .toast-icon-wrapper svg {
+        display: block;
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+</style>
+
+<script>
+    import type { ToastEventDetail } from "./toast";
+
+    const container = document.getElementById("toast-container");
+    const template = document.getElementById(
+        "toast-template",
+    ) as HTMLTemplateElement;
+
+    const icons = {
+        success: `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`,
+        error: `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><g transform="translate(-0.5, 0)"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></g></svg>`,
+    };
+
+    const createToast = (detail: ToastEventDetail) => {
+        if (!container || !template) return;
+
+        const clone = template.content.cloneNode(true) as DocumentFragment;
+        const item = clone.querySelector(".toast-item") as HTMLElement;
+        const iconWrapper = clone.querySelector(
+            ".toast-icon-wrapper",
+        ) as HTMLElement;
+        const title = clone.querySelector(".toast-title") as HTMLElement;
+        const message = clone.querySelector(".toast-message") as HTMLElement;
+        const closeBtn = clone.querySelector(".toast-close") as HTMLElement;
+
+        item.classList.add(detail.type);
+        iconWrapper.classList.add(detail.type);
+        iconWrapper.innerHTML = icons[detail.type];
+        title.textContent = detail.type === "success" ? "Success!" : "Error";
+        message.textContent = detail.message;
+
+        const removeToast = () => {
+            item.classList.remove("show");
+            item.addEventListener("transitionend", () => item.remove(), {
+                once: true,
+            });
+        };
+
+        closeBtn.addEventListener("click", removeToast);
+
+        container.appendChild(clone);
+
+        requestAnimationFrame(() => {
+            item.classList.add("show");
+        });
+
+        setTimeout(removeToast, 5000);
+    };
+
+    window.addEventListener("toast-notify", (e: any) => {
+        createToast(e.detail);
+    });
+</script>
