@@ -1,0 +1,117 @@
+---
+interface Props {
+    title: string;
+    description: string;
+    image?: string;
+    type?: "website" | "article" | "profile";
+    jsonLd?: string | undefined;
+    canonicalUrl?: string | undefined;
+    noindex?: boolean;
+    preloadHeroImage?: any;
+}
+
+const {
+    title,
+    description,
+    image = "/images/thumbnail-preview.webp",
+    type = "website",
+    jsonLd,
+    canonicalUrl,
+    noindex = false,
+    preloadHeroImage,
+} = Astro.props;
+
+import { getImage } from "astro:assets";
+
+const siteUrl = Astro.site?.href || "https://developer.johandercampos.com";
+const canonical = canonicalUrl || Astro.url.href;
+const fullOgImage = image.startsWith("http") ? image : `${siteUrl}${image}`;
+
+let optimizedHeroUrl = "";
+if (preloadHeroImage) {
+    if (typeof preloadHeroImage === "string") {
+        optimizedHeroUrl = preloadHeroImage;
+    } else {
+        const optimizedHero = await getImage({
+            src: preloadHeroImage,
+            width: 375,
+            format: "avif",
+        });
+        optimizedHeroUrl = optimizedHero.src;
+    }
+}
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:url" content={canonical} />
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content="Johander Campos" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />
+
+<link rel="icon" type="image/webp" href="/favicon.webp" />
+
+{
+    optimizedHeroUrl && (
+        <link
+            rel="preload"
+            as="image"
+            href={optimizedHeroUrl}
+            type="image/avif"
+            fetchpriority="high"
+        />
+    )
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://cdn.sanity.io" />
+<link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
+/>
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
+    rel="stylesheet"
+    media="print"
+    onload="this.setAttribute('media', 'all')"
+/>
+<noscript>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
+        rel="stylesheet"
+    />
+</noscript>
+
+{jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+
+<script is:inline>
+    const getTheme = () => {
+        if (
+            typeof localStorage !== "undefined" &&
+            localStorage.getItem("theme")
+        ) {
+            return localStorage.getItem("theme");
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+    };
+
+    const theme = getTheme();
+    document.documentElement.setAttribute("data-theme", theme);
+</script>
