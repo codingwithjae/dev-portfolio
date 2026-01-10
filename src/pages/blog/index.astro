@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogListPage from "../../components/pages/BlogListPage.astro";
+import { getBlogPosts } from "../../lib/sanity/sanity";
+import { generateBreadcrumbSchema } from "../../lib/sanity/seo";
+
+const posts = await getBlogPosts();
+
+const siteUrl = "https://developer.johandercampos.com";
+const breadcrumbJsonLd = generateBreadcrumbSchema([
+  { name: "Home", url: siteUrl },
+  { name: "Blog", url: `${siteUrl}/blog` },
+]);
+---
+
+<BaseLayout
+  title="Blog | Johander Campos"
+  description="Thoughts, tutorials, and insights on frontend development by Johander Campos."
+  jsonLd={breadcrumbJsonLd}
+>
+  <BlogListPage posts={posts} />
+</BaseLayout>

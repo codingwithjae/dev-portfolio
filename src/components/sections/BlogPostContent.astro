@@ -1,0 +1,163 @@
+---
+import { PortableText } from "astro-portabletext";
+import { urlFor } from "../../lib/sanity/sanity";
+
+interface Props {
+  post: {
+    title: string;
+    excerpt?: string;
+    coverImage?: any;
+    body?: any;
+    categories?: string[];
+    author?: {
+      name: string;
+      image?: any;
+      bio?: string;
+    };
+    publishedAt?: string;
+  };
+}
+
+const { post } = Astro.props;
+
+let coverImageUrl = "https://placehold.co/1200x630";
+---
+
+<article
+  class="max-w-[50rem] mx-auto p-5 min-h-screen reveal transition-colors"
+>
+  <div
+    class="glassmorphism rounded-[2.5rem] p-8 md:p-12 overflow-hidden relative"
+  >
+    <header class="mb-12 relative z-10">
+      <div class="flex flex-wrap gap-2 mb-6">
+        {
+          post.categories?.map((cat) => (
+            <span class="text-[0.7rem] bg-accent/20 text-accent px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+              {cat}
+            </span>
+          ))
+        }
+      </div>
+
+      <h1
+        class="text-[2.5rem] md:text-[3.5rem] font-display font-bold mb-8 text-text-base leading-[1.1] transition-colors"
+      >
+        {post.title}
+      </h1>
+
+      <div
+        class="flex flex-wrap items-center gap-8 text-text-muted border-b border-border-base pb-10 transition-colors"
+      >
+        {
+          post.author && (
+            <div class="flex items-center gap-4">
+              {post.author.image ? (
+                <img
+                  src={urlFor(post.author.image).width(56).height(56).url()}
+                  alt={post.author.name}
+                  class="w-14 h-14 rounded-full border-2 border-accent/30 shadow-lg"
+                  width="56"
+                  height="56"
+                />
+              ) : (
+                <div class="w-14 h-14 rounded-full border-2 border-border-base bg-secondary flex items-center justify-center shadow-lg">
+                  <svg
+                    class="w-6 h-6 text-text-muted"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                    />
+                  </svg>
+                </div>
+              )}
+              <div class="flex flex-col">
+                <span class="text-text-base font-bold text-lg transition-colors">
+                  {post.author.name}
+                </span>
+                <span class="text-xs uppercase tracking-widest text-text-muted/70">
+                  Author
+                </span>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          post.publishedAt && (
+            <div class="flex flex-col">
+              <time
+                datetime={post.publishedAt}
+                class="text-text-base font-bold text-lg transition-colors"
+              >
+                {new Date(post.publishedAt).toLocaleDateString("es-ES", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+              <span class="text-xs uppercase tracking-widest text-text-muted/70">
+                Published on
+              </span>
+            </div>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      coverImageUrl && (
+        <figure class="mb-16 reveal delay-100 relative z-10">
+          <img
+            src={coverImageUrl}
+            alt={post.coverImage?.alt || post.title}
+            class="w-full rounded-3xl shadow-2xl border border-border-base transition-colors"
+            width="1200"
+            height="630"
+            loading="eager"
+            fetchpriority="high"
+          />
+          {post.coverImage?.caption && (
+            <figcaption class="text-center text-sm text-text-muted mt-6 italic opacity-80 font-sans">
+              {post.coverImage.caption}
+            </figcaption>
+          )}
+        </figure>
+      )
+    }
+
+    <div
+      class="prose dark:prose-invert prose-lg max-w-none reveal delay-200 relative z-10
+                prose-headings:font-display prose-headings:text-text-base prose-headings:font-bold
+                prose-p:text-text-base prose-p:leading-relaxed prose-p:text-[1.1rem] md:prose-p:text-[1.2rem]
+                prose-a:text-text-base prose-a:no-underline prose-a:underline prose-a:decoration-accent/30 prose-a:transition-all prose-a:hover:text-accent prose-a:hover:decoration-accent
+                prose-strong:text-text-base prose-strong:font-bold
+                prose-code:bg-secondary px-2 py-1 rounded-lg text-text-base before:content-none after:content-none font-mono text-[0.9em]
+                prose-pre:bg-[#0d1117] prose-pre:backdrop-blur-md prose-pre:border prose-pre:border-border-base prose-pre:rounded-2xl prose-pre:shadow-xl
+                prose-blockquote:border-l-[4px] prose-blockquote:border-l-accent prose-blockquote:bg-accent/5 prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:rounded-r-2xl prose-blockquote:italic prose-blockquote:text-text-base/90
+                prose-img:rounded-3xl prose-img:shadow-xl prose-img:border prose-img:border-border-base transition-colors"
+    >
+      {post.body && <PortableText value={post.body} />}
+    </div>
+  </div>
+</article>
+
+<style is:global>
+  /* Custom scrollbar for code blocks inside prose */
+  .prose pre::-webkit-scrollbar {
+    height: 8px;
+  }
+  .prose pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+  .prose pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+</style>

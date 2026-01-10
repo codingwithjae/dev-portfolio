@@ -1,0 +1,81 @@
+---
+import Toast from "../components/ui/Toast/Toast.astro";
+import Seo from "../components/head/Seo.astro";
+import type { ImageMetadata } from "astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: "website" | "article" | "profile";
+  jsonLd?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+  preloadHeroImage?: ImageMetadata | string;
+}
+
+const {
+  title,
+  description = "Front End Developer skilled in creating responsive, interactive web designs using HTML, CSS, JavaScript, and React.",
+  ogImage = "/images/thumbnail-preview.webp",
+  ogType = "website",
+  jsonLd,
+  canonicalUrl,
+  noindex = false,
+  preloadHeroImage,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Seo
+      title={title}
+      description={description}
+      image={ogImage}
+      type={ogType}
+      jsonLd={jsonLd}
+      canonicalUrl={canonicalUrl}
+      noindex={noindex}
+      preloadHeroImage={preloadHeroImage}
+    />
+  </head>
+
+  <body>
+    <Toast />
+
+    <div class="bg-noise" aria-hidden="true"></div>
+    <div class="bg-topology" aria-hidden="true"></div>
+
+    <slot />
+
+    <script>
+      const reveal = () => {
+        const reveals = document.querySelectorAll(".reveal");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px",
+          },
+        );
+
+        reveals.forEach((el) => observer.observe(el));
+      };
+
+      reveal();
+      document.addEventListener("astro:after-swap", reveal);
+    </script>
+
+    <script src="../scripts/glassmorphism-effect.ts"></script>
+  </body>
+</html>

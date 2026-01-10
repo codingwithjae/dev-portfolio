@@ -1,0 +1,54 @@
+---
+import BlogPostContent from "../sections/BlogPostContent.astro";
+import Footer from "../sections/Footer.astro";
+
+import type { BlogPostDetail } from "../../lib/sanity/sanity.types";
+
+interface Props {
+    post: BlogPostDetail;
+}
+
+const { post } = Astro.props;
+
+const heroData = {
+    linkedinUrl: "https://www.linkedin.com/in/johandercampos/",
+    githubUrl: "https://github.com/codingwithjae",
+};
+---
+
+<nav
+    class="max-w-[50rem] mx-auto px-5 pt-12 reveal"
+    aria-label="Back navigation"
+>
+    <a
+        href="/"
+        class="glassmorphism inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold font-display text-text-base hover:text-text-muted transition-all hover:scale-105 active:scale-95 group"
+    >
+        <svg
+            class="w-3 h-3 transition-transform group-hover:-translate-x-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
+        </svg>
+        Back to Home
+    </a>
+</nav>
+
+<main class="py-10" id="main-content">
+    <article>
+        <BlogPostContent post={post} />
+    </article>
+</main>
+
+<Footer
+    linkedinUrl={heroData.linkedinUrl}
+    githubUrl={heroData.githubUrl}
+    repoUrl="https://github.com/codingwithjae/dev-portfolio"
+/>
