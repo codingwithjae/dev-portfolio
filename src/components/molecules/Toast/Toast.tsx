@@ -1,25 +1,7 @@
 import React from 'react';
-import { useToast } from '../../hooks/useToast';
+import { useToast } from './useToast';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Inline SVG icons to avoid Font Awesome dependency
-const CheckIcon = () => (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-);
-
-const ExclamationIcon = () => (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-    </svg>
-);
-
-const CloseIcon = () => (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-);
+import { CheckIcon, ExclamationIcon, CloseIcon } from '../../atoms/icons';
 
 export const Toast: React.FC = () => {
     const { toasts, removeToast } = useToast();

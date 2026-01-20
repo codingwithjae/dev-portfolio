@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSkillTicker } from '../../hooks/useSkillTicker';
+import { useSkillTicker } from './useSkillTicker';
 
 interface Skill {
     name: string;

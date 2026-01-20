@@ -6,7 +6,7 @@
  * OPTIMIZED: Critical fonts preloaded, Font Awesome deferred, hero image preload hint.
  */
 
-import { Toast } from "../components/molecules/Toast.tsx";
+import { Toast } from "../molecules/Toast/Toast.tsx";
 
 interface Props {
   /** Page title - used in <title> and OG/Twitter tags */
@@ -191,5 +191,5 @@ const fullOgImage = ogImage.startsWith("http")
 </html>
 
 <style is:global>
-  @import "../styles/global.css";
+  @import "../../styles/global.css";
 </style>

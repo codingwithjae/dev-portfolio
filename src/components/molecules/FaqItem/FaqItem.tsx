@@ -1,38 +1,18 @@
 /**
  * @file FaqItem.tsx
  * @description An accessible accordion component for FAQ sections.
- * Follows WCAG guidelines with proper ARIA attributes for screen readers.
  */
 
 import React, { useId } from 'react';
-import { useAccordion } from '../../hooks/useAccordion';
+import { useAccordion } from './useAccordion';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Inline SVG icons to avoid Font Awesome dependency
-// Note: The icon itself doesn't rotate - we simply switch between plus and minus
-const PlusIcon = () => (
-    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-    </svg>
-);
-
-const MinusIcon = () => (
-    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-    </svg>
-);
+import { PlusIcon, MinusIcon } from '../../atoms/icons';
 
 interface FaqItemProps {
-    /** The question text displayed in the trigger button */
     question: string;
-    /** The answer text revealed when expanded */
     answer: string;
 }
 
-/**
- * Accessible FAQ accordion item.
- * Uses unique IDs for proper ARIA labeling and screen reader support.
- */
 export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
     const { isOpen, toggle } = useAccordion();
     const id = useId();

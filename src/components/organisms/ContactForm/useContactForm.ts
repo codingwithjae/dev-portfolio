@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import emailjs from '@emailjs/browser';
-import { useToast } from './useToast';
+import { useToast } from '../../molecules/Toast/useToast';
 
 /**
  * Shape of the contact form data.

@@ -5,13 +5,13 @@
  * Optimized for SEO with JSON-LD structured data and semantic HTML.
  */
 
-import BaseLayout from "../layouts/BaseLayout.astro";
+import BaseLayout from "../components/templates/BaseTemplate.astro";
 import Header from "../components/organisms/Header.astro";
-import { SkillCard } from "../components/molecules/SkillCard.tsx";
-import ProjectCard from "../components/molecules/ProjectCard.astro";
-import BlogCard from "../components/molecules/BlogCard.astro";
-import { ContactForm } from "../components/organisms/ContactForm.tsx";
-import { FaqItem } from "../components/molecules/FaqItem.tsx";
+import { SkillCard } from "../components/molecules/cards/SkillCard/SkillCard.tsx";
+import ProjectCard from "../components/molecules/cards/ProjectCard.astro";
+import BlogCard from "../components/molecules/cards/BlogCard.astro";
+import { ContactForm } from "../components/organisms/ContactForm/ContactForm.tsx";
+import { FaqItem } from "../components/molecules/FaqItem/FaqItem.tsx";
 import Footer from "../components/organisms/Footer.astro";
 import { getPageContent, getFeaturedBlogPosts, urlFor } from "../lib/sanity";
 import { generateWebsiteSchema, generatePersonSchema } from "../lib/seo";
