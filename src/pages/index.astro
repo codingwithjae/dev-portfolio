@@ -76,6 +76,7 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
   title="Johander Campos | Front End Developer"
   description="Portfolio of Johander Campos, a Front End Developer specializing in React, TypeScript, and modern web technologies."
   jsonLd={combinedJsonLd}
+  preloadHeroImage="/images/photo.avif"
 >
   <Header
     name={heroData.name}
@@ -100,7 +101,7 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
           const skillsForTicker = [...cat.skills, cat.skills[0]];
           return (
             <div class={`reveal delay-${(index + 1) * 100}`}>
-              <SkillCard client:load category={cat.category} skills={skillsForTicker} />
+              <SkillCard client:visible category={cat.category} skills={skillsForTicker} />
             </div>
           );
         })
@@ -161,7 +162,7 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
     <!-- Contact Section -->
     <section class="w-full reveal mb-[6.25rem]" aria-labelledby="contact-heading">
       <h2 id="contact-heading" class="sr-only">Contact Me</h2>
-      <ContactForm client:load email="connect@johandercampos.com" />
+      <ContactForm client:visible email="connect@johandercampos.com" />
     </section>
 
     {faqs.length > 0 && (
