@@ -1,0 +1,102 @@
+[
+    {
+        "category": "Frontend",
+        "skills": [
+            {
+                "name": "React",
+                "experience": "1 year",
+                "logo": "fa-brands fa-react"
+            },
+            {
+                "name": "JavaScript",
+                "experience": "1.5 years",
+                "logo": "fa-brands fa-js"
+            },
+            {
+                "name": "TypeScript",
+                "experience": "Learning",
+                "logo": "fa-solid fa-code"
+            },
+            {
+                "name": "HTML",
+                "experience": "1.5 years",
+                "logo": "fa-brands fa-html5"
+            }
+        ]
+    },
+    {
+        "category": "UI/Styles",
+        "skills": [
+            {
+                "name": "CSS",
+                "experience": "1.5 years",
+                "logo": "fa-brands fa-css3-alt"
+            },
+            {
+                "name": "Tailwind CSS",
+                "experience": "1 year",
+                "logo": "fa-solid fa-wind"
+            },
+            {
+                "name": "PostCSS",
+                "experience": "6 months",
+                "logo": "fa-solid fa-vial"
+            },
+            {
+                "name": "Framer",
+                "experience": "Learning",
+                "logo": "fa-solid fa-wand-magic-sparkles"
+            }
+        ]
+    },
+    {
+        "category": "Backend",
+        "skills": [
+            {
+                "name": "Node JS",
+                "experience": "Learning",
+                "logo": "fa-brands fa-node-js"
+            },
+            {
+                "name": "Express",
+                "experience": "Learning",
+                "logo": "fa-solid fa-server"
+            },
+            {
+                "name": "Prisma",
+                "experience": "Learning",
+                "logo": "fa-solid fa-database"
+            },
+            {
+                "name": "PostgreSQL",
+                "experience": "Learning",
+                "logo": "fa-solid fa-table"
+            }
+        ]
+    },
+    {
+        "category": "Tools",
+        "skills": [
+            {
+                "name": "Figma",
+                "experience": "1 year",
+                "logo": "fa-brands fa-figma"
+            },
+            {
+                "name": "Storybook",
+                "experience": "6 months",
+                "logo": "fa-solid fa-book-open"
+            },
+            {
+                "name": "Vitest",
+                "experience": "Learning",
+                "logo": "fa-solid fa-flask"
+            },
+            {
+                "name": "Sanity",
+                "experience": "Learning",
+                "logo": "fa-solid fa-leaf"
+            }
+        ]
+    }
+]

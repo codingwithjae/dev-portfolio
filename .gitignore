@@ -126,3 +126,11 @@ license.txt
 exports
 dist
 build
+
+############################
+# Astro / Vercel / IDE
+############################
+
+.astro
+.vercel
+.vscode

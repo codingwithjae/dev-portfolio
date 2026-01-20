@@ -1,0 +1,188 @@
+---
+/**
+ * @file index.astro
+ * @description Homepage displaying hero, skills, projects, blog previews, contact form, and FAQ.
+ * Optimized for SEO with JSON-LD structured data and semantic HTML.
+ */
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/organisms/Header.astro";
+import { SkillCard } from "../components/molecules/SkillCard.tsx";
+import ProjectCard from "../components/molecules/ProjectCard.astro";
+import BlogCard from "../components/molecules/BlogCard.astro";
+import { ContactForm } from "../components/organisms/ContactForm.tsx";
+import { FaqItem } from "../components/molecules/FaqItem.tsx";
+import Footer from "../components/organisms/Footer.astro";
+import { getPageContent, getFeaturedBlogPosts, urlFor } from "../lib/sanity";
+import { generateWebsiteSchema, generatePersonSchema } from "../lib/seo";
+import skillCategories from "../data/skills.json";
+import type { BlogPost } from "../lib/sanity.types";
+
+// --- Sanity Data Fetch ---
+let sanityData = null;
+let blogPosts: BlogPost[] = [];
+
+try {
+  [sanityData, blogPosts] = await Promise.all([
+    getPageContent(),
+    getFeaturedBlogPosts()
+  ]);
+} catch (e) {
+  console.error("Sanity fetch failed:", e);
+}
+
+// --- Content Mapping ---
+const heroData = {
+  name: { first: "Johander", last: "Campos" },
+  title: sanityData?.hero?.title || "Hey, It's Johander Campos.",
+  subtitle: sanityData?.hero?.subtitle || "Front End Developer",
+  paragraph: sanityData?.hero?.bio || "I've been working as a Front End Developer for 1 year.",
+  photoSrc: "/images/photo.avif",
+  linkedinUrl: sanityData?.socials?.linkedin || "https://www.linkedin.com/in/johandercampos/",
+  githubUrl: sanityData?.socials?.github || "https://github.com/codingwithjae",
+  cvUrl: sanityData?.cvUrl || "#",
+};
+
+const projects = sanityData?.projects?.map(p => ({
+  title: p.name,
+  thumbnail: p.thumbnail ? urlFor(p.thumbnail).width(800).url() : "/images/thumbnail-preview.webp",
+  technologies: p.techStack,
+  demoUrl: p.demoUrl || "#",
+  codeUrl: p.githubUrl || "#",
+})) || [];
+
+const faqs = sanityData?.faqs || [];
+
+// --- JSON-LD Structured Data ---
+const siteUrl = "https://developer.johandercampos.com";
+const websiteSchema = generateWebsiteSchema({
+  name: "Johander Campos | Front End Developer",
+  url: siteUrl,
+  description: "Portfolio of Johander Campos, a Front End Developer specializing in React, TypeScript, and modern web technologies.",
+});
+
+const personSchema = generatePersonSchema({
+  name: "Johander Campos",
+  jobTitle: "Front End Developer",
+  url: siteUrl,
+  sameAs: [heroData.linkedinUrl, heroData.githubUrl],
+  image: `${siteUrl}/images/photo.avif`,
+});
+
+const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
+---
+
+<BaseLayout 
+  title="Johander Campos | Front End Developer"
+  description="Portfolio of Johander Campos, a Front End Developer specializing in React, TypeScript, and modern web technologies."
+  jsonLd={combinedJsonLd}
+>
+  <Header
+    name={heroData.name}
+    title={heroData.title}
+    subtitle={heroData.subtitle}
+    paragraph={heroData.paragraph}
+    photoSrc={heroData.photoSrc}
+    linkedinUrl={heroData.linkedinUrl}
+    githubUrl={heroData.githubUrl}
+    cvUrl={heroData.cvUrl}
+  />
+
+  <main class="p-5 flex flex-col justify-center items-center text-text-base overflow-x-hidden transition-colors" id="main-content">
+    <!-- Skills Section -->
+    <section 
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-[1.25rem] max-w-[50rem] w-full mb-[6.25rem] lg:self-center"
+      aria-labelledby="skills-heading"
+    >
+      <h2 id="skills-heading" class="sr-only">Technical Skills</h2>
+      {
+        skillCategories.map((cat: any, index: number) => {
+          const skillsForTicker = [...cat.skills, cat.skills[0]];
+          return (
+            <div class={`reveal delay-${(index + 1) * 100}`}>
+              <SkillCard client:load category={cat.category} skills={skillsForTicker} />
+            </div>
+          );
+        })
+      }
+    </section>
+
+    {projects.length > 0 && (
+      <!-- Portfolio Section -->
+      <section 
+        class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-[6.25rem]"
+        aria-labelledby="projects-heading"
+      >
+        <div class="w-full flex justify-between items-center mb-[3.125rem] reveal">
+          <h2 id="projects-heading" class="text-[clamp(2.8rem,5vw,3.625rem)] font-display font-bold">My projects</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-[1.5rem] w-full items-start">
+          {
+            projects.map((project, index) => (
+              <article class={`reveal delay-${(index + 1) * 100} h-full`}>
+                <ProjectCard
+                  title={project.title}
+                  thumbnail={project.thumbnail}
+                  technologies={project.technologies}
+                  demoUrl={project.demoUrl}
+                  codeUrl={project.codeUrl}
+                />
+              </article>
+            ))
+          }
+        </div>
+      </section>
+    )}
+
+    {blogPosts.length > 0 && (
+      <!-- Blog Section -->
+      <section 
+        class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-[6.25rem]"
+        aria-labelledby="blog-heading"
+      >
+        <div class="w-full flex justify-between items-center mb-[3.125rem] reveal">
+          <h2 id="blog-heading" class="text-[clamp(2.8rem,5vw,3.625rem)] font-display font-bold text-left w-full">Latest Articles</h2>
+        </div>
+        <div class="flex flex-col justify-center items-center gap-[2.5rem] w-full">
+          {
+            blogPosts.map((post: BlogPost, index: number) => (
+              <article class={`w-full reveal delay-${(index + 1) * 100}`}>
+                <BlogCard title={post.title} excerpt={post.excerpt || ""} slug={post.slug || ""} coverImage={post.coverImage} />
+              </article>
+            ))
+          }
+          <div class="reveal delay-300">
+            <a href="/blog" class="text-accent font-bold hover:underline transition-all mt-4">View all articles →</a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Contact Section -->
+    <section class="w-full reveal mb-[6.25rem]" aria-labelledby="contact-heading">
+      <h2 id="contact-heading" class="sr-only">Contact Me</h2>
+      <ContactForm client:load email="connect@johandercampos.com" />
+    </section>
+
+    {faqs.length > 0 && (
+      <!-- FAQ Section -->
+      <section 
+        class="text-center p-5 w-full max-w-[37.5rem] font-display mt-0 mb-[6.25rem]"
+        aria-labelledby="faq-heading"
+      >
+        <div class="reveal">
+          <h2 id="faq-heading" class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold tracking-[0.125rem]">Know a little more about me</h2>
+        </div>
+        <div class="glassmorphism p-[1.875rem] rounded-[1.875rem] mt-[3.125rem] reveal transition-all duration-300">
+          {
+            faqs.map((faq) => (
+              <FaqItem client:visible question={faq.question} answer={faq.answer} />
+            ))
+          }
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Footer linkedinUrl={heroData.linkedinUrl} githubUrl={heroData.githubUrl} repoUrl="https://github.com/codingwithjae/dev-portfolio" />
+</BaseLayout>

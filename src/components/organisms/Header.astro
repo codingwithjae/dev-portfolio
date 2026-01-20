@@ -1,0 +1,138 @@
+---
+/**
+ * @file Header.astro
+ * @description Hero section component with profile photo, name, bio, social links, and CV download.
+ * Follows semantic HTML best practices with a single H1 per usage context.
+ */
+
+import ThemeToggle from "../atoms/ThemeToggle.tsx";
+
+interface Props {
+  /** Object containing first and last name for the logo */
+  name: { first: string; last: string };
+  /** Main headline (H1) */
+  title: string;
+  /** Secondary headline (styled paragraph, not H1) */
+  subtitle: string;
+  /** Bio paragraph text */
+  paragraph: string;
+  /** Path to profile photo */
+  photoSrc: string;
+  /** LinkedIn profile URL */
+  linkedinUrl: string;
+  /** GitHub profile URL */
+  githubUrl: string;
+  /** Optional CV download URL */
+  cvUrl?: string;
+}
+
+const {
+  name,
+  title,
+  subtitle,
+  paragraph,
+  photoSrc,
+  linkedinUrl,
+  githubUrl,
+  cvUrl,
+} = Astro.props;
+---
+
+<header
+  class="p-5 flex flex-col items-center justify-center mb-[6.25rem]"
+  role="banner"
+>
+  <!-- Top Navigation Bar -->
+  <nav
+    class="w-full max-w-[50rem] mb-5 flex justify-between items-center"
+    aria-label="Primary navigation"
+  >
+    <a
+      href="/"
+      class="text-text-base font-sans text-[1.13rem] hover:opacity-80 transition-opacity"
+    >
+      {name.first}
+      <span class="font-bold">{name.last}.</span>
+    </a>
+    <ThemeToggle client:load />
+  </nav>
+
+  <!-- Hero Section -->
+  <section
+    class="flex flex-col items-center text-text-base font-display max-w-[50rem]"
+    aria-label="About me"
+  >
+    <figure
+      class="rounded-full border-[3px] border-text-base mb-10 flex items-center transition-colors duration-300"
+    >
+      <img
+        class="rounded-full w-[375px] h-[375px]"
+        src={photoSrc}
+        alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
+        width="375"
+        height="375"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </figure>
+
+    <div class="text-center mb-7 text-text-base transition-colors duration-300">
+      <h1 class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold leading-[1.2]">
+        {title}
+      </h1>
+      {
+        subtitle && !title.includes(subtitle) && (
+          <p class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold leading-[1.2] mt-1">
+            {subtitle}
+          </p>
+        )
+      }
+    </div>
+
+    <p
+      class="text-[1.13rem] text-center leading-[1.5625rem] max-w-[40rem] font-sans text-text-muted"
+    >
+      {paragraph}
+    </p>
+
+    <!-- Social Links -->
+    <nav class="flex gap-4 my-4" aria-label="Social media links">
+      <a
+        href={linkedinUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-text-base hover:scale-125 transition-transform inline-block"
+        aria-label="Visit my LinkedIn profile"
+      >
+        <i class="fa-brands fa-linkedin-in text-[1.5rem]" aria-hidden="true"
+        ></i>
+      </a>
+      <a
+        href={githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-text-base hover:scale-125 transition-transform inline-block"
+        aria-label="Visit my GitHub profile"
+      >
+        <i class="fa-brands fa-github text-[1.5rem]" aria-hidden="true"></i>
+      </a>
+    </nav>
+
+    <!-- CTA Button -->
+    {
+      cvUrl && cvUrl !== "#" && (
+        <a
+          href={cvUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-5 py-3 bg-accent text-black font-bold rounded-md
+               hover:bg-accent-hover hover:scale-110 transition-transform font-display mt-4 text-[1.13rem]"
+          aria-label="Download my CV (opens in new tab)"
+        >
+          Download my CV
+        </a>
+      )
+    }
+  </section>
+</header>

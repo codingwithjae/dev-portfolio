@@ -1,8 +1,0 @@
-User-agent: *
-Disallow: /private/
-Disallow: /admin/
-
-# Allow everything else
-Allow: /
-
-Sitemap: https://www.codingwithjae.dev/sitemap.xml

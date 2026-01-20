@@ -1,0 +1,90 @@
+---
+/**
+ * @file blog/[slug].astro
+ * @description Dynamic route for individual blog post pages.
+ * Includes Article JSON-LD structured data for rich search results.
+ */
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogPostContent from "../../components/organisms/BlogPostContent.astro";
+import Footer from "../../components/organisms/Footer.astro";
+import { getBlogPost, urlFor } from "../../lib/sanity";
+import { generateArticleSchema, generateBreadcrumbSchema } from "../../lib/seo";
+
+const { slug } = Astro.params;
+let post;
+
+try {
+  post = await getBlogPost(slug!);
+} catch (e) {
+  console.error("Sanity fetch failed for slug:", slug, e);
+}
+
+if (!post) {
+  return Astro.redirect("/404");
+}
+
+// --- JSON-LD Structured Data ---
+const siteUrl = "https://developer.johandercampos.com";
+const postUrl = `${siteUrl}/blog/${post.slug}`;
+const postImage = post.coverImage
+  ? urlFor(post.coverImage).width(1200).height(630).url()
+  : `${siteUrl}/images/thumbnail-preview.webp`;
+
+const articleSchema = generateArticleSchema({
+  headline: post.title,
+  author: post.author?.name || "Johander Campos",
+  datePublished: post.publishedAt || new Date().toISOString().split("T")[0],
+  image: postImage,
+  url: postUrl,
+  description: post.excerpt || "",
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: "Home", url: siteUrl },
+  { name: "Blog", url: `${siteUrl}/blog` },
+  { name: post.title, url: postUrl },
+]);
+
+const combinedJsonLd = `[${articleSchema}, ${breadcrumbSchema}]`;
+
+const heroData = {
+  linkedinUrl: "https://www.linkedin.com/in/johandercampos/",
+  githubUrl: "https://github.com/codingwithjae",
+};
+---
+
+<BaseLayout
+  title={`${post.title} | Johander Campos`}
+  description={post.excerpt || "Read this article by Johander Campos."}
+  ogType="article"
+  ogImage={postImage}
+  jsonLd={combinedJsonLd}
+>
+  <nav
+    class="max-w-[50rem] mx-auto px-5 pt-12 reveal"
+    aria-label="Back navigation"
+  >
+    <a
+      href="/"
+      class="glassmorphism inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold font-display text-text-base hover:text-accent transition-all hover:scale-105 active:scale-95 group"
+    >
+      <i
+        class="fas fa-arrow-left text-xs transition-transform group-hover:-translate-x-1"
+        aria-hidden="true"></i>
+      Back to Home
+    </a>
+  </nav>
+
+  <main class="py-10" id="main-content">
+    <article>
+      <BlogPostContent post={post} />
+    </article>
+  </main>
+
+  <Footer
+    linkedinUrl={heroData.linkedinUrl}
+    githubUrl={heroData.githubUrl}
+    repoUrl="https://github.com/codingwithjae/dev-portfolio"
+  />
+</BaseLayout>

@@ -1,22 +1,40 @@
 {
   "name": "dev-portfolio",
-  "private": true,
-  "version": "0.0.1",
   "type": "module",
+  "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^6.2.0"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "studio": "sanity dev --dir sanity"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/vercel": "^9.0.4",
     "@emailjs/browser": "^4.4.1",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "postcss-nested": "^6.2.0",
-    "sal.js": "^0.8.5",
-    "toastify-js": "^1.12.0"
+    "@sanity/astro": "^3.2.11",
+    "@sanity/client": "^7.14.0",
+    "@sanity/code-input": "^7.0.6",
+    "@sanity/image-url": "^2.0.3",
+    "@sanity/types": "^5.5.0",
+    "@sanity/vision": "^5.5.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^5.16.11",
+    "astro-portabletext": "^0.13.0",
+    "framer-motion": "^12.4.7",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "sanity": "^5.5.0",
+    "styled-components": "^6.1.11",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
   }
 }

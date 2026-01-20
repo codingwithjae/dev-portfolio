@@ -1,0 +1,159 @@
+---
+/**
+ * @file BaseLayout.astro
+ * @description Core layout component providing SEO meta tags, Open Graph, Twitter Cards,
+ * JSON-LD structured data injection, font preloading, and global styles.
+ */
+
+import { Toast } from "../components/molecules/Toast.tsx";
+
+interface Props {
+  /** Page title - used in <title> and OG/Twitter tags */
+  title: string;
+  /** Meta description for SEO and social sharing */
+  description?: string;
+  /** Open Graph image URL (defaults to a generic thumbnail) */
+  ogImage?: string;
+  /** Open Graph type (website, article, profile) */
+  ogType?: "website" | "article" | "profile";
+  /** JSON-LD structured data string (use generators from src/lib/seo.ts) */
+  jsonLd?: string;
+  /** Canonical URL override (defaults to Astro.url.href) */
+  canonicalUrl?: string;
+  /** Whether to allow search engine indexing (defaults to true) */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = "Front End Developer skilled in creating responsive, interactive web designs using HTML, CSS, JavaScript, and React.",
+  ogImage = "/images/thumbnail-preview.webp",
+  ogType = "website",
+  jsonLd,
+  canonicalUrl,
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = Astro.site?.href || "https://developer.johandercampos.com";
+const canonical = canonicalUrl || Astro.url.href;
+const fullOgImage = ogImage.startsWith("http")
+  ? ogImage
+  : `${siteUrl}${ogImage}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO Meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta
+      name="robots"
+      content={noindex ? "noindex, nofollow" : "index, follow"}
+    />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Johander Campos" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+
+    <!-- Fonts: Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome (loaded async for non-blocking) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      />
+    </noscript>
+
+    <!-- JSON-LD Structured Data -->
+    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+
+    <!-- Theme Initialization (Critical - prevents FOUC) -->
+    <script is:inline>
+      const getTheme = () => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+
+      const theme = getTheme();
+      document.documentElement.setAttribute("data-theme", theme);
+    </script>
+  </head>
+  <body>
+    <Toast client:load />
+
+    <!-- Background Elements -->
+    <div class="bg-noise" aria-hidden="true"></div>
+    <div class="bg-topology" aria-hidden="true"></div>
+
+    <slot />
+
+    <script>
+      // Scroll Reveal Logic
+      const reveal = () => {
+        const reveals = document.querySelectorAll(".reveal");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px",
+          },
+        );
+
+        reveals.forEach((el) => observer.observe(el));
+      };
+
+      reveal();
+      document.addEventListener("astro:after-swap", reveal);
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/global.css";
+</style>

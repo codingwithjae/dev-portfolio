@@ -1,0 +1,11 @@
+# robots.txt - https://developer.johandercampos.com
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://developer.johandercampos.com/sitemap-index.xml
+
+# Disallow admin/studio paths from indexing
+Disallow: /admin
+Disallow: /admin/*

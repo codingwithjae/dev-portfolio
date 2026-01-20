@@ -1,0 +1,50 @@
+---
+interface Props {
+  linkedinUrl: string;
+  githubUrl: string;
+  repoUrl: string;
+}
+
+const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
+---
+
+<footer class="relative text-text-base text-center py-12 px-4 font-display transition-colors duration-300">
+  <div class="max-w-[75rem] mx-auto">
+    <h2 class="mb-2 font-bold text-xl">Johander Campos</h2>
+
+    <div class="my-4 flex justify-center gap-4">
+      <a
+        href={linkedinUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-text-base hover:scale-125 transition-transform inline-block"
+        aria-label="LinkedIn Profile"
+      >
+        <i class="fa-brands fa-linkedin-in text-2xl"></i>
+      </a>
+      <a
+        href={githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-text-base hover:scale-125 transition-transform inline-block"
+        aria-label="GitHub Profile"
+      >
+        <i class="fa-brands fa-github text-2xl"></i>
+      </a>
+    </div>
+
+    <p class="my-2">© {new Date().getFullYear()} under MIT License.</p>
+    <p class="my-2">
+      Check the
+      <a
+        href={repoUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-accent hover:text-accent-hover"
+      >
+        code
+      </a>
+      of this website
+    </p>
+  </div>
+</footer>

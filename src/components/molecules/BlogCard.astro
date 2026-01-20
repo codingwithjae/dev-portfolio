@@ -1,0 +1,94 @@
+---
+/**
+ * @file BlogCard.astro
+ * @description A glassmorphism-styled card component for displaying blog post previews.
+ * Features hover scaling, image optimization via Sanity CDN, and responsive layout.
+ */
+
+import { urlFor } from "../../lib/sanity";
+
+/**
+ * Properties for the BlogCard component.
+ */
+interface Props {
+  /** The title of the blog post */
+  title: string;
+  /** A short summary or fallback text for the post */
+  excerpt: string;
+  /** The unique slug used for dynamic routing (e.g., 'my-post-title') */
+  slug: string;
+  /**
+   * The cover image source.
+   * Can be a string (URL) or a Sanity image object for CDN processing.
+   */
+  coverImage?: any;
+}
+
+const { title, excerpt, slug, coverImage } = Astro.props;
+
+/**
+ * Logic to resolve the image URL.
+ * Supports direct URLs or Sanity image records with manual transforms.
+ */
+let imageUrl = null;
+if (
+  typeof coverImage === "string" &&
+  (coverImage.startsWith("http") || coverImage.startsWith("/"))
+) {
+  imageUrl = coverImage;
+} else if (coverImage) {
+  try {
+    imageUrl = urlFor(coverImage).width(800).height(400).url();
+  } catch (err) {
+    console.error("Failed to generate image URL:", err);
+  }
+}
+---
+
+<a
+  href={`/blog/${slug}`}
+  class="block w-full max-w-[50rem] group hover:scale-[1.01] transition-transform duration-300"
+>
+  <article
+    class="glassmorphism rounded-[1.25rem] overflow-hidden w-full h-full cursor-pointer transition-colors"
+  >
+    <div class="flex flex-col md:flex-row h-full">
+      {
+        imageUrl && (
+          <div class="md:w-1/3 h-48 md:h-auto overflow-hidden">
+            <img
+              src={imageUrl}
+              alt={title}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          </div>
+        )
+      }
+
+      <div
+        class={`flex flex-col justify-center p-6 md:p-8 font-display ${imageUrl ? "md:w-2/3" : "w-full"}`}
+      >
+        <h3
+          class="text-[1.5rem] md:text-[1.8rem] font-bold leading-tight mb-3 group-hover:text-accent transition-colors text-text-base"
+        >
+          {title}
+        </h3>
+
+        <p
+          class="text-[1rem] text-text-muted font-sans line-clamp-2 leading-relaxed mb-6 transition-colors"
+        >
+          {excerpt}
+        </p>
+
+        <div
+          class="flex items-center gap-2 text-accent font-bold text-[1.1rem]"
+        >
+          <span>Read more</span>
+          <i
+            class="fas fa-arrow-right text-[0.9rem] transition-transform group-hover:translate-x-1"
+          ></i>
+        </div>
+      </div>
+    </div>
+  </article>
+</a>
