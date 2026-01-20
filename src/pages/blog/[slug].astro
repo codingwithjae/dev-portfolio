@@ -1,13 +1,11 @@
 ---
 /**
  * @file blog/[slug].astro
- * @description Dynamic route for individual blog post pages.
- * Includes Article JSON-LD structured data for rich search results.
+ * @description Dynamic blog post route - data fetching only, UI delegated to BlogPostPage.
  */
 
 import BaseLayout from "../../components/templates/BaseTemplate.astro";
-import BlogPostContent from "../../components/organisms/BlogPostContent.astro";
-import Footer from "../../components/organisms/Footer.astro";
+import BlogPostPage from "../../components/pages/BlogPostPage.astro";
 import { getBlogPost, urlFor } from "../../lib/sanity";
 import { generateArticleSchema, generateBreadcrumbSchema } from "../../lib/seo";
 
@@ -47,11 +45,6 @@ const breadcrumbSchema = generateBreadcrumbSchema([
 ]);
 
 const combinedJsonLd = `[${articleSchema}, ${breadcrumbSchema}]`;
-
-const heroData = {
-  linkedinUrl: "https://www.linkedin.com/in/johandercampos/",
-  githubUrl: "https://github.com/codingwithjae",
-};
 ---
 
 <BaseLayout
@@ -61,40 +54,5 @@ const heroData = {
   ogImage={postImage}
   jsonLd={combinedJsonLd}
 >
-  <nav
-    class="max-w-[50rem] mx-auto px-5 pt-12 reveal"
-    aria-label="Back navigation"
-  >
-    <a
-      href="/"
-      class="glassmorphism inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold font-display text-text-base hover:text-accent transition-all hover:scale-105 active:scale-95 group"
-    >
-      <svg
-        class="w-3 h-3 transition-transform group-hover:-translate-x-1"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2.5"
-        aria-hidden="true"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
-      </svg>
-      Back to Home
-    </a>
-  </nav>
-
-  <main class="py-10" id="main-content">
-    <article>
-      <BlogPostContent post={post} />
-    </article>
-  </main>
-
-  <Footer
-    linkedinUrl={heroData.linkedinUrl}
-    githubUrl={heroData.githubUrl}
-    repoUrl="https://github.com/codingwithjae/dev-portfolio"
-  />
+  <BlogPostPage post={post} />
 </BaseLayout>

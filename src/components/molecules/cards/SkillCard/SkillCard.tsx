@@ -1,6 +1,41 @@
-import React from 'react';
-import { useSkillTicker } from './useSkillTicker';
+/**
+ * @file SkillCard.tsx
+ * @description Glassmorphism card with vertical ticker, includes useSkillTicker hook.
+ */
 
+import React, { useState, useEffect } from 'react';
+
+// --- Hook (non-reusable, co-located) ---
+const useSkillTicker = (itemCount: number, intervalMs: number = 2400) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isHovering, setIsHovering] = useState(false);
+    const [isTransitioning, setIsTransitioning] = useState(true);
+
+    useEffect(() => {
+        if (isHovering || itemCount <= 1) return;
+
+        const interval = setInterval(() => {
+            setIsTransitioning(true);
+            setCurrentIndex((prev) => prev + 1);
+        }, intervalMs);
+
+        return () => clearInterval(interval);
+    }, [isHovering, itemCount, intervalMs]);
+
+    useEffect(() => {
+        if (currentIndex === itemCount - 1) {
+            const timeout = setTimeout(() => {
+                setIsTransitioning(false);
+                setCurrentIndex(0);
+            }, 500);
+            return () => clearTimeout(timeout);
+        }
+    }, [currentIndex, itemCount]);
+
+    return { currentIndex, isHovering, setIsHovering, isTransitioning };
+};
+
+// --- Component ---
 interface Skill {
     name: string;
     experience: string;
@@ -12,18 +47,8 @@ interface SkillCardProps {
     skills: Skill[];
 }
 
-/**
- * SkillCard React Component
- * 
- * Renders a glassmorphism card with a vertical ticker of skills.
- * Refactored from Astro to React to handle complex interactive logic.
- */
 export const SkillCard: React.FC<SkillCardProps> = ({ category, skills }) => {
-    const {
-        currentIndex,
-        setIsHovering,
-        isTransitioning
-    } = useSkillTicker(skills.length);
+    const { currentIndex, setIsHovering, isTransitioning } = useSkillTicker(skills.length);
 
     return (
         <div
@@ -31,12 +56,10 @@ export const SkillCard: React.FC<SkillCardProps> = ({ category, skills }) => {
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
         >
-            {/* Background Category Name (Ghost Text) */}
             <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[4rem] font-bold text-text-base opacity-[0.05] whitespace-nowrap font-display select-none pointer-events-none">
                 {category}
             </h2>
 
-            {/* Vertical Ticker Container */}
             <div className="relative w-full h-full overflow-hidden z-10">
                 <div
                     className="ticker-content flex flex-col h-full"

@@ -1,0 +1,86 @@
+---
+/**
+ * @file BlogListPage.astro
+ * @description Blog listing page UI component - receives pre-fetched posts data.
+ */
+
+import BlogCard from "../molecules/cards/BlogCard.astro";
+import Footer from "../organisms/Footer.astro";
+
+interface Props {
+    posts: Array<{
+        title: string;
+        excerpt: string;
+        slug: string;
+        coverImage?: any;
+    }>;
+}
+
+const { posts } = Astro.props;
+---
+
+<!-- Simplified Header for Blog -->
+<header
+    class="p-5 flex flex-col items-center justify-center mb-[3rem]"
+    role="banner"
+>
+    <nav
+        class="w-full max-w-4xl mb-5 flex justify-between items-center"
+        aria-label="Blog navigation"
+    >
+        <a
+            href="/"
+            class="text-text-base font-sans text-[1.13rem] hover:opacity-80 transition-opacity"
+        >
+            Johander <span class="font-bold">Campos.</span>
+        </a>
+        <a href="/" class="text-accent font-bold hover:underline"
+            >← Back to Home</a
+        >
+    </nav>
+</header>
+
+<main
+    class="max-w-4xl mx-auto p-5 min-h-screen transition-colors"
+    id="main-content"
+>
+    <div class="mb-10 text-center reveal">
+        <h1
+            class="text-[clamp(2.5rem,5vw,3.625rem)] font-display font-bold text-text-base"
+        >
+            Blog
+        </h1>
+        <p class="text-text-muted mt-2 text-lg">
+            Thoughts, tutorials, and insights on frontend development.
+        </p>
+    </div>
+
+    {
+        posts.length === 0 ? (
+            <p class="text-text-muted text-center py-20 reveal">
+                No blog posts yet. Coming soon!
+            </p>
+        ) : (
+            <div class="grid gap-8" role="feed" aria-label="Blog posts">
+                {posts.map((post, index) => (
+                    <article
+                        class={`reveal delay-${((index % 4) + 1) * 100} w-full`}
+                    >
+                        <BlogCard
+                            title={post.title}
+                            excerpt={post.excerpt || ""}
+                            slug={post.slug}
+                            coverImage={post.coverImage}
+                        />
+                    </article>
+                ))}
+            </div>
+        )
+    }
+</main>
+
+<Footer
+    linkedinUrl="https://www.linkedin.com/in/johandercampos/"
+    githubUrl="https://github.com/codingwithjae"
+    repoUrl="https://github.com/codingwithjae/dev-portfolio"
+/>
