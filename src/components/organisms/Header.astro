@@ -16,8 +16,10 @@ interface Props {
   subtitle: string;
   /** Bio paragraph text */
   paragraph: string;
-  /** Path to profile photo */
+  /** Path to profile photo - should be high resolution for retina displays */
   photoSrc: string;
+  /** Path to 2x resolution photo for retina displays */
+  photoSrc2x?: string;
   /** LinkedIn profile URL */
   linkedinUrl: string;
   /** GitHub profile URL */
@@ -32,10 +34,14 @@ const {
   subtitle,
   paragraph,
   photoSrc,
+  photoSrc2x,
   linkedinUrl,
   githubUrl,
   cvUrl,
 } = Astro.props;
+
+// Use 2x image if available, fallback to regular
+const retinaPhoto = photoSrc2x || photoSrc;
 ---
 
 <header
@@ -62,12 +68,18 @@ const {
     class="flex flex-col items-center text-text-base font-display max-w-[50rem]"
     aria-label="About me"
   >
+    <!-- 
+      Hero image with proper aspect ratio (1:1) and retina support.
+      Using fixed dimensions to prevent CLS and aspect ratio issues.
+      srcset provides 2x resolution for retina displays.
+    -->
     <figure
-      class="rounded-full border-[3px] border-text-base mb-10 flex items-center transition-colors duration-300"
+      class="rounded-full border-[3px] border-text-base mb-10 flex items-center justify-center transition-colors duration-300 overflow-hidden"
     >
       <img
-        class="rounded-full w-[375px] h-[375px]"
+        class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
         src={photoSrc}
+        srcset={`${photoSrc} 1x, ${retinaPhoto} 2x`}
         alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
         width="375"
         height="375"
@@ -127,7 +139,7 @@ const {
           target="_blank"
           rel="noopener noreferrer"
           class="px-5 py-3 bg-accent text-black font-bold rounded-md
-               hover:bg-accent-hover hover:scale-110 transition-transform font-display mt-4 text-[1.13rem]"
+                 hover:bg-accent-hover hover:scale-110 transition-transform font-display mt-4 text-[1.13rem]"
           aria-label="Download my CV (opens in new tab)"
         >
           Download my CV
