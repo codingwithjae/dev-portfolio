@@ -8,6 +8,20 @@ import React, { useId } from 'react';
 import { useAccordion } from '../../hooks/useAccordion';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Inline SVG icons to avoid Font Awesome dependency
+// Note: The icon itself doesn't rotate - we simply switch between plus and minus
+const PlusIcon = () => (
+    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+);
+
+const MinusIcon = () => (
+    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+    </svg>
+);
+
 interface FaqItemProps {
     /** The question text displayed in the trigger button */
     question: string;
@@ -32,15 +46,14 @@ export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
                 onClick={toggle}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className="faq-trigger w-full font-bold cursor-pointer flex items-center justify-between text-[18px] text-left text-text-base font-display outline-none select-none bg-transparent border-none transition-all duration-300 hover:scale-[1.01] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                className="faq-trigger w-full font-bold cursor-pointer flex items-center justify-between text-[18px] text-left text-text-base font-display outline-none select-none bg-transparent border-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
                 {question}
                 <span
-                    className={`w-[2.1875rem] h-[2.1875rem] flex items-center justify-center rounded-full border border-border-base 
-                         bg-primary transition-all duration-500 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+                    className="w-[2.1875rem] h-[2.1875rem] flex items-center justify-center rounded-full border border-border-base bg-primary transition-colors duration-300 flex-shrink-0"
                     aria-hidden="true"
                 >
-                    <i className={`fas faq-icon text-sm ${isOpen ? 'fa-minus' : 'fa-plus'}`}></i>
+                    {isOpen ? <MinusIcon /> : <PlusIcon />}
                 </span>
             </button>
 

@@ -126,21 +126,10 @@ const fullOgImage = ogImage.startsWith("http")
     />
 
     <!-- 
-      Font Awesome: Loaded async to prevent render-blocking.
-      Uses print media trick + onload to defer without affecting functionality.
+      NOTE: Font Awesome has been completely removed.
+      All social icons are now inline SVGs in Header.astro and Footer.astro.
+      This eliminates ~100KB of render-blocking CSS.
     -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      />
-    </noscript>
 
     <!-- JSON-LD Structured Data -->
     {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}

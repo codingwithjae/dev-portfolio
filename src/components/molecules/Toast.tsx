@@ -2,6 +2,25 @@ import React from 'react';
 import { useToast } from '../../hooks/useToast';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Inline SVG icons to avoid Font Awesome dependency
+const CheckIcon = () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+);
+
+const ExclamationIcon = () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+    </svg>
+);
+
+const CloseIcon = () => (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+);
+
 export const Toast: React.FC = () => {
     const { toasts, removeToast } = useToast();
 
@@ -15,13 +34,13 @@ export const Toast: React.FC = () => {
                         animate={{ opacity: 1, x: 0, scale: 1 }}
                         exit={{ opacity: 0, x: 50, scale: 0.9 }}
                         className={`pointer-events-auto px-6 py-4 rounded-xl border border-border-base shadow-2xl flex items-center gap-4 min-w-[20rem] backdrop-blur-md ${toast.type === 'success'
-                                ? 'bg-gradient-to-r from-accent/20 to-accent/5'
-                                : 'bg-gradient-to-r from-red-500/20 to-red-500/5'
+                            ? 'bg-gradient-to-r from-accent/20 to-accent/5'
+                            : 'bg-gradient-to-r from-red-500/20 to-red-500/5'
                             }`}
                     >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${toast.type === 'success' ? 'bg-accent text-primary' : 'bg-red-500 text-white'
                             }`}>
-                            <i className={`fas ${toast.type === 'success' ? 'fa-check' : 'fa-exclamation'}`}></i>
+                            {toast.type === 'success' ? <CheckIcon /> : <ExclamationIcon />}
                         </div>
 
                         <div className="flex-1">
@@ -33,7 +52,7 @@ export const Toast: React.FC = () => {
                             onClick={() => removeToast(toast.id)}
                             className="text-text-muted hover:text-text-base transition-colors"
                         >
-                            <i className="fas fa-times"></i>
+                            <CloseIcon />
                         </button>
                     </motion.div>
                 ))}

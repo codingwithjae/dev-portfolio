@@ -31,6 +31,7 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
       src={thumbnail}
       alt={title}
       loading="lazy"
+      decoding="async"
     />
 
     <div
