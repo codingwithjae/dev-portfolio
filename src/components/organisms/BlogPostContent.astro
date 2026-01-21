@@ -71,6 +71,8 @@ if (post.coverImage) {
                   src={urlFor(post.author.image).width(56).height(56).url()}
                   alt={post.author.name}
                   class="w-14 h-14 rounded-full border-2 border-accent/30 shadow-lg"
+                  width="56"
+                  height="56"
                 />
               ) : (
                 <div class="w-14 h-14 rounded-full border-2 border-border-base bg-secondary flex items-center justify-center shadow-lg">
@@ -130,6 +132,10 @@ if (post.coverImage) {
             src={coverImageUrl}
             alt={post.coverImage.alt || post.title}
             class="w-full rounded-3xl shadow-2xl border border-border-base transition-colors"
+            width="1200"
+            height="630"
+            loading="eager"
+            fetchpriority="high"
           />
           {post.coverImage.caption && (
             <figcaption class="text-center text-sm text-text-muted mt-6 italic opacity-80 font-sans">
