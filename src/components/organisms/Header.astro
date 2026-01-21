@@ -72,13 +72,13 @@ const {
       srcset provides 2x resolution for retina displays.
     -->
     <figure
-      class="rounded-full border-[3px] border-text-base mb-10 flex items-center justify-center transition-colors duration-300 overflow-hidden"
+      class="rounded-full border-[3px] border-text-base mb-10 flex items-center justify-center transition-colors duration-300 overflow-hidden bg-white/5"
     >
       <Image
         class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
         src={photo}
-        widths={[200, 375, 400, 750]}
-        sizes="(max-width: 768px) 200px, 375px"
+        width={375}
+        height={375}
         alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
         loading="eager"
         fetchpriority="high"

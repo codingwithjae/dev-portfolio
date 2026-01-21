@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
 :root {
-    /* Light Mode (Now Default) */
+    /* Light Mode (Original Crystal Theme) */
     --color-primary: #e5e5e5;
-    /* Darker grey for better glass contrast */
     --color-bg: #e5e5e5;
     --color-secondary: #ffffff;
     --color-card: #ffffff;
     --color-accent: #d6ea2e;
     --color-accent-hover: #e4f454;
     --color-form-bg: #e2e8f0;
+    --color-input-bg: transparent;
+    --color-input-focus: rgba(255, 255, 255, 0.2);
     --color-summary-bg: #ffffff;
     --color-text: #0f172a;
     --color-text-muted: #64748b;
@@ -27,10 +28,9 @@
     --glass-text-shadow: none;
 
     /* Topographic Pattern (SVG) */
-    /* Only horizontal wavy lines for a cleaner technical look */
     --pattern-topology: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,200 C150,300 350,150 500,250 C650,350 850,200 1000,300' fill='none' stroke='black' stroke-width='0.5' /%3E%3Cpath d='M0,350 C200,450 400,300 550,400 C700,500 900,350 1000,450' fill='none' stroke='black' stroke-width='0.5' /%3E%3Cpath d='M0,500 C250,600 450,450 600,550 C750,650 950,500 1000,600' fill='none' stroke='black' stroke-width='0.5' /%3E%3Cpath d='M0,650 C150,750 350,600 500,700 C650,800 850,650 1000,750' fill='none' stroke='black' stroke-width='0.5' /%3E%3Cpath d='M0,800 C200,900 400,750 550,850 C700,950 900,800 1000,900' fill='none' stroke='black' stroke-width='0.5' /%3E%3Cpath d='M0,100 C300,200 500,50 700,150 C900,250 1100,100 1200,200' fill='none' stroke='black' stroke-width='0.5' /%3E%3C/svg%3E");
 
-    /* Light Mode Topology: Dark lines, subtle but visible */
+    /* Light Mode Topology */
     --topology-opacity: 0.10;
     --topology-filter: none;
 
@@ -46,6 +46,8 @@
     --color-accent: #d6ea2e;
     --color-accent-hover: #eafe63;
     --color-form-bg: #111113;
+    --color-input-bg: rgba(0, 0, 0, 0.2);
+    --color-input-focus: rgba(255, 255, 255, 0.05);
     --color-summary-bg: #000000;
     --color-text: #fafafa;
     --color-text-muted: #a1a1aa;
@@ -82,6 +84,8 @@
     --color-text-base: var(--color-text);
     --color-text-muted: var(--color-text-muted);
     --color-border-base: var(--color-border);
+    --color-input-bg: var(--color-input-bg);
+    --color-input-focus: var(--color-input-focus);
 
     /* Use glass tokens */
     --color-glass-bg: var(--glass-bg);
@@ -100,7 +104,7 @@
         color: var(--color-text);
         font-family: var(--font-sans);
         @apply transition-colors duration-300;
-        /* Add a subtle gradient background to body to enhance glass effect */
+        /* Subtle gradient background for original look */
         background-image:
             radial-gradient(circle at 10% 20%, rgba(214, 234, 46, 0.05) 0%, transparent 40%),
             radial-gradient(circle at 90% 80%, rgba(214, 234, 46, 0.03) 0%, transparent 40%);
