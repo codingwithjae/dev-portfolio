@@ -117,13 +117,26 @@ const fullOgImage = ogImage.startsWith("http")
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <!-- 
-      Fonts loaded with display=swap to prevent FOIT (Flash of Invisible Text).
-      The preloaded fonts above ensure the critical fonts are ready immediately.
+      Fonts loaded ASYNC to avoid render-blocking.
+      Uses media="print" trick to load without blocking, then swap to "all" on load.
     -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
     <!-- 
       NOTE: Font Awesome has been completely removed.

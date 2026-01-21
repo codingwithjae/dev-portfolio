@@ -10,7 +10,7 @@ import Footer from "../organisms/Footer.astro";
 interface Props {
     posts: Array<{
         title: string;
-        excerpt: string;
+        excerpt?: string;
         slug: string;
         coverImage?: any;
     }>;
