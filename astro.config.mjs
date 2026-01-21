@@ -18,6 +18,13 @@ export default defineConfig({
       // @ts-ignore
       tailwindcss()
     ],
+    build: {
+      chunkSizeWarningLimit: 6000,
+      rollupOptions: {
+        // We let Astro handle chunking automatically to avoid circular dependencies.
+        // The large Sanity Studio bundle is isolated from the main site and only loads on /admin.
+      }
+    }
   },
 
   integrations: [

@@ -1,15 +1,11 @@
 ---
-/**
- * @file ProjectCard.astro
- * @description A glassmorphism-styled project display card with interactive hover states.
- * Features an overlay with direct links to live demos and source code.
- */
+import { Image } from "astro:assets";
 
 interface Props {
   /** The name of the project */
   title: string;
-  /** Path to the thumbnail image */
-  thumbnail: string;
+  /** Path to the thumbnail image or ImageMetadata object */
+  thumbnail: string | ImageMetadata;
   /** Comma-separated or space-separated list of tech used (e.g., 'React, Astro, Tailwind') */
   technologies: string;
   /** URL to the live production site or demo */
@@ -25,21 +21,20 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
   class="glassmorphism group relative rounded-[0.9375rem] max-w-[37.5rem] cursor-pointer overflow-hidden"
 >
   <figure class="overflow-hidden rounded-t-[0.9375rem]">
-    <img
-      class="w-full h-auto rounded-t-[0.9375rem]
-             transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.4]"
-      src={thumbnail}
+    <Image
+      class="w-full h-auto rounded-t-[0.9375rem] transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.4]"
+      src={thumbnail as any}
+      width={600}
+      height={340}
+      widths={[400, 600, 800]}
+      sizes="(max-width: 768px) 400px, 600px"
       alt={title}
-      width="600"
-      height="340"
       loading="lazy"
       decoding="async"
     />
 
     <div
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[70%]
-                flex flex-col items-center opacity-0 pointer-events-none
-                group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[70%] flex flex-col items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300"
     >
       <a
         href={demoUrl}

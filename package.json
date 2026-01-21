@@ -17,16 +17,10 @@
     "@emailjs/browser": "^4.4.1",
     "@sanity/astro": "^3.2.11",
     "@sanity/client": "^7.14.0",
-    "@sanity/code-input": "^7.0.6",
     "@sanity/image-url": "^2.0.3",
-    "@sanity/types": "^5.5.0",
-    "@sanity/vision": "^5.5.0",
     "@tailwindcss/vite": "^4.1.18",
-    "@types/react": "^19.2.8",
-    "@types/react-dom": "^19.2.3",
     "astro": "^5.16.11",
     "astro-portabletext": "^0.13.0",
-    "framer-motion": "^12.4.7",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "sanity": "^5.5.0",
@@ -35,6 +29,13 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@sanity/types": "^5.5.0",
+    "@types/lodash": "^4.17.23",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "lodash": "^4.17.21",
+    "react-compiler-runtime": "^1.0.0",
+    "react-is": "^19.2.3",
     "vite": "^7.3.1"
   }
 }

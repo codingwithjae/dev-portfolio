@@ -5,6 +5,7 @@
  * Follows semantic HTML best practices with a single H1 per usage context.
  */
 
+import { Image } from "astro:assets";
 import ThemeToggle from "../atoms/ThemeToggle/ThemeToggle.tsx";
 
 interface Props {
@@ -16,10 +17,10 @@ interface Props {
   subtitle: string;
   /** Bio paragraph text */
   paragraph: string;
-  /** Path to profile photo - should be high resolution for retina displays */
-  photoSrc: string;
-  /** Path to 2x resolution photo for retina displays */
-  photoSrc2x?: string;
+  /** Profile photo - ImageMetadata for Astro optimization */
+  photo: ImageMetadata;
+  /** 2x resolution photo for retina displays - ImageMetadata for Astro optimization */
+  photo2x?: ImageMetadata;
   /** LinkedIn profile URL */
   linkedinUrl: string;
   /** GitHub profile URL */
@@ -33,15 +34,12 @@ const {
   title,
   subtitle,
   paragraph,
-  photoSrc,
-  photoSrc2x,
+  photo,
+  photo2x,
   linkedinUrl,
   githubUrl,
   cvUrl,
 } = Astro.props;
-
-// Use 2x image if available, fallback to regular
-const retinaPhoto = photoSrc2x || photoSrc;
 ---
 
 <header
@@ -76,13 +74,12 @@ const retinaPhoto = photoSrc2x || photoSrc;
     <figure
       class="rounded-full border-[3px] border-text-base mb-10 flex items-center justify-center transition-colors duration-300 overflow-hidden"
     >
-      <img
+      <Image
         class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
-        src={photoSrc}
-        srcset={`${photoSrc} 1x, ${retinaPhoto} 2x`}
+        src={photo}
+        widths={[200, 375, 400, 750]}
+        sizes="(max-width: 768px) 200px, 375px"
         alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
-        width="375"
-        height="375"
         loading="eager"
         fetchpriority="high"
         decoding="async"

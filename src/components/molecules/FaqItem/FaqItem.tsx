@@ -1,10 +1,4 @@
-/**
- * @file FaqItem.tsx
- * @description Accordion component with co-located useAccordion hook.
- */
-
-import React, { useId, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useId, useState, useCallback, useRef, useEffect } from 'react';
 
 // --- Hook (non-reusable, co-located) ---
 const useAccordion = (initialState = false) => {
@@ -24,6 +18,16 @@ export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
     const id = useId();
     const panelId = `faq-panel-${id}`;
     const triggerId = `faq-trigger-${id}`;
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [height, setHeight] = useState<number | string>(0);
+
+    useEffect(() => {
+        if (isOpen && contentRef.current) {
+            setHeight(contentRef.current.scrollHeight);
+        } else {
+            setHeight(0);
+        }
+    }, [isOpen]);
 
     return (
         <div className="faq-item group py-[0.9375rem] mx-[0.9375rem] border-b border-border-base transition-colors duration-300">
@@ -49,26 +53,23 @@ export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
                 </span>
             </button>
 
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        id={panelId}
-                        role="region"
-                        aria-labelledby={triggerId}
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
-                    >
-                        <div className="pt-[0.9375rem] pb-[0.625rem]">
-                            <p className="leading-[1.5625rem] text-text-muted text-left text-[18px] font-display transition-colors">
-                                {answer}
-                            </p>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <div
+                id={panelId}
+                role="region"
+                aria-labelledby={triggerId}
+                ref={contentRef}
+                style={{
+                    height: isOpen ? `${height}px` : '0px',
+                    opacity: isOpen ? 1 : 0
+                }}
+                className="overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            >
+                <div className="pt-[0.9375rem] pb-[0.625rem]">
+                    <p className="leading-[1.5625rem] text-text-muted text-left text-[18px] font-display transition-colors">
+                        {answer}
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };
