@@ -6,7 +6,7 @@ import { schemaTypes } from './src/sanity/schemas';
 import { myStructure } from './sanity.structure';
 
 export default defineConfig({
-    name: 'Developer portfolio',
+    name: 'developer-portfolio',
     // Use the title the user wanted or a generic one
     title: 'Johander Campos | Studio',
 
