@@ -94,32 +94,13 @@ const fullOgImage = ogImage.startsWith("http")
     }
 
     <!-- 
-      PERFORMANCE CRITICAL: Preload primary fonts.
-      Inter 400 is used for body text, Space Grotesk 700 for headings.
+      FONTS OPTIMIZATION:
+      1. Preconnect FIRST to establish connection early
+      2. Async stylesheet load (media=print trick) - non-blocking
+      3. Removed redundant woff2 preloads that created extra chain
     -->
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="https://fonts.gstatic.com/s/spacegrotesk/v16/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2"
-      crossorigin="anonymous"
-    />
-
-    <!-- Fonts: Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <!-- 
-      Fonts loaded ASYNC to avoid render-blocking.
-      Uses media="print" trick to load without blocking, then swap to "all" on load.
-    -->
     <link
       rel="preload"
       as="style"
