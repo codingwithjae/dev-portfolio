@@ -40,7 +40,8 @@ const heroData = {
   name: { first: "Johander", last: "Campos" },
   title: sanityData?.hero?.title || "Hey, It's Johander Campos.",
   subtitle: sanityData?.hero?.subtitle || "Front End Developer",
-  paragraph: sanityData?.hero?.bio || "I've been working as a Front End Developer for 1 year.",
+  paragraph: sanityData?.hero?.bio || `I've been working as a Front End Developer for 1 year.
+I am based in Montevideo, Uruguay.`,
   photo: photoImage,
   photo2x: photoImage2x,
   linkedinUrl: sanityData?.socials?.linkedin || "https://www.linkedin.com/in/johandercampos/",
@@ -107,7 +108,7 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
   <main class="p-5 flex flex-col justify-center items-center text-text-base overflow-x-hidden transition-colors" id="main-content">
     <!-- Skills Section -->
     <section 
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-[1.25rem] max-w-[50rem] w-full mb-[6.25rem] lg:self-center"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-[1.25rem] max-w-[50rem] w-full mb-16 lg:self-center"
       aria-labelledby="skills-heading"
     >
       <h2 id="skills-heading" class="sr-only">Technical Skills</h2>
@@ -126,10 +127,10 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
     {projects.length > 0 && (
       <!-- Portfolio Section -->
       <section 
-        class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-[6.25rem]"
+        class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-16"
         aria-labelledby="projects-heading"
       >
-        <div class="w-full mb-[3.125rem] reveal">
+        <div class="w-full mb-16 reveal">
           <h2 id="projects-heading" class="text-[clamp(2.8rem,5vw,3.625rem)] font-display font-bold">My projects</h2>
           <p class="text-text-muted mt-2 font-sans">A curated selection of my work across different layers of architecture.</p>
         </div>
@@ -140,10 +141,10 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
 
           return (
             <div class="w-full mb-16 last:mb-0">
-              <div class="flex items-center gap-4 mb-8 reveal">
+              <div class="flex items-center gap-4 mb-16 reveal">
                 <h3 class="text-2xl font-display font-bold capitalize text-text-base">{cat}</h3>
                 <div class="h-[1px] flex-1 bg-border-base/30"></div>
-                <span class="text-[10px] font-mono font-bold text-text-base uppercase tracking-[0.2em]">{categoryProjects.length} {categoryProjects.length === 1 ? 'Project' : 'Projects'}</span>
+                <span class="text-[10px] font-mono text-text-base font-bold uppercase tracking-[0.2em]">{categoryProjects.length} {categoryProjects.length === 1 ? 'Project' : 'Projects'}</span>
               </div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-[1.5rem] w-full items-start">
@@ -170,13 +171,13 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
     {blogPosts.length > 0 && (
       <!-- Blog Section -->
       <section 
-        class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-[6.25rem]"
+        class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-16"
         aria-labelledby="blog-heading"
       >
-        <div class="w-full flex justify-between items-center mb-[3.125rem] reveal">
+        <div class="w-full flex justify-between items-center mb-16 reveal">
           <h2 id="blog-heading" class="text-[clamp(2.8rem,5vw,3.625rem)] font-display font-bold text-left w-full">Latest Articles</h2>
         </div>
-        <div class="flex flex-col justify-center items-center gap-[2.5rem] w-full">
+        <div class="flex flex-col justify-center items-center gap-16 w-full">
           {
             blogPosts.map((post: BlogPost, index: number) => (
               <article class={`w-full reveal delay-${(index + 1) * 100}`}>
@@ -185,14 +186,14 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
             ))
           }
           <div class="reveal delay-300">
-            <a href="/blog" class="text-text-base font-bold hover:underline transition-all mt-4">View all articles →</a>
+            <a href="/blog" class="font-bold hover:text-link-hover transition-all mt-4">View all articles →</a>
           </div>
         </div>
       </section>
     )}
 
     <!-- Contact Section -->
-    <section class="w-full reveal mb-[6.25rem]" aria-labelledby="contact-heading">
+    <section class="w-full reveal mb-16" aria-labelledby="contact-heading">
       <h2 id="contact-heading" class="sr-only">Contact Me</h2>
       <ContactForm client:visible email="connect@johandercampos.com" />
     </section>
@@ -200,18 +201,20 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
     {faqs.length > 0 && (
       <!-- FAQ Section -->
       <section 
-        class="text-center p-2 sm:p-5 w-full md:max-w-[45rem] font-display mt-0 mb-[6.25rem]"
+        class="text-center p-2 sm:p-5 w-full md:max-w-[45rem] font-display mt-0 mb-16"
         aria-labelledby="faq-heading"
       >
         <div class="reveal">
           <h2 id="faq-heading" class="text-[clamp(2.5rem,5vw,3.625rem)] font-bold tracking-[0.0625rem] sm:tracking-[0.125rem]">Know a little more about me</h2>
         </div>
-        <div class="glassmorphism p-4 sm:p-[1.875rem] rounded-[1.25rem] sm:rounded-[1.875rem] mt-[2rem] sm:mt-[3.125rem] reveal transition-all duration-300">
-          {
-            faqs.map((faq) => (
-              <FaqItem client:visible question={faq.question} answer={faq.answer} />
-            ))
-          }
+        <div class="reveal">
+          <div class="glassmorphism p-4 sm:p-[1.875rem] rounded-[1.25rem] sm:rounded-[1.875rem] mt-16 transition-all duration-300 cursor-pointer">
+            {
+              faqs.map((faq) => (
+                <FaqItem client:visible question={faq.question} answer={faq.answer} />
+              ))
+            }
+          </div>
         </div>
       </section>
     )}

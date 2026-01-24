@@ -43,12 +43,12 @@ const {
 ---
 
 <header
-  class="p-5 flex flex-col items-center justify-center mb-[6.25rem]"
+  class="p-5 flex flex-col items-center justify-center mb-16"
   role="banner"
 >
   <!-- Top Navigation Bar -->
   <nav
-    class="w-full max-w-[50rem] mb-5 flex justify-between items-center"
+    class="w-full max-w-[50rem] mb-16 flex justify-between items-center"
     aria-label="Primary navigation"
   >
     <a
@@ -72,7 +72,7 @@ const {
       srcset provides 2x resolution for retina displays.
     -->
     <figure
-      class="rounded-full border-[3px] border-text-base mb-10 flex items-center justify-center transition-colors duration-300 overflow-hidden bg-white/5"
+      class="rounded-full border-[3px] border-text-base mb-16 flex items-center justify-center transition-colors duration-300 overflow-hidden bg-white/5"
     >
       <Image
         class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
@@ -86,7 +86,9 @@ const {
       />
     </figure>
 
-    <div class="text-center mb-7 text-text-base transition-colors duration-300">
+    <div
+      class="text-center mb-16 text-text-base transition-colors duration-300"
+    >
       <h1 class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold leading-[1.2]">
         {title}
       </h1>
@@ -99,14 +101,15 @@ const {
       }
     </div>
 
-    <p
-      class="text-[1.13rem] text-center leading-[1.5625rem] max-w-[40rem] font-sans text-text-muted"
+    <div
+      class="text-[1.13rem] text-center leading-[1.5625rem] max-w-[40rem] font-sans text-text-muted mb-16"
     >
-      {paragraph}
-    </p>
+      <p>I've been working as a Front End Developer for 1 year.</p>
+      <p>I am based in Montevideo, Uruguay.</p>
+    </div>
 
     <!-- Social Links (inline SVGs to avoid Font Awesome dependency) -->
-    <nav class="flex gap-4 my-4" aria-label="Social media links">
+    <nav class="flex gap-4 mb-16" aria-label="Social media links">
       <a
         href={linkedinUrl}
         target="_blank"
@@ -153,8 +156,8 @@ const {
           href={cvUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="px-5 py-3 bg-cta text-black font-bold rounded-md
-                 hover:bg-cta-hover hover:scale-110 transition-transform font-display mt-4 text-[1.13rem]"
+          class="px-5 py-3 bg-accent text-black font-bold rounded-md
+                 hover:bg-accent-hover hover:scale-110 transition-transform font-display text-[1.13rem]"
           aria-label="Download my CV (opens in new tab)"
         >
           Download my CV

@@ -7,18 +7,18 @@
 
 <button
     id="theme-toggle"
-    class="relative w-12 h-6 rounded-full bg-secondary border border-border-base cursor-pointer outline-none transition-colors duration-300 hover:border-accent opacity-0 pointer-events-none"
+    class="relative w-12 h-6 rounded-full bg-secondary border border-border-base cursor-pointer outline-none transition-colors duration-300 opacity-0 pointer-events-none"
     aria-label="Toggle Theme"
 >
     <div
         id="theme-toggle-dot"
-        class="absolute top-1 left-1 w-4 h-4 rounded-full bg-accent transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex items-center justify-center overflow-hidden shadow-[0_0_10px_rgba(214,234,46,0.5)]"
+        class="absolute top-1 left-1 w-4 h-4 rounded-full bg-accent transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex items-center justify-center overflow-hidden"
     >
         <div class="relative w-full h-full flex items-center justify-center">
             {/* Sun Icon */}
             <span
                 id="sun-icon"
-                class="absolute transition-all duration-300 opacity-0 scale-50 rotate-90 text-primary"
+                class="absolute transition-all duration-300 opacity-0 scale-50 rotate-90 text-black"
             >
                 <svg
                     class="w-[10px] h-[10px]"
@@ -34,7 +34,7 @@
             {/* Moon Icon */}
             <span
                 id="moon-icon"
-                class="absolute transition-all duration-300 opacity-0 scale-50 -rotate-90 text-primary"
+                class="absolute transition-all duration-300 opacity-0 scale-50 -rotate-90 text-white"
             >
                 <svg
                     class="w-[10px] h-[10px]"
@@ -58,12 +58,8 @@
 
     const updateUI = (theme: string) => {
         if (theme === "light") {
-            dot?.classList.add(
-                "translate-x-6",
-                "rotate-180",
-                "bg-text-base",
-                "shadow-none",
-            );
+            dot?.classList.add("translate-x-6", "rotate-180", "bg-text-base");
+            dot?.classList.remove("bg-accent");
             sunIcon?.classList.add("opacity-0", "scale-50", "rotate-90");
             sunIcon?.classList.remove("opacity-100", "scale-100", "rotate-0");
             moonIcon?.classList.add("opacity-100", "scale-100", "rotate-0");
@@ -73,8 +69,8 @@
                 "translate-x-6",
                 "rotate-180",
                 "bg-text-base",
-                "shadow-none",
             );
+            dot?.classList.add("bg-accent");
             sunIcon?.classList.add("opacity-100", "scale-100", "rotate-0");
             sunIcon?.classList.remove("opacity-0", "scale-50", "rotate-90");
             moonIcon?.classList.add("opacity-0", "scale-50", "-rotate-90");

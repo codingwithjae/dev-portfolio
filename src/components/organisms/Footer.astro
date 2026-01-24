@@ -19,7 +19,7 @@ const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
         href={linkedinUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="text-text-base hover:scale-125 transition-transform inline-block"
+        class="text-text-base hover:text-link-hover hover:scale-110 transition-all inline-block"
         aria-label="LinkedIn Profile"
       >
         <svg
@@ -37,7 +37,7 @@ const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
         href={githubUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="text-text-base hover:scale-125 transition-transform inline-block"
+        class="text-text-base hover:text-link-hover hover:scale-110 transition-all inline-block"
         aria-label="GitHub Profile"
       >
         <svg
@@ -61,7 +61,7 @@ const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
         href={repoUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="text-accent hover:text-accent-hover"
+        class="text-text-base hover:text-link-hover font-bold transition-colors"
       >
         code
       </a>

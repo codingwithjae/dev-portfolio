@@ -75,12 +75,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
         <section className="group p-5 flex flex-col md:flex-row md:justify-between md:gap-[9.375rem] items-center bg-transparent font-display w-full transition-all duration-300 hover:scale-[1.01] cursor-pointer">
             <div className="text-center md:text-left mb-7 md:ml-auto">
                 <h2 className="text-[clamp(2.2rem,5vw,2.8rem)] font-bold mb-[0.625rem] text-text-base transition-colors">Got a project?</h2>
-                <h3 className="text-accent text-[2rem] mb-[1.25rem] font-bold">Lets Talk!</h3>
+                <h3 className="text-heading-accent text-[2rem] mb-[1.25rem] font-bold">Lets Talk!</h3>
                 <p className="text-text-base text-[1.13rem] transition-colors">
                     {email}
                     <button
                         id="copy-email"
-                        className="ml-2 cursor-pointer hover:text-accent transition-colors inline-flex items-center align-middle"
+                        className="ml-2 cursor-pointer hover:text-link-hover transition-colors inline-flex items-center align-middle"
                         aria-label="Copy email to clipboard"
                         onClick={() => {
                             navigator.clipboard.writeText(email)
@@ -96,7 +96,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
                 </p>
             </div>
 
-            <form onSubmit={handleSubmit} noValidate className="glassmorphism w-full md:max-w-[50%] lg:max-w-[28.125rem] rounded-[0.625rem] p-4 lg:p-[1.875rem] md:mr-auto md:my-[6.25rem] shadow-sm transition-all duration-300">
+            <form onSubmit={handleSubmit} noValidate className="glassmorphism w-full md:max-w-[50%] lg:max-w-[28.125rem] rounded-[0.625rem] p-4 lg:p-[1.875rem] md:mr-auto shadow-sm transition-all duration-300">
                 <div className="mb-6">
                     <label htmlFor="name" className="block text-text-base font-bold mb-2 ml-1">Name</label>
                     <input id="name" type="text" name="name" placeholder="Your Name" autoComplete="name" required value={formState.name} onChange={handleChange} className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base outline-none placeholder:text-text-muted/50 focus:border-accent transition-colors" />
@@ -110,7 +110,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
                     <textarea id="message" name="message" placeholder="Your message" rows={4} required value={formState.message} onChange={handleChange} className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base h-[6.25rem] resize-none outline-none placeholder:text-text-muted/50 focus:border-accent transition-colors"></textarea>
                 </div>
                 <div className="flex pt-4 md:pt-6">
-                    <button type="submit" disabled={isSubmitting} className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-cta text-black rounded-[0.5rem] hover:bg-cta-hover hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <button type="submit" disabled={isSubmitting} className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-accent text-black rounded-[0.5rem] hover:bg-accent-hover hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
                 </div>

@@ -8,6 +8,7 @@
 
 import { getImage } from "astro:assets";
 import Toast from "../molecules/Toast/Toast.astro";
+import "../../styles/global.css";
 
 interface Props {
   /** Page title - used in <title> and OG/Twitter tags */
@@ -200,7 +201,3 @@ if (preloadHeroImage) {
     </script>
   </body>
 </html>
-
-<style is:global>
-  @import "../../styles/global.css";
-</style>

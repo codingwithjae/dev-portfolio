@@ -61,19 +61,19 @@ const imageSrc = typeof coverImage === "string" ? coverImage : coverImage;
         class={`flex flex-col justify-center p-6 md:p-8 font-display ${imageSrc ? "md:w-2/3" : "w-full"}`}
       >
         <h3
-          class="text-[1.5rem] md:text-[1.8rem] font-bold leading-tight mb-3 group-hover:opacity-70 transition-all text-text-base"
+          class="text-[1.5rem] md:text-[1.8rem] font-bold leading-tight mb-3 transition-colors text-text-base group-hover:text-link-hover"
         >
           {title}
         </h3>
 
         <p
-          class="text-[1rem] text-text-muted font-sans line-clamp-2 leading-relaxed mb-6 transition-colors"
+          class="text-[1rem] text-text-base font-sans line-clamp-2 leading-relaxed mb-6 transition-colors"
         >
           {excerpt}
         </p>
 
         <div
-          class="flex items-center gap-2 text-text-base font-bold text-[1.1rem]"
+          class="flex items-center gap-2 text-text-base font-bold text-[1.1rem] group-hover:text-link-hover transition-colors"
         >
           <span>Read more</span>
           <svg
