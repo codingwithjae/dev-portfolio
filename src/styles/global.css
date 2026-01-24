@@ -6,19 +6,15 @@
     --color-bg: #e5e5e5;
     --color-secondary: #ffffff;
     --color-card: #ffffff;
-    --color-accent: #4f46e5;
-    /* Deep Indigo for better light mode contrast */
-    --color-accent-hover: #4338ca;
+    --color-accent: #d6ea2e;
+    --color-accent-hover: #e4f454;
     --color-form-bg: #e2e8f0;
     --color-input-bg: transparent;
-    --color-input-focus: rgba(79, 70, 229, 0.1);
+    --color-input-focus: rgba(255, 255, 255, 0.2);
     --color-summary-bg: #ffffff;
     --color-text: #0f172a;
     --color-text-muted: #64748b;
     --color-border: rgba(15, 23, 42, 0.12);
-    --color-cta: #d6ea2e;
-    /* Original Lime for specific buttons */
-    --color-cta-hover: #e4f454;
 
     /* Glassmorphism Tokens (Light Mode - Crystal Mirror) */
     --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
@@ -56,8 +52,6 @@
     --color-text: #fafafa;
     --color-text-muted: #a1a1aa;
     --color-border: rgba(255, 255, 255, 0.1);
-    --color-cta: #d6ea2e;
-    --color-cta-hover: #eafe63;
 
     /* Glassmorphism Tokens (Dark Mode - Premium Mirror) */
     --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
@@ -85,8 +79,6 @@
     --color-secondary: var(--color-secondary);
     --color-accent: var(--color-accent);
     --color-accent-hover: var(--color-accent-hover);
-    --color-cta: var(--color-cta);
-    --color-cta-hover: var(--color-cta-hover);
     --color-form-bg: var(--color-form-bg);
     --color-summary-bg: var(--color-summary-bg);
     --color-text-base: var(--color-text);
@@ -114,8 +106,8 @@
         @apply transition-colors duration-300;
         /* Subtle gradient background adapting to theme */
         background-image:
-            radial-gradient(circle at 10% 20%, color-mix(in srgb, var(--color-accent), transparent 95%) 0%, transparent 40%),
-            radial-gradient(circle at 90% 80%, color-mix(in srgb, var(--color-accent), transparent 97%) 0%, transparent 40%);
+            radial-gradient(circle at 10% 20%, rgba(214, 234, 46, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, rgba(214, 234, 46, 0.03) 0%, transparent 40%);
         background-attachment: fixed;
     }
 }
