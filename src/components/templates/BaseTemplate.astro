@@ -7,7 +7,7 @@
  */
 
 import { getImage } from "astro:assets";
-import { Toast } from "../molecules/Toast/Toast.tsx";
+import Toast from "../molecules/Toast/Toast.astro";
 
 interface Props {
   /** Page title - used in <title> and OG/Twitter tags */
@@ -164,7 +164,7 @@ if (preloadHeroImage) {
     </script>
   </head>
   <body>
-    <Toast client:idle />
+    <Toast />
 
     <!-- Background Elements -->
     <div class="bg-noise" aria-hidden="true"></div>

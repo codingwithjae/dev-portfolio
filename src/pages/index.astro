@@ -54,7 +54,16 @@ const projects = sanityData?.projects?.map(p => ({
   technologies: p.techStack,
   demoUrl: p.demoUrl || "#",
   codeUrl: p.githubUrl || "#",
+  category: p.category || 'frontend',
 })) || [];
+
+const categoriesOrder = ['frontend', 'backend', 'fullstack'] as const;
+const groupedProjects = projects.reduce((acc, project) => {
+  const cat = project.category || 'frontend';
+  if (!acc[cat]) acc[cat] = [];
+  acc[cat].push(project);
+  return acc;
+}, {} as Record<string, typeof projects>);
 
 const faqs = sanityData?.faqs || [];
 
@@ -120,24 +129,41 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
         class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-[6.25rem]"
         aria-labelledby="projects-heading"
       >
-        <div class="w-full flex justify-between items-center mb-[3.125rem] reveal">
+        <div class="w-full mb-[3.125rem] reveal">
           <h2 id="projects-heading" class="text-[clamp(2.8rem,5vw,3.625rem)] font-display font-bold">My projects</h2>
+          <p class="text-text-muted mt-2 font-sans">A curated selection of my work across different layers of architecture.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-[1.5rem] w-full items-start">
-          {
-            projects.map((project, index) => (
-              <article class={`reveal delay-${(index + 1) * 100} h-full`}>
-                <ProjectCard
-                  title={project.title}
-                  thumbnail={project.thumbnail}
-                  technologies={project.technologies}
-                  demoUrl={project.demoUrl}
-                  codeUrl={project.codeUrl}
-                />
-              </article>
-            ))
-          }
-        </div>
+
+        {categoriesOrder.map((cat) => {
+          const categoryProjects = groupedProjects[cat] || [];
+          if (categoryProjects.length === 0) return null;
+
+          return (
+            <div class="w-full mb-16 last:mb-0">
+              <div class="flex items-center gap-4 mb-8 reveal">
+                <h3 class="text-2xl font-display font-bold capitalize text-text-base">{cat}</h3>
+                <div class="h-[1px] flex-1 bg-border-base/30"></div>
+                <span class="text-[10px] font-mono font-bold text-accent uppercase tracking-[0.2em]">{categoryProjects.length} {categoryProjects.length === 1 ? 'Project' : 'Projects'}</span>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-[1.5rem] w-full items-start">
+                {
+                  categoryProjects.map((project, index) => (
+                    <article class={`reveal delay-${(index + 1) * 100} h-full`}>
+                      <ProjectCard
+                        title={project.title}
+                        thumbnail={project.thumbnail}
+                        technologies={project.technologies}
+                        demoUrl={project.demoUrl}
+                        codeUrl={project.codeUrl}
+                      />
+                    </article>
+                  ))
+                }
+              </div>
+            </div>
+          );
+        })}
       </section>
     )}
 
@@ -174,13 +200,13 @@ const combinedJsonLd = `[${websiteSchema}, ${personSchema}]`;
     {faqs.length > 0 && (
       <!-- FAQ Section -->
       <section 
-        class="text-center p-5 w-full max-w-[37.5rem] font-display mt-0 mb-[6.25rem]"
+        class="text-center p-2 sm:p-5 w-full md:max-w-[45rem] font-display mt-0 mb-[6.25rem]"
         aria-labelledby="faq-heading"
       >
         <div class="reveal">
-          <h2 id="faq-heading" class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold tracking-[0.125rem]">Know a little more about me</h2>
+          <h2 id="faq-heading" class="text-[clamp(2.5rem,5vw,3.625rem)] font-bold tracking-[0.0625rem] sm:tracking-[0.125rem]">Know a little more about me</h2>
         </div>
-        <div class="glassmorphism p-[1.875rem] rounded-[1.875rem] mt-[3.125rem] reveal transition-all duration-300">
+        <div class="glassmorphism p-4 sm:p-[1.875rem] rounded-[1.25rem] sm:rounded-[1.875rem] mt-[2rem] sm:mt-[3.125rem] reveal transition-all duration-300">
           {
             faqs.map((faq) => (
               <FaqItem client:visible question={faq.question} answer={faq.answer} />

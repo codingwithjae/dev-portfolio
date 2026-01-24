@@ -64,7 +64,20 @@ export default {
                         { name: 'thumbnail', title: 'Thumbnail Image', type: 'image' },
                         { name: 'githubUrl', title: 'GitHub URL', type: 'url' },
                         { name: 'demoUrl', title: 'Demo URL', type: 'url' },
-                        { name: 'techStack', title: 'Technologies (Slash separated)', type: 'string', description: "e.g. 'React / CSS / JavaScript'" }
+                        { name: 'techStack', title: 'Technologies (Slash separated)', type: 'string', description: "e.g. 'React / CSS / JavaScript'" },
+                        {
+                            name: 'category',
+                            title: 'Category',
+                            type: 'string',
+                            options: {
+                                list: [
+                                    { title: 'Frontend', value: 'frontend' },
+                                    { title: 'Backend', value: 'backend' },
+                                    { title: 'Fullstack', value: 'fullstack' },
+                                ]
+                            },
+                            initialValue: 'frontend'
+                        }
                     ]
                 }
             ],

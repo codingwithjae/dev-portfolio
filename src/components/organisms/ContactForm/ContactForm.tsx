@@ -5,7 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import emailjs from '@emailjs/browser';
-import { useToast } from '../../molecules/Toast/useToast';
+import { toast } from '../../molecules/Toast/toast';
 
 // --- Hook (non-reusable, co-located) ---
 interface FormState {
@@ -15,7 +15,6 @@ interface FormState {
 }
 
 const useContactForm = (initialEmail: string) => {
-    const { notify } = useToast();
     const [formState, setFormState] = useState<FormState>({ name: '', email: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,10 +26,10 @@ const useContactForm = (initialEmail: string) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!formState.name.trim()) { notify('Please enter your name', 'error'); return; }
-        if (!formState.email.trim()) { notify('Please enter your email', 'error'); return; }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) { notify('Please enter a valid email address', 'error'); return; }
-        if (!formState.message.trim()) { notify('Please enter your message', 'error'); return; }
+        if (!formState.name.trim()) { toast('Please enter your name', 'error'); return; }
+        if (!formState.email.trim()) { toast('Please enter your email', 'error'); return; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) { toast('Please enter a valid email address', 'error'); return; }
+        if (!formState.message.trim()) { toast('Please enter your message', 'error'); return; }
 
         setIsSubmitting(true);
 
@@ -46,16 +45,16 @@ const useContactForm = (initialEmail: string) => {
                     message: formState.message,
                     to_email: initialEmail,
                 }, publicKey);
-                notify('Thanks for your message!', 'success');
+                toast('Thanks for your message!', 'success');
                 setFormState({ name: '', email: '', message: '' });
             } else {
                 console.log('Form submission (Dev Mode):', formState);
-                notify('Development: Form submitted locally', 'success');
+                toast('Development: Form submitted locally', 'success');
                 setFormState({ name: '', email: '', message: '' });
             }
         } catch (error) {
             console.error('EmailJS Error:', error);
-            notify('Failed to send message. Please try again.', 'error');
+            toast('Failed to send message. Please try again.', 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -71,7 +70,6 @@ interface ContactFormProps {
 
 export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
     const { formState, isSubmitting, handleChange, handleSubmit } = useContactForm(email);
-    const { notify } = useToast();
 
     return (
         <section className="group p-5 flex flex-col md:flex-row md:justify-between md:gap-[9.375rem] items-center bg-transparent font-display w-full transition-all duration-300 hover:scale-[1.01] cursor-pointer">
@@ -86,8 +84,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
                         aria-label="Copy email to clipboard"
                         onClick={() => {
                             navigator.clipboard.writeText(email)
-                                .then(() => notify('Email copied to clipboard!', 'success'))
-                                .catch(() => notify('Failed to copy email', 'error'));
+                                .then(() => toast('Email copied to clipboard!', 'success'))
+                                .catch(() => toast('Failed to copy email', 'error'));
                         }}
                     >
                         {/* Copy icon - inline SVG */}
@@ -111,8 +109,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
                     <label htmlFor="message" className="block text-text-base font-bold mb-2 ml-1">Message</label>
                     <textarea id="message" name="message" placeholder="Your message" rows={4} required value={formState.message} onChange={handleChange} className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base h-[6.25rem] resize-none outline-none placeholder:text-text-muted/50 focus:border-accent transition-colors"></textarea>
                 </div>
-                <div className="flex">
-                    <button type="submit" disabled={isSubmitting} className={`px-[1.25rem] py-[0.625rem] font-bold text-[1.13rem] bg-accent text-black rounded-[0.3125rem] hover:bg-accent-hover hover:scale-105 transition-all ml-auto relative top-[1.25rem] shadow-md ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <div className="flex pt-4 md:pt-6">
+                    <button type="submit" disabled={isSubmitting} className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-accent text-black rounded-[0.5rem] hover:bg-accent-hover hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
                 </div>

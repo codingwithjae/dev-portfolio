@@ -50,6 +50,7 @@ export interface PageContent {
         githubUrl: string;
         demoUrl: string;
         techStack: string;
+        category?: 'frontend' | 'backend' | 'fullstack';
     }>;
     faqs?: Array<{
         question: string;

@@ -40,16 +40,22 @@ export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
             >
                 {question}
                 <span className="w-[2.1875rem] h-[2.1875rem] flex items-center justify-center rounded-full border border-border-base bg-primary transition-colors duration-300 flex-shrink-0" aria-hidden="true">
-                    {/* Plus/Minus icons - inline SVGs */}
-                    {isOpen ? (
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-                        </svg>
-                    ) : (
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    )}
+                    <svg
+                        className={`w-3 h-3 overflow-visible transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? 'rotate-180' : 'rotate-0'}`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                        strokeLinecap="round"
+                    >
+                        {/* Vertical line - rotates to horizontal and fades */}
+                        <path
+                            d="M12 5V19"
+                            className={`origin-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`}
+                        />
+                        {/* Horizontal line - stays fixed */}
+                        <path d="M5 12H19" />
+                    </svg>
                 </span>
             </button>
 

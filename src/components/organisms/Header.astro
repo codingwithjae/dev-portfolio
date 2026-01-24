@@ -6,7 +6,7 @@
  */
 
 import { Image } from "astro:assets";
-import ThemeToggle from "../atoms/ThemeToggle/ThemeToggle.tsx";
+import ThemeToggle from "../atoms/ThemeToggle/ThemeToggle.astro";
 
 interface Props {
   /** Object containing first and last name for the logo */
@@ -58,7 +58,7 @@ const {
       {name.first}
       <span class="font-bold">{name.last}.</span>
     </a>
-    <ThemeToggle client:load />
+    <ThemeToggle />
   </nav>
 
   <!-- Hero Section -->
