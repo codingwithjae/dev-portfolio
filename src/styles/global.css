@@ -6,8 +6,9 @@
     --color-bg: #e5e5e5;
     --color-secondary: #ffffff;
     --color-card: #ffffff;
-    --color-accent: #d6ea2e;
-    --color-accent-hover: #e4f454;
+    --color-accent: #f97316;
+    /* Vibrant Orange for better light mode contrast */
+    --color-accent-hover: #ea580c;
     --color-form-bg: #e2e8f0;
     --color-input-bg: transparent;
     --color-input-focus: rgba(255, 255, 255, 0.2);
@@ -106,8 +107,8 @@
         @apply transition-colors duration-300;
         /* Subtle gradient background adapting to theme */
         background-image:
-            radial-gradient(circle at 10% 20%, rgba(214, 234, 46, 0.05) 0%, transparent 40%),
-            radial-gradient(circle at 90% 80%, rgba(214, 234, 46, 0.03) 0%, transparent 40%);
+            radial-gradient(circle at 10% 20%, color-mix(in srgb, var(--color-accent), transparent 95%) 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, color-mix(in srgb, var(--color-accent), transparent 97%) 0%, transparent 40%);
         background-attachment: fixed;
     }
 }
