@@ -6,9 +6,12 @@
     --color-bg: #e5e5e5;
     --color-secondary: #ffffff;
     --color-card: #ffffff;
-    --color-accent: #f97316;
-    /* Vibrant Orange for better light mode contrast */
-    --color-accent-hover: #ea580c;
+    --color-accent: #0f172a;
+    /* High contrast black for general accents */
+    --color-accent-hover: #334155;
+    --color-cta: #d6ea2e;
+    /* Brand Lime ONLY for CTAs */
+    --color-cta-hover: #e4f454;
     --color-form-bg: #e2e8f0;
     --color-input-bg: transparent;
     --color-input-focus: rgba(255, 255, 255, 0.2);
@@ -53,6 +56,8 @@
     --color-text: #fafafa;
     --color-text-muted: #a1a1aa;
     --color-border: rgba(255, 255, 255, 0.1);
+    --color-cta: #d6ea2e;
+    --color-cta-hover: #eafe63;
 
     /* Glassmorphism Tokens (Dark Mode - Premium Mirror) */
     --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
@@ -80,6 +85,8 @@
     --color-secondary: var(--color-secondary);
     --color-accent: var(--color-accent);
     --color-accent-hover: var(--color-accent-hover);
+    --color-cta: var(--color-cta);
+    --color-cta-hover: var(--color-cta-hover);
     --color-form-bg: var(--color-form-bg);
     --color-summary-bg: var(--color-summary-bg);
     --color-text-base: var(--color-text);
@@ -105,10 +112,10 @@
         color: var(--color-text);
         font-family: var(--font-sans);
         @apply transition-colors duration-300;
-        /* Subtle gradient background adapting to theme */
+        /* Subtle gradient background based on theme-neutral tones for light mode */
         background-image:
-            radial-gradient(circle at 10% 20%, color-mix(in srgb, var(--color-accent), transparent 95%) 0%, transparent 40%),
-            radial-gradient(circle at 90% 80%, color-mix(in srgb, var(--color-accent), transparent 97%) 0%, transparent 40%);
+            radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.03) 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, rgba(15, 23, 42, 0.02) 0%, transparent 40%);
         background-attachment: fixed;
     }
 }

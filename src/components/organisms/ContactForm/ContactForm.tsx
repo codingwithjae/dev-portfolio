@@ -110,7 +110,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
                     <textarea id="message" name="message" placeholder="Your message" rows={4} required value={formState.message} onChange={handleChange} className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base h-[6.25rem] resize-none outline-none placeholder:text-text-muted/50 focus:border-accent transition-colors"></textarea>
                 </div>
                 <div className="flex pt-4 md:pt-6">
-                    <button type="submit" disabled={isSubmitting} className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-accent text-black rounded-[0.5rem] hover:bg-accent-hover hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <button type="submit" disabled={isSubmitting} className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-cta text-black rounded-[0.5rem] hover:bg-cta-hover hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
                 </div>
