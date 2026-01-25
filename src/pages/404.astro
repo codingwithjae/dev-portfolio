@@ -1,0 +1,49 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { staticData } from "../data/staticData";
+
+const { notFound } = staticData;
+---
+
+<BaseLayout title={notFound.title} description={notFound.description}>
+    <main
+        class="flex flex-col items-center justify-center min-h-screen text-center px-4 relative z-10 w-full"
+    >
+        <div class="reveal">
+            <h1
+                class="text-[clamp(8rem,30vw,16rem)] font-bold font-display text-text-transparent bg-clip-text bg-gradient-brand leading-none drop-shadow-[0_0_30px_rgba(202,246,144,0.15)] select-none"
+            >
+                {notFound.heading}
+            </h1>
+        </div>
+
+        <div class="reveal delay-100 mb-12">
+            <p
+                class="text-[clamp(1.5rem,4vw,2.5rem)] font-bold text-text-base mb-6"
+            >
+                {notFound.subtitle}
+            </p>
+            <p class="text-text-muted text-xl max-w-lg mx-auto leading-relaxed">
+                {notFound.message}
+            </p>
+        </div>
+
+        <div class="reveal delay-200">
+            <a
+                href="/"
+                class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 font-bold text-black transition-all duration-300 bg-accent rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(214,234,46,0.5)] hover:scale-110 active:scale-95 text-lg leading-none"
+            >
+                <i
+                    class={`${notFound.buttonIcon} group-hover:-translate-x-1 transition-transform`}
+                    aria-hidden="true"></i>
+                <span>{notFound.buttonText}</span>
+                <!-- Ghost element for perfect balance -->
+                <i
+                    class={`${notFound.buttonIcon} opacity-0 pointer-events-none`}
+                    aria-hidden="true"></i>
+            </a>
+        </div>
+    </main>
+</BaseLayout>
