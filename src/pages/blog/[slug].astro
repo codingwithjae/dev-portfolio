@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogPostPage from "../../components/pages/BlogPostPage.astro";
+import { getBlogPost, urlFor } from "../../sanity/lib/sanity";
+import { getBlogPostSchema, SITE_URL } from "../../sanity/lib/seo";
+
+const { slug: blogPostSlug } = Astro.params;
+let currentBlogPost;
+
+try {
+  currentBlogPost = await getBlogPost(blogPostSlug!);
+} catch (fetchError) {
+  console.error("Sanity fetch failed for slug:", blogPostSlug, fetchError);
+}
+
+if (!currentBlogPost) {
+  return Astro.redirect("/404");
+}
+
+const blogPostCoverImageUrl = currentBlogPost.coverImage
+  ? urlFor(currentBlogPost.coverImage).width(1200).height(630).url()
+  : `${SITE_URL}/images/thumbnail-preview.webp`;
+
+const blogPostJsonLd = getBlogPostSchema(currentBlogPost);
+---
+
+<BaseLayout
+  title={`${currentBlogPost.title} | Johander Campos`}
+  description={currentBlogPost.excerpt ||
+    "Read this article by Johander Campos."}
+  ogType="article"
+  ogImage={blogPostCoverImageUrl}
+  jsonLd={blogPostJsonLd}
+>
+  <BlogPostPage post={currentBlogPost} />
+</BaseLayout>
