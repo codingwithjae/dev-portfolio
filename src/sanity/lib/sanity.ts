@@ -8,7 +8,10 @@ const builder = createImageUrlBuilder(sanityClient);
 export const urlFor = (source: SanityImageSource) => builder.image(source).auto('format');
 
 export async function getPageContent(): Promise<PageContent | null> {
-  return sanityClient.fetch(`*[_type == "pageContent"][0]`);
+  return sanityClient.fetch(`*[_type == "pageContent"][0] {
+    ...,
+    "portrait": portrait.asset->url
+  }`);
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {

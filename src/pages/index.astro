@@ -67,6 +67,8 @@ const frequentlyAskedQuestions = homePageContent?.faqs || [];
 import { getImage } from "astro:assets";
 const optimizedPersonImage = await getImage({
   src: photoImage,
+  width: 375,
+  height: 375,
   format: "webp",
 });
 const combinedJsonLd = getHomeSchema(
@@ -87,7 +89,7 @@ const combinedJsonLd = getHomeSchema(
     title={homePageContent?.hero?.title || staticData.basic.title}
     subtitle={homePageContent?.hero?.subtitle || staticData.basic.subtitle}
     paragraph={homePageContent?.hero?.bio || staticData.basic.bio}
-    photo={photoImage}
+    photo={homePageContent?.portrait || photoImage}
     linkedinUrl={homePageContent?.socials?.linkedin ||
       staticData.basic.socials.linkedin}
     githubUrl={homePageContent?.socials?.github ||

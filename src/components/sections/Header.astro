@@ -8,7 +8,7 @@ interface Props {
   title: string;
   subtitle: string;
   paragraph: string;
-  photo: ImageMetadata;
+  photo: ImageMetadata | string;
   photo2x?: ImageMetadata;
   linkedinUrl: string;
   githubUrl: string;
@@ -40,16 +40,28 @@ const { name, title, subtitle, photo, linkedinUrl, githubUrl, cvUrl } =
   <figure
     class="rounded-full border-[3px] border-text-base mb-16 flex items-center justify-center transition-colors duration-300 overflow-hidden bg-white/5"
   >
-    <Image
-      class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
-      src={photo}
-      width={375}
-      height={375}
-      alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-    />
+    {
+      typeof photo === "string" ? (
+        <img
+          class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
+          src={photo}
+          alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        <Image
+          class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
+          src={photo}
+          width={375}
+          height={375}
+          alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      )
+    }
   </figure>
 
   <div class="text-center mb-16 text-text-base transition-colors duration-300">

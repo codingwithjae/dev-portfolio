@@ -34,6 +34,7 @@ export interface BlogPostDetail extends BlogPost {
 export interface PageContent {
     _id: string;
     _type: 'pageContent';
+    portrait?: string;
     hero?: {
         title: string;
         subtitle: string;
