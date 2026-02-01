@@ -163,4 +163,13 @@ export const staticData = {
             }
         ]
     },
+    notFound: {
+        title: "404 | Page Not Found",
+        description: "The page you are looking for does not exist.",
+        heading: "404",
+        subtitle: "Page Not Found",
+        message: "Oops! The page you're looking for seems to have wandered off into the digital void.",
+        buttonText: "Go Home",
+        buttonIcon: "fa-solid fa-house",
+    },
 };
