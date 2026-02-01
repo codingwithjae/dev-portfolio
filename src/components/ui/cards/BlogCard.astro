@@ -1,33 +1,15 @@
 ---
-/**
- * @file BlogCard.astro
- * @description A glassmorphism-styled card component for displaying blog post previews.
- * Features hover scaling, image optimization via Sanity CDN, and responsive layout.
- */
-
 import { Image } from "astro:assets";
-import { urlFor } from "../../../sanity/lib/sanity";
 
-/**
- * Properties for the BlogCard component.
- */
 interface Props {
-  /** The title of the blog post */
   title: string;
-  /** A short summary or fallback text for the post */
   excerpt: string;
-  /** The unique slug used for dynamic routing (e.g., 'my-post-title') */
   slug: string;
-  /**
-   * The cover image source.
-   * Can be a string (URL) or a Sanity image object.
-   */
   coverImage?: any;
 }
 
 const { title, excerpt, slug, coverImage } = Astro.props;
 
-// Use Sanity URL for optimized delivery if it's a Sanity object
 const imageSrc = typeof coverImage === "string" ? coverImage : coverImage;
 ---
 

@@ -4,8 +4,8 @@ interface Props {
     description: string;
     image?: string;
     type?: "website" | "article" | "profile";
-    jsonLd?: string;
-    canonicalUrl?: string;
+    jsonLd?: string | undefined;
+    canonicalUrl?: string | undefined;
     noindex?: boolean;
     preloadHeroImage?: any;
 }
@@ -88,7 +88,7 @@ if (preloadHeroImage) {
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
     rel="stylesheet"
     media="print"
-    onload="this.media='all'"
+    onload="this.setAttribute('media', 'all')"
 />
 <noscript>
     <link

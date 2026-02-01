@@ -8,7 +8,6 @@
         class="absolute top-1 left-1 w-4 h-4 rounded-full bg-accent transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex items-center justify-center overflow-hidden"
     >
         <div class="relative w-full h-full flex items-center justify-center">
-            {/* Sun Icon */}
             <span
                 id="sun-icon"
                 class="absolute transition-all duration-300 opacity-0 scale-50 rotate-90 text-black"
@@ -24,7 +23,6 @@
                         clip-rule="evenodd"></path>
                 </svg>
             </span>
-            {/* Moon Icon */}
             <span
                 id="moon-icon"
                 class="absolute transition-all duration-300 opacity-0 scale-50 -rotate-90 text-white"
@@ -69,7 +67,6 @@
             moonIcon?.classList.add("opacity-0", "scale-50", "-rotate-90");
             moonIcon?.classList.remove("opacity-100", "scale-100", "rotate-0");
         }
-        // Show button after first calculation to prevent flash
         themeToggle?.classList.remove("opacity-0", "pointer-events-none");
     };
 
@@ -89,13 +86,10 @@
         updateUI(newTheme);
     };
 
-    // Listen for clicks
     themeToggle?.addEventListener("click", toggleTheme);
 
-    // Initial load
     initTheme();
 
-    // Watch for external theme changes (optional but good for consistency)
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.attributeName === "data-theme") {

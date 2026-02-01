@@ -1,11 +1,5 @@
-/**
- * @file SkillCard.tsx
- * @description Glassmorphism card with vertical ticker, includes useSkillTicker hook.
- */
-
 import React, { useState, useEffect } from 'react';
 
-// --- Component ---
 interface Skill {
     name: string;
     experience: string;
@@ -17,7 +11,6 @@ interface SkillCardProps {
     skills: Skill[];
 }
 
-// --- Hook (non-reusable, co-located) ---
 const useSkillTicker = (itemCount: number, intervalMs: number = 2400) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isHovering, setIsHovering] = useState(false);
@@ -42,6 +35,7 @@ const useSkillTicker = (itemCount: number, intervalMs: number = 2400) => {
             }, 500);
             return () => clearTimeout(timeout);
         }
+        return undefined;
     }, [currentIndex, itemCount]);
 
     return { currentIndex, isHovering, setIsHovering, isTransitioning };

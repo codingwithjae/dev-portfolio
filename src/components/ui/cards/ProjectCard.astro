@@ -2,15 +2,10 @@
 import { Image } from "astro:assets";
 
 interface Props {
-  /** The name of the project */
   title: string;
-  /** Path to the thumbnail image or ImageMetadata object */
   thumbnail: string | ImageMetadata;
-  /** Comma-separated or space-separated list of tech used (e.g., 'React, Astro, Tailwind') */
   technologies: string;
-  /** URL to the live production site or demo */
   demoUrl: string;
-  /** URL to the source code repository (e.g., GitHub) */
   codeUrl: string;
 }
 
