@@ -10,7 +10,10 @@ export const urlFor = (source: SanityImageSource) => builder.image(source).auto(
 export async function getPageContent(): Promise<PageContent | null> {
   return sanityClient.fetch(`*[_type == "pageContent"][0] {
     ...,
-    "portrait": portrait.asset->url
+    "portrait": select(
+      defined(portrait.asset) => portrait.asset->url,
+      null
+    )
   }`);
 }
 

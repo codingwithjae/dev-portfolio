@@ -89,7 +89,9 @@ const combinedJsonLd = getHomeSchema(
     title={homePageContent?.hero?.title || staticData.basic.title}
     subtitle={homePageContent?.hero?.subtitle || staticData.basic.subtitle}
     paragraph={homePageContent?.hero?.bio || staticData.basic.bio}
-    photo={homePageContent?.portrait || photoImage}
+    photo={homePageContent?.portrait && homePageContent.portrait.trim() !== ""
+      ? homePageContent.portrait
+      : photoImage}
     linkedinUrl={homePageContent?.socials?.linkedin ||
       staticData.basic.socials.linkedin}
     githubUrl={homePageContent?.socials?.github ||
