@@ -116,14 +116,14 @@ let coverImageUrl = "https://placehold.co/1200x630";
         <figure class="mb-16 reveal delay-100 relative z-10">
           <img
             src={coverImageUrl}
-            alt={post.coverImage.alt || post.title}
+            alt={post.coverImage?.alt || post.title}
             class="w-full rounded-3xl shadow-2xl border border-border-base transition-colors"
             width="1200"
             height="630"
             loading="eager"
             fetchpriority="high"
           />
-          {post.coverImage.caption && (
+          {post.coverImage?.caption && (
             <figcaption class="text-center text-sm text-text-muted mt-6 italic opacity-80 font-sans">
               {post.coverImage.caption}
             </figcaption>
