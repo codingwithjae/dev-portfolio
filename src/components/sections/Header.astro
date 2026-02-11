@@ -1,25 +1,35 @@
 ---
-import { Image } from 'astro:assets';
-import ThemeToggle from '../ui/ThemeToggle/ThemeToggle.astro';
+import { Image } from "astro:assets";
+import ThemeToggle from "../ui/ThemeToggle/ThemeToggle.astro";
 
 export interface Props {
-	name: { first: string; last: string };
-	title: string;
-	subtitle: string;
-	paragraph: string;
-	experience?: string;
-	location?: string;
-	photo: ImageMetadata | string;
-	photo2x?: ImageMetadata;
-	linkedinUrl: string;
-	githubUrl: string;
-	cvUrl?: string;
-	downloadCvText: string;
+  name: { first: string; last: string };
+  title: string;
+  subtitle: string;
+  paragraph: string;
+  experience?: string;
+  location?: string;
+  photo: ImageMetadata | string;
+  photo2x?: ImageMetadata;
+  linkedinUrl: string;
+  githubUrl: string;
+  cvUrl?: string;
+  downloadCvText: string;
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: Props are used in the template
-const { name, title, subtitle, paragraph, experience, location, photo, linkedinUrl, githubUrl, cvUrl, downloadCvText } =
-	Astro.props;
+const {
+  name,
+  title,
+  subtitle,
+  paragraph,
+  experience,
+  location,
+  photo,
+  linkedinUrl,
+  githubUrl,
+  cvUrl,
+  downloadCvText,
+} = Astro.props;
 ---
 
 <header
@@ -68,12 +78,12 @@ const { name, title, subtitle, paragraph, experience, location, photo, linkedinU
   </figure>
 
   <div class="text-center mb-6 text-text-base transition-colors duration-300">
-    <h1 class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold leading-[1.2]">
+    <h1 class="text-[clamp(2.4rem,6vw,3.625rem)] font-bold leading-tight">
       {title}
     </h1>
     {
       subtitle && !title.includes(subtitle) && (
-        <p class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold leading-[1.2] mt-1">
+        <p class="text-[clamp(2.4rem,6vw,3.625rem)] font-bold leading-tight mt-1">
           {subtitle}
         </p>
       )
@@ -147,7 +157,18 @@ const { name, title, subtitle, paragraph, experience, location, photo, linkedinU
   }
 </header>
 
-<script define:vars={{ name, title, subtitle, paragraph, experience, location, linkedinUrl, githubUrl }}>
+<script
+  define:vars={{
+    name,
+    title,
+    subtitle,
+    paragraph,
+    experience,
+    location,
+    linkedinUrl,
+    githubUrl,
+  }}
+>
   // Ensure variables are "used" for static analysis
   console.debug("Header initialized");
 </script>
