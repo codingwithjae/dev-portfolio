@@ -36,34 +36,21 @@ export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
 				onClick={toggle}
 				aria-expanded={isOpen}
 				aria-controls={panelId}
-				className="faq-trigger w-full font-bold cursor-pointer flex items-center justify-between text-[18px] text-left text-text-base font-display outline-none select-none bg-transparent border-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+				className="faq-trigger group/trigger w-full font-bold cursor-pointer flex items-center justify-between text-[18px] text-left text-text-base font-display outline-none select-none bg-transparent border-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
 			>
-				{question}
+				<span className="group-hover/trigger:text-heading-accent transition-colors duration-300">
+					{question}
+				</span>
 				<span
-					className="relative w-[2.1875rem] h-[2.1875rem] flex items-center justify-center rounded-full border border-border-base bg-primary transition-colors duration-300 flex-shrink-0"
+					className={`relative w-[2.1875rem] h-[2.1875rem] flex items-center justify-center rounded-full border border-border-base transition-all duration-300 flex-shrink-0 ${isOpen ? 'bg-[#d6ea2e] border-[#d6ea2e]' : 'bg-transparent'}`}
 					aria-hidden="true"
 				>
-					{/* Plus/Minus icons with smooth spin transitions */}
-					<svg
-						className={`absolute w-3 h-3 transition-all duration-500 ease-out ${isOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'}`}
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						strokeWidth={2.5}
-					>
-						<title>{isOpen ? 'Close FAQ' : 'Open FAQ'}</title>
-						<path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-					</svg>
-					<svg
-						className={`absolute w-3 h-3 transition-all duration-500 ease-out ${!isOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'}`}
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						strokeWidth={2.5}
-					>
-						<title>{isOpen ? 'Close FAQ' : 'Open FAQ'}</title>
-						<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-					</svg>
+					<div className={`relative w-3 h-3 transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? 'rotate-180' : ''}`}>
+						{/* Horizontal line */}
+						<div className={`absolute top-1/2 left-0 w-full h-[3px] -translate-y-1/2 rounded-full transition-colors duration-300 ${isOpen ? 'bg-black' : 'bg-text-base'}`}></div>
+						{/* Vertical line (hides when open) */}
+						<div className={`absolute top-0 left-1/2 w-[3px] h-full -translate-x-1/2 rounded-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? 'rotate-90 scale-0 bg-black' : 'bg-text-base'}`}></div>
+					</div>
 				</span>
 			</button>
 
@@ -72,10 +59,10 @@ export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
 				aria-labelledby={triggerId}
 				ref={contentRef}
 				style={{
-					height: isOpen ? `${height}px` : '0px',
+					maxHeight: isOpen ? `${height}px` : '0px',
 					opacity: isOpen ? 1 : 0,
 				}}
-				className="overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+				className="overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
 			>
 				<div className="pt-[0.9375rem] pb-[0.625rem]">
 					<p className="leading-[1.5625rem] text-text-muted text-left text-[18px] font-display transition-colors">

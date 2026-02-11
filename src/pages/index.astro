@@ -10,43 +10,20 @@ import { SkillCard } from "../components/ui/cards/SkillCard";
 import { FaqItem } from "../components/ui/FaqItem/FaqItem";
 import { staticData } from "../data/staticData";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { sendContactEmail } from "../lib/resend/resend";
+import { getFeaturedBlogPosts, getPageContent } from "../lib/sanity/sanity";
+import type { BlogPost, PageContent } from "../lib/sanity/sanity.types";
+import { getHomeSchema } from "../components/seo/sanity-seo";
 import {
-  getFeaturedBlogPosts,
-  getPageContent,
-  urlFor,
-} from "../lib/sanity/sanity";
-import type { BlogPost } from "../lib/sanity/sanity.types";
-import { getHomeSchema } from "../lib/sanity/seo";
+  mapSanityProjectsToUI,
+  groupProjectsByCategory,
+  resolveSkillCategories,
+  extractHomeSEO,
+  extractAuthorHeader,
+  PROJECT_CATEGORIES_ORDER,
+  CATEGORY_DISPLAY_NAMES,
+} from "../lib/sanity/transform";
 
-if (Astro.request.method === "POST") {
-  try {
-    const formData = await Astro.request.formData();
-    const name = formData.get("name")?.toString();
-    const email = formData.get("email")?.toString();
-    const message = formData.get("message")?.toString();
-
-    if (!name || !email || !message) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        { status: 400 },
-      );
-    }
-
-    await sendContactEmail({ name, email, message });
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-    });
-  } catch (error) {
-    console.error("Form processing error:", error);
-    return new Response(
-      JSON.stringify({ success: false, error: "Failed to process request" }),
-      { status: 500 },
-    );
-  }
-}
-
-let homePageContent: any = null;
+let homePageContent: PageContent | null = null;
 let featuredBlogPosts: BlogPost[] = [];
 
 try {
@@ -60,50 +37,9 @@ try {
   console.error("Sanity data fetch failed:", fetchError);
 }
 
-const skillCategories =
-  homePageContent?.skills && homePageContent.skills.length > 0
-    ? homePageContent.skills
-    : staticData.home.skills;
-
-const portfolioProjects =
-  homePageContent?.projects && homePageContent.projects.length > 0
-    ? homePageContent.projects.map((sanityProject: any) => ({
-        title: sanityProject.name,
-        thumbnail: sanityProject.thumbnail
-          ? urlFor(sanityProject.thumbnail).url()
-          : "https://placehold.co/600x400",
-        technologies: sanityProject.techStack,
-        demoUrl: sanityProject.demoUrl || "#",
-        codeUrl: sanityProject.githubUrl || "#",
-        category: sanityProject.category || "frontend",
-      }))
-    : staticData.home.projects.list.map((p: any) => ({
-        title: p.name,
-        thumbnail: p.thumbnail,
-        technologies: p.techStack,
-        demoUrl: p.demoUrl || "#",
-        codeUrl: p.githubUrl || "#",
-        category: p.category || "frontend",
-      }));
-
-const PROJECT_CATEGORIES_ORDER = ["frontend", "backend", "fullstack"] as const;
-
-const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
-  frontend: "Frontend",
-  backend: "Backend",
-  fullstack: "Full-Stack",
-};
-
-const projectsByCategory = portfolioProjects.reduce(
-  (acc: any, project: any) => {
-    const cat = project.category || "frontend";
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(project);
-    return acc;
-  },
-  {} as Record<string, typeof portfolioProjects>,
-);
-
+const skillCategories = resolveSkillCategories(homePageContent);
+const portfolioProjects = mapSanityProjectsToUI(homePageContent?.projects);
+const projectsByCategory = groupProjectsByCategory(portfolioProjects);
 const frequentlyAskedQuestions = staticData.home.faq.questions;
 
 const optimizedPersonImage = await getImage({
@@ -113,12 +49,12 @@ const optimizedPersonImage = await getImage({
   format: "webp",
 });
 
-const homeSeo = homePageContent?.seo;
-const pageTitle = homeSeo?.title || "Johander Campos | Front End Developer";
-const pageDescription =
-  homeSeo?.description ||
-  "Portfolio of Johander Campos, a Front End Developer specializing in React, TypeScript, and modern web technologies.";
-const ogImage = homeSeo?.ogImage ? urlFor(homeSeo.ogImage).url() : undefined;
+const {
+  title: pageTitle,
+  description: pageDescription,
+  ogImage,
+} = extractHomeSEO(homePageContent);
+const headerData = extractAuthorHeader(homePageContent);
 
 const combinedJsonLd = getHomeSchema(
   homePageContent,
@@ -135,11 +71,11 @@ const combinedJsonLd = getHomeSchema(
   preloadHeroImage={photoImage}
 >
   <Header
-    name={homePageContent?.author?.name || staticData.header.name}
-    title={homePageContent?.author?.title || staticData.header.title}
-    subtitle={homePageContent?.author?.subtitle || staticData.header.subtitle}
-    paragraph={homePageContent?.author?.bio || staticData.header.bio}
-    photo={homePageContent?.portrait || photoImage}
+    name={headerData.name}
+    title={headerData.title}
+    subtitle={headerData.subtitle}
+    paragraph={headerData.bio}
+    photo={headerData.portrait || photoImage}
     linkedinUrl={staticData.header.socials.linkedin}
     githubUrl={staticData.header.socials.github}
     cvUrl={homePageContent?.cvUrl || "#"}
@@ -185,7 +121,7 @@ const combinedJsonLd = getHomeSchema(
           <div class="w-full mb-16 reveal">
             <h2
               id="projects-heading"
-              class="text-[clamp(2.8rem,5vw,3.625rem)] font-display font-bold"
+              class="text-[clamp(2.5rem,5vw,3.625rem)] font-display font-bold"
             >
               {staticData.home.projects.title}
             </h2>
@@ -331,8 +267,4 @@ const combinedJsonLd = getHomeSchema(
     frequentlyAskedQuestions,
     combinedJsonLd,
     featuredBlogPosts,
-  }}
->
-  // Ensure these are "used" for static analysis
-  console.debug("Page initialized");
-</script>
+  }}></script>

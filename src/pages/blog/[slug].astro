@@ -1,9 +1,13 @@
 ---
-import BlogPostPage from '../../components/pages/BlogPostPage.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getBlogPost, getBlogPosts, urlFor } from '../../lib/sanity/sanity';
-import type { BlogPost, BlogPostDetail } from '../../lib/sanity/sanity.types';
-import { getBlogPostSchema, SITE_URL } from '../../lib/sanity/seo';
+import BlogPostPage from "../../components/pages/BlogPostPage.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getBlogPost, getBlogPosts, urlFor } from "../../lib/sanity/sanity";
+import type { BlogPost, BlogPostDetail } from "../../lib/sanity/sanity.types";
+import { getBlogPostSchema, SITE_URL } from "../../components/seo/sanity-seo";
+
+const { post: staticPost } = Astro.props;
+const { slug: blogPostSlug } = Astro.params;
+
 export async function getStaticPaths() {
 	const posts = await getBlogPosts();
 	return posts.map((post) => ({
@@ -12,21 +16,22 @@ export async function getStaticPaths() {
 	}));
 }
 
-const { post: staticPost } = Astro.props;
-const { slug: blogPostSlug } = Astro.params;
-
 let currentBlogPost: BlogPost | BlogPostDetail | null = staticPost;
 
 if (!currentBlogPost) {
 	try {
 		currentBlogPost = await getBlogPost(blogPostSlug!);
 	} catch (fetchError) {
-		console.error('Sanity fetch failed for slug:', blogPostSlug, fetchError);
+		console.error(
+			"Sanity fetch failed for slug:",
+			blogPostSlug,
+			fetchError,
+		);
 	}
 }
 
 if (!currentBlogPost) {
-	return Astro.redirect('/404');
+	return Astro.redirect("/404");
 }
 
 const blogPostCoverImageUrl = currentBlogPost.coverImage
@@ -37,12 +42,12 @@ const blogPostJsonLd = getBlogPostSchema(currentBlogPost);
 ---
 
 <BaseLayout
-  title={`${currentBlogPost.title} | Johander Campos`}
-  description={currentBlogPost.excerpt ||
-    "Read this article by Johander Campos."}
-  ogType="article"
-  ogImage={blogPostCoverImageUrl}
-  jsonLd={blogPostJsonLd}
+	title={`${currentBlogPost.title} | Johander Campos`}
+	description={currentBlogPost.excerpt ||
+		"Read this article by Johander Campos."}
+	ogType="article"
+	ogImage={blogPostCoverImageUrl}
+	jsonLd={blogPostJsonLd}
 >
-  <BlogPostPage post={currentBlogPost} />
+	<BlogPostPage post={currentBlogPost} />
 </BaseLayout>

@@ -1,4 +1,6 @@
-import type { ArticleSchemaConfig, BreadcrumbItem, PersonSchemaConfig, WebsiteSchemaConfig } from '../../types/seo';
+import type { ArticleSchemaConfig, BreadcrumbItem, PersonSchemaConfig, WebsiteSchemaConfig } from './types';
+import { urlFor } from '../../lib/sanity/sanity';
+import type { PageContent, BlogPostDetail } from '../../lib/sanity/sanity.types';
 
 export function generateWebsiteSchema(config: WebsiteSchemaConfig): string {
 	return JSON.stringify({
@@ -58,31 +60,30 @@ export function mergeSchemas(schemas: string[]): string {
 	return `[${schemas.join(', ')}]`;
 }
 
-import { urlFor } from './sanity';
-
-export function getHomeSchema(sanityData: any, staticData: any, imageUrl?: string): string {
+export function getHomeSchema(sanityData: PageContent | null, staticData: any, imageUrl?: string): string {
 	const websiteSchema = generateWebsiteSchema({
-		name: 'Johander Campos | Front End Developer',
+		name: 'Johander Campos | Software Engineer',
 		url: SITE_URL,
 		description:
-			'Portfolio of Johander Campos, a Front End Developer specializing in React, TypeScript, and modern web technologies.',
+			sanityData?.seo?.description ||
+			'Portfolio of Johander Campos, a Software Engineer specializing in building scalable and efficient web applications.',
 	});
+
+	const linkedin = sanityData?.socials?.linkedin || staticData.header.socials.linkedin;
+	const github = sanityData?.socials?.github || staticData.header.socials.github;
 
 	const personSchema = generatePersonSchema({
 		name: 'Johander Campos',
-		jobTitle: 'Front End Developer',
+		jobTitle: sanityData?.author?.title || 'Software Engineer',
 		url: SITE_URL,
-		sameAs: [
-			sanityData?.socials?.linkedin || staticData.basic.socials.linkedin,
-			sanityData?.socials?.github || staticData.basic.socials.github,
-		],
-		image: imageUrl || `${SITE_URL}/images/photo.avif`,
+		sameAs: [linkedin, github].filter(Boolean) as string[],
+		image: imageUrl || `${SITE_URL}/images/portrait.webp`,
 	});
 
 	return mergeSchemas([websiteSchema, personSchema]);
 }
 
-export function getBlogPostSchema(post: any): string {
+export function getBlogPostSchema(post: BlogPostDetail): string {
 	const postUrl = `${SITE_URL}/blog/${post.slug}`;
 	const postImage = post.coverImage
 		? urlFor(post.coverImage).width(1200).height(630).url()
@@ -91,7 +92,7 @@ export function getBlogPostSchema(post: any): string {
 	const articleSchema = generateArticleSchema({
 		headline: post.title,
 		author: post.author?.name || 'Johander Campos',
-		datePublished: post.publishedAt || new Date().toISOString().split('T')[0],
+		datePublished: post.publishedAt || new Date().toISOString().split('T')[0] || '',
 		image: postImage,
 		url: postUrl,
 		description: post.excerpt || '',

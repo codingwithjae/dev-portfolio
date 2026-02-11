@@ -1,4 +1,5 @@
-import React, { type ChangeEvent, type FormEvent, useCallback, useState } from 'react';
+import React, { type ChangeEvent, type FormEvent, useCallback, useEffect, useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { toast } from '../ui/Toast/toast';
 
 interface FormState {
@@ -15,6 +16,13 @@ const useContactForm = () => {
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
+	useEffect(() => {
+		const publicKey = import.meta.env.PUBLIC_EMAILJS_API_KEY;
+		if (publicKey) {
+			emailjs.init(publicKey);
+		}
+	}, []);
+
 	const handleChange = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value } = event.target;
 		setFormState((previousState: FormState) => ({
@@ -25,6 +33,15 @@ const useContactForm = () => {
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+
+		const serviceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
+		const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
+
+		if (!serviceId || !templateId) {
+			console.error('EmailJS service ID or template ID is missing');
+			toast('Configuration error. Please try again later.', 'error');
+			return;
+		}
 
 		if (!formState.name.trim()) {
 			toast('Please enter your name', 'error');
@@ -46,32 +63,27 @@ const useContactForm = () => {
 		setIsSubmitting(true);
 
 		try {
-			const formData = new FormData();
-			formData.append('name', formState.name);
-			formData.append('email', formState.email);
-			formData.append('message', formState.message);
+			const templateParams = {
+				from_name: formState.name,
+				from_email: formState.email,
+				message: formState.message,
+				to_name: 'Johander',
+			};
 
-			const res = await fetch('/', {
-				method: 'POST',
-				body: formData,
+			const publicKey = import.meta.env.PUBLIC_EMAILJS_API_KEY;
+			const result = await emailjs.send(serviceId, templateId, templateParams, {
+				publicKey: publicKey,
 			});
 
-			const result = await res.json();
-
-			if (!res.ok) {
-				const errorMessage = result.error || 'Something went wrong. Please try again.';
-				toast(errorMessage, 'error');
-				console.error('Submission Error:', result.error);
-				return;
-			}
-
-			if (result.success) {
+			if (result.status === 200) {
 				toast('Thanks for your message!', 'success');
 				setFormState({ name: '', email: '', message: '' });
+			} else {
+				toast('Something went wrong. Please try again.', 'error');
 			}
-		} catch (error: unknown) {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to send message. Please try again.';
-			console.error('Submission Exception:', error);
+		} catch (error: any) {
+			console.error('Submission Error:', error);
+			const errorMessage = error?.text || error?.message || 'Failed to send message. Please try again.';
 			toast(errorMessage, 'error');
 		} finally {
 			setIsSubmitting(false);
@@ -95,8 +107,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 					Got a project?
 				</h2>
 				<h3 className="text-heading-accent text-[2rem] mb-[1.25rem] font-bold">Lets Talk!</h3>
-				<p className="text-text-base text-[1.13rem] transition-colors flex items-center justify-center md:justify-start flex-wrap gap-2">
-					<span className="break-all sm:break-normal">{email}</span>
+				<p className="text-text-base text-[1.13rem] transition-colors flex items-center justify-center md:justify-start gap-3 w-full">
+					<span className="truncate max-w-[calc(100vw-100px)] sm:max-w-none">{email}</span>
 					<button
 						id="copy-email"
 						type="button"

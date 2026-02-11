@@ -58,6 +58,17 @@ export interface PageContent {
 		question: string;
 		answer: string;
 	}>;
+	author?: {
+		name: string;
+		title: string;
+		subtitle: string;
+		bio: string;
+	};
+	seo?: {
+		title?: string;
+		description?: string;
+		ogImage?: SanityImage;
+	};
 }
 
 export interface Skill {
@@ -70,4 +81,27 @@ export interface SkillCategory {
 	category: string;
 	skills: Skill[];
 	order?: number;
+}
+
+export interface UIProject {
+	title: string;
+	thumbnail: string;
+	technologies: string;
+	demoUrl: string;
+	codeUrl: string;
+	category: string;
+}
+
+export interface HeaderAuthor {
+	name: { first: string; last: string };
+	title: string;
+	subtitle: string;
+	bio: string;
+	portrait: string | null;
+}
+
+export interface HomeSEO {
+	title: string;
+	description: string;
+	ogImage: string | undefined;
 }

@@ -1,15 +1,14 @@
 ---
-import BlogListPage from '../../components/pages/BlogListPage.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getBlogPosts } from '../../lib/sanity/sanity';
-import { generateBreadcrumbSchema } from '../../lib/sanity/seo';
+import BlogListPage from "../../components/pages/BlogListPage.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getBlogPosts } from "../../lib/sanity/sanity";
+import { generateBreadcrumbSchema } from "../../components/seo/sanity-seo";
 
 const posts = await getBlogPosts();
-
-const siteUrl = 'https://developer.johandercampos.com';
+const siteUrl = "https://developer.johandercampos.com";
 const breadcrumbJsonLd = generateBreadcrumbSchema([
-	{ name: 'Home', url: siteUrl },
-	{ name: 'Blog', url: `${siteUrl}/blog` },
+  { name: "Home", url: siteUrl },
+  { name: "Blog", url: `${siteUrl}/blog` },
 ]);
 ---
 

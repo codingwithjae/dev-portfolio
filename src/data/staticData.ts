@@ -4,7 +4,7 @@ export const staticData = {
 		name: { first: 'Johander', last: 'Campos' },
 		title: "Hey, I'm Johander Campos.",
 		subtitle: 'Software Engineer',
-		bio: `I build backend-driven web systems with TypeScript, focusing on clean architecture, well-structured APIs, security-first design, and testing strategies that ensure reliability from development to deployment.`,
+		bio: `I build backend-driven web systems with TypeScript, focusing on software architecture, well-structured APIs, security-first design, and testing strategies that ensure reliability from development to deployment.`,
 		socials: {
 			linkedin: 'https://www.linkedin.com/in/johandercampos/',
 			github: 'https://github.com/codingwithjae',
