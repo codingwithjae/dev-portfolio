@@ -1,16 +1,15 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import BlogPostPage from "../../components/pages/BlogPostPage.astro";
-import type { BlogPost, BlogPostDetail } from "../../lib/sanity/sanity.types";
-import { getBlogPosts, getBlogPost, urlFor } from "../../lib/sanity/sanity";
-import { getBlogPostSchema, SITE_URL } from "../../lib/sanity/seo";
-
+import BlogPostPage from '../../components/pages/BlogPostPage.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getBlogPost, getBlogPosts, urlFor } from '../../lib/sanity/sanity';
+import type { BlogPost, BlogPostDetail } from '../../lib/sanity/sanity.types';
+import { getBlogPostSchema, SITE_URL } from '../../lib/sanity/seo';
 export async function getStaticPaths() {
-  const posts = await getBlogPosts();
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+	const posts = await getBlogPosts();
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: { post },
+	}));
 }
 
 const { post: staticPost } = Astro.props;
@@ -19,20 +18,20 @@ const { slug: blogPostSlug } = Astro.params;
 let currentBlogPost: BlogPost | BlogPostDetail | null = staticPost;
 
 if (!currentBlogPost) {
-  try {
-    currentBlogPost = await getBlogPost(blogPostSlug!);
-  } catch (fetchError) {
-    console.error("Sanity fetch failed for slug:", blogPostSlug, fetchError);
-  }
+	try {
+		currentBlogPost = await getBlogPost(blogPostSlug!);
+	} catch (fetchError) {
+		console.error('Sanity fetch failed for slug:', blogPostSlug, fetchError);
+	}
 }
 
 if (!currentBlogPost) {
-  return Astro.redirect("/404");
+	return Astro.redirect('/404');
 }
 
 const blogPostCoverImageUrl = currentBlogPost.coverImage
-  ? urlFor(currentBlogPost.coverImage).width(1200).height(630).url()
-  : `${SITE_URL}/images/thumbnail-preview.webp`;
+	? urlFor(currentBlogPost.coverImage).width(1200).height(630).url()
+	: `${SITE_URL}/images/thumbnail-preview.webp`;
 
 const blogPostJsonLd = getBlogPostSchema(currentBlogPost);
 ---

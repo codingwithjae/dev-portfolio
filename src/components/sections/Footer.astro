@@ -1,11 +1,11 @@
 ---
-import { staticData } from "../../data/staticData";
-
-interface Props {
-  linkedinUrl: string;
-  githubUrl: string;
-  repoUrl: string;
+export interface Props {
+	linkedinUrl: string;
+	githubUrl: string;
+	repoUrl: string;
 }
+
+import { staticData } from '../../data/staticData';
 
 const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
 ---

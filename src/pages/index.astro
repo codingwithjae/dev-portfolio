@@ -1,76 +1,125 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Header from "../components/sections/Header.astro";
-import ProjectCard from "../components/ui/cards/ProjectCard.astro";
-import BlogCard from "../components/ui/cards/BlogCard.astro";
-import Footer from "../components/sections/Footer.astro";
+import { getImage } from "astro:assets";
 import photoImage from "../assets/images/portrait.webp";
-import type { BlogPost, SkillCategory } from "../lib/sanity/sanity.types";
+import { ContactForm } from "../components/sections/ContactForm";
+import Footer from "../components/sections/Footer.astro";
+import Header from "../components/sections/Header.astro";
+import BlogCard from "../components/ui/cards/BlogCard.astro";
+import ProjectCard from "../components/ui/cards/ProjectCard.astro";
+import { SkillCard } from "../components/ui/cards/SkillCard";
+import { FaqItem } from "../components/ui/FaqItem/FaqItem";
 import { staticData } from "../data/staticData";
-import { getHomeSchema } from "../lib/sanity/seo";
-import { ContactForm } from "../components/sections/ContactForm.tsx";
-import { FaqItem } from "../components/ui/FaqItem/FaqItem.tsx";
-import { SkillCard } from "../components/ui/cards/SkillCard.tsx";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sendContactEmail } from "../lib/resend/resend";
 import {
-  getPageContent,
   getFeaturedBlogPosts,
-  getSkills,
+  getPageContent,
+  urlFor,
 } from "../lib/sanity/sanity";
+import type { BlogPost } from "../lib/sanity/sanity.types";
+import { getHomeSchema } from "../lib/sanity/seo";
 
-let homePageContent = null;
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const name = formData.get("name")?.toString();
+    const email = formData.get("email")?.toString();
+    const message = formData.get("message")?.toString();
+
+    if (!name || !email || !message) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400 },
+      );
+    }
+
+    await sendContactEmail({ name, email, message });
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Form processing error:", error);
+    return new Response(
+      JSON.stringify({ success: false, error: "Failed to process request" }),
+      { status: 500 },
+    );
+  }
+}
+
+let homePageContent: any = null;
 let featuredBlogPosts: BlogPost[] = [];
-let fetchedSkills: SkillCategory[] = [];
 
 try {
-  [homePageContent, featuredBlogPosts, fetchedSkills] = await Promise.all([
+  const [content, posts] = await Promise.all([
     getPageContent(),
     getFeaturedBlogPosts(),
-    getSkills(),
   ]);
+  homePageContent = content;
+  featuredBlogPosts = posts;
 } catch (fetchError) {
   console.error("Sanity data fetch failed:", fetchError);
 }
 
 const skillCategories =
-  fetchedSkills.length > 0
-    ? fetchedSkills
-    : (staticData.home.skills as unknown as SkillCategory[]);
+  homePageContent?.skills && homePageContent.skills.length > 0
+    ? homePageContent.skills
+    : staticData.home.skills;
 
 const portfolioProjects =
-  homePageContent?.projects?.map((sanityProject) => ({
-    title: sanityProject.name,
-    thumbnail: "https://placehold.co/600x400",
-    technologies: sanityProject.techStack,
-    demoUrl: sanityProject.demoUrl || "#",
-    codeUrl: sanityProject.githubUrl || "#",
-    category: sanityProject.category || "frontend",
-  })) || [];
+  homePageContent?.projects && homePageContent.projects.length > 0
+    ? homePageContent.projects.map((sanityProject: any) => ({
+        title: sanityProject.name,
+        thumbnail: sanityProject.thumbnail
+          ? urlFor(sanityProject.thumbnail).url()
+          : "https://placehold.co/600x400",
+        technologies: sanityProject.techStack,
+        demoUrl: sanityProject.demoUrl || "#",
+        codeUrl: sanityProject.githubUrl || "#",
+        category: sanityProject.category || "frontend",
+      }))
+    : staticData.home.projects.list.map((p: any) => ({
+        title: p.name,
+        thumbnail: p.thumbnail,
+        technologies: p.techStack,
+        demoUrl: p.demoUrl || "#",
+        codeUrl: p.githubUrl || "#",
+        category: p.category || "frontend",
+      }));
 
 const PROJECT_CATEGORIES_ORDER = ["frontend", "backend", "fullstack"] as const;
 
+const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+  frontend: "Frontend",
+  backend: "Backend",
+  fullstack: "Full-Stack",
+};
+
 const projectsByCategory = portfolioProjects.reduce(
-  (groupedProjects, project) => {
-    const projectCategory = project.category || "frontend";
-
-    if (!groupedProjects[projectCategory]) {
-      groupedProjects[projectCategory] = [];
-    }
-
-    groupedProjects[projectCategory].push(project);
-    return groupedProjects;
+  (acc: any, project: any) => {
+    const cat = project.category || "frontend";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(project);
+    return acc;
   },
   {} as Record<string, typeof portfolioProjects>,
 );
 
-const frequentlyAskedQuestions = homePageContent?.faqs || [];
+const frequentlyAskedQuestions = staticData.home.faq.questions;
 
-import { getImage } from "astro:assets";
 const optimizedPersonImage = await getImage({
   src: photoImage,
   width: 375,
   height: 375,
   format: "webp",
 });
+
+const homeSeo = homePageContent?.seo;
+const pageTitle = homeSeo?.title || "Johander Campos | Front End Developer";
+const pageDescription =
+  homeSeo?.description ||
+  "Portfolio of Johander Campos, a Front End Developer specializing in React, TypeScript, and modern web technologies.";
+const ogImage = homeSeo?.ogImage ? urlFor(homeSeo.ogImage).url() : undefined;
+
 const combinedJsonLd = getHomeSchema(
   homePageContent,
   staticData,
@@ -79,24 +128,22 @@ const combinedJsonLd = getHomeSchema(
 ---
 
 <BaseLayout
-  title="Johander Campos | Front End Developer"
-  description="Portfolio of Johander Campos, a Front End Developer specializing in React, TypeScript, and modern web technologies."
+  title={pageTitle}
+  description={pageDescription}
+  ogImage={ogImage}
   jsonLd={combinedJsonLd}
   preloadHeroImage={photoImage}
 >
   <Header
-    name={staticData.basic.name}
-    title={homePageContent?.hero?.title || staticData.basic.title}
-    subtitle={homePageContent?.hero?.subtitle || staticData.basic.subtitle}
-    paragraph={homePageContent?.hero?.bio || staticData.basic.bio}
-    photo={homePageContent?.portrait && homePageContent.portrait.trim() !== ""
-      ? homePageContent.portrait
-      : photoImage}
-    linkedinUrl={homePageContent?.socials?.linkedin ||
-      staticData.basic.socials.linkedin}
-    githubUrl={homePageContent?.socials?.github ||
-      staticData.basic.socials.github}
+    name={homePageContent?.author?.name || staticData.header.name}
+    title={homePageContent?.author?.title || staticData.header.title}
+    subtitle={homePageContent?.author?.subtitle || staticData.header.subtitle}
+    paragraph={homePageContent?.author?.bio || staticData.header.bio}
+    photo={homePageContent?.portrait || photoImage}
+    linkedinUrl={staticData.header.socials.linkedin}
+    githubUrl={staticData.header.socials.github}
     cvUrl={homePageContent?.cvUrl || "#"}
+    downloadCvText={staticData.header.downloadCv}
   />
 
   <main
@@ -109,13 +156,18 @@ const combinedJsonLd = getHomeSchema(
     >
       <h2 id="skills-heading" class="sr-only">{staticData.home.skillsTitle}</h2>
       {
-        skillCategories.map((cat: any, index: number) => {
-          const skillsForTicker = [...cat.skills, cat.skills[0]];
+        skillCategories.map((skillCategory: any, index: number) => {
+          if (!skillCategory?.skills || !Array.isArray(skillCategory.skills))
+            return null;
+          const skillsForTicker = [
+            ...skillCategory.skills,
+            skillCategory.skills[0],
+          ];
           return (
             <div class={`reveal delay-${(index + 1) * 100}`}>
               <SkillCard
                 client:visible
-                category={cat.category}
+                category={skillCategory.category}
                 skills={skillsForTicker}
               />
             </div>
@@ -149,8 +201,8 @@ const combinedJsonLd = getHomeSchema(
             return (
               <div class="w-full mb-16 last:mb-0">
                 <div class="flex items-center gap-4 mb-16 reveal">
-                  <h3 class="text-2xl font-display font-bold capitalize text-text-base">
-                    {cat}
+                  <h3 class="text-2xl font-display font-bold text-text-base">
+                    {CATEGORY_DISPLAY_NAMES[cat] || cat}
                   </h3>
                   <div class="h-[1px] flex-1 bg-border-base/30" />
                   <span class="text-[10px] font-mono text-text-base font-bold uppercase tracking-[0.2em]">
@@ -161,9 +213,19 @@ const combinedJsonLd = getHomeSchema(
                   </span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-[1.5rem] w-full items-start">
-                  {categoryProjects.map((project, index) => (
-                    <article class={`reveal delay-${(index + 1) * 100} h-full`}>
+                <div
+                  class={`${
+                    categoryProjects.length === 1
+                      ? "flex justify-center"
+                      : "grid grid-cols-1 md:grid-cols-2"
+                  } gap-[1.5rem] w-full items-start`}
+                >
+                  {categoryProjects.map((project: any, index: number) => (
+                    <article
+                      class={`reveal delay-${(index + 1) * 100} h-full ${
+                        categoryProjects.length === 1 ? "w-full max-w-lg" : ""
+                      }`}
+                    >
                       <ProjectCard
                         title={project.title}
                         thumbnail={project.thumbnail}
@@ -202,7 +264,7 @@ const combinedJsonLd = getHomeSchema(
                   title={post.title}
                   excerpt={post.excerpt || ""}
                   slug={post.slug || ""}
-                  coverImage="https://placehold.co/600x400"
+                  coverImage={post.coverImage}
                 />
               </article>
             ))}
@@ -240,7 +302,7 @@ const combinedJsonLd = getHomeSchema(
           </div>
           <div class="reveal">
             <div class="glassmorphism p-4 sm:p-[1.875rem] rounded-[1.25rem] sm:rounded-[1.875rem] mt-16 transition-all duration-300 cursor-pointer">
-              {frequentlyAskedQuestions.map((faq) => (
+              {frequentlyAskedQuestions.map((faq: any) => (
                 <FaqItem
                   client:visible
                   question={faq.question}
@@ -255,10 +317,22 @@ const combinedJsonLd = getHomeSchema(
   </main>
 
   <Footer
-    linkedinUrl={homePageContent?.socials?.linkedin ||
-      staticData.basic.socials.linkedin}
-    githubUrl={homePageContent?.socials?.github ||
-      staticData.basic.socials.github}
-    repoUrl={staticData.basic.repoUrl}
+    linkedinUrl={staticData.header.socials.linkedin}
+    githubUrl={staticData.header.socials.github}
+    repoUrl={staticData.header.repoUrl}
   />
 </BaseLayout>
+<script
+  is:inline
+  define:vars={{
+    pageTitle,
+    pageDescription,
+    projectsByCategory,
+    frequentlyAskedQuestions,
+    combinedJsonLd,
+    featuredBlogPosts,
+  }}
+>
+  // Ensure these are "used" for static analysis
+  console.debug("Page initialized");
+</script>

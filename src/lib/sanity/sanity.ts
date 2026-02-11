@@ -1,6 +1,6 @@
 import { sanityClient } from 'sanity:client';
-import { createImageUrlBuilder } from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 import type { BlogPost, BlogPostDetail, PageContent, SkillCategory } from './sanity.types';
 
 const builder = createImageUrlBuilder(sanityClient);
@@ -8,7 +8,7 @@ const builder = createImageUrlBuilder(sanityClient);
 export const urlFor = (source: SanityImageSource) => builder.image(source).auto('format');
 
 export async function getPageContent(): Promise<PageContent | null> {
-  return sanityClient.fetch(`*[_type == "pageContent"][0] {
+	return sanityClient.fetch(`*[_type == "pageContent"][0] {
     ...,
     "portrait": select(
       defined(portrait.asset) => portrait.asset->url,
@@ -18,7 +18,7 @@ export async function getPageContent(): Promise<PageContent | null> {
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
-  return sanityClient.fetch(`
+	return sanityClient.fetch(`
     *[_type == "blogPost"] | order(publishedAt desc) {
       _id,
       _type,
@@ -35,8 +35,8 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
 }
 
 export async function getBlogPost(slug: string): Promise<BlogPostDetail | null> {
-  return sanityClient.fetch(
-    `
+	return sanityClient.fetch(
+		`
     *[_type == "blogPost" && slug.current == $slug][0] {
       _id,
       _type,
@@ -50,12 +50,12 @@ export async function getBlogPost(slug: string): Promise<BlogPostDetail | null> 
       "author": author->{ _id, name, image, bio }
     }
   `,
-    { slug }
-  );
+		{ slug },
+	);
 }
 
 export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {
-  return sanityClient.fetch(`
+	return sanityClient.fetch(`
     *[_type == "blogPost" && featured == true] | order(publishedAt desc)[0...3] {
       _id,
       _type,
@@ -72,10 +72,10 @@ export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {
 }
 
 export async function getSkills(): Promise<SkillCategory[]> {
-  const data = await sanityClient.fetch(`
+	const data = await sanityClient.fetch(`
     *[_type == "pageContent"][0] {
       skills
     }
   `);
-  return data?.skills || [];
+	return data?.skills || [];
 }

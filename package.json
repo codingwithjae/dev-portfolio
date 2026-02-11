@@ -1,42 +1,45 @@
 {
-  "name": "Johander: Developer Portfolio",
-  "type": "module",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "studio": "sanity dev --dir sanity"
-  },
-  "dependencies": {
-    "@astrojs/check": "^0.9.6",
-    "@astrojs/react": "^4.4.2",
-    "@astrojs/vercel": "^9.0.4",
-    "@emailjs/browser": "^4.4.1",
-    "@sanity/astro": "^3.2.11",
-    "@sanity/client": "^7.14.1",
-    "@sanity/image-url": "^2.0.3",
-    "@tailwindcss/vite": "^4.1.18",
-    "@types/lodash": "^4.17.23",
-    "@types/styled-components": "^5.1.36",
-    "astro": "^5.16.11",
-    "astro-portabletext": "^0.13.0",
-    "lodash": "^4.17.23",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "sanity": "^5.7.0",
-    "styled-components": "^6.3.8",
-    "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
-  },
-  "devDependencies": {
-    "@sanity/types": "^5.7.0",
-    "@types/react": "^19.2.9",
-    "@types/react-dom": "^19.2.3",
-    "react-compiler-runtime": "^1.0.0",
-    "react-is": "^19.2.3",
-    "vite": "^7.3.1"
-  }
+	"name": "johander-developer-portfolio",
+	"type": "module",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"studio": "sanity dev --dir sanity",
+		"check": "astro check"
+	},
+	"dependencies": {
+		"@astrojs/check": "^0.9.6",
+		"@astrojs/react": "^4.4.2",
+		"@astrojs/vercel": "^9.0.4",
+		"@sanity/astro": "^3.2.11",
+		"@sanity/client": "^7.14.1",
+		"@sanity/image-url": "^2.0.3",
+		"@tailwindcss/vite": "^4.1.18",
+		"@types/lodash": "^4.17.23",
+		"@types/styled-components": "^5.1.36",
+		"astro": "^5.16.11",
+		"astro-portabletext": "^0.13.0",
+		"dotenv": "^17.2.4",
+		"lodash": "^4.17.23",
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
+		"react-icons": "^5.5.0",
+		"resend": "^6.9.2",
+		"sanity": "^5.7.0",
+		"styled-components": "^6.3.8",
+		"tailwindcss": "^4.1.18",
+		"typescript": "^5.9.3"
+	},
+	"devDependencies": {
+		"@sanity/types": "^5.7.0",
+		"@types/react": "^19.2.9",
+		"@types/react-dom": "^19.2.3",
+		"react-compiler-runtime": "^1.0.0",
+		"react-is": "^19.2.3",
+		"vite": "^7.3.1"
+	}
 }

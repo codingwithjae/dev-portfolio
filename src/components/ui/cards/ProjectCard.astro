@@ -1,23 +1,30 @@
 ---
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
+import { TechnologyIconList } from '../TechnologyIconList/TechnologyIconList';
 
-interface Props {
-  title: string;
-  thumbnail: string | ImageMetadata;
-  technologies: string;
-  demoUrl: string;
-  codeUrl: string;
+export interface Props {
+	title: string;
+	thumbnail: string | ImageMetadata;
+	technologies: string;
+	demoUrl: string;
+	codeUrl: string;
 }
 
 const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
+
+// Biome unused variable false positive fixes
+void [Image, TechnologyIconList, title, thumbnail, technologies, demoUrl, codeUrl];
 ---
 
 <article
-  class="glassmorphism group relative rounded-[0.9375rem] max-w-[37.5rem] cursor-pointer overflow-hidden"
+  class={`
+    glassmorphism group relative rounded-[0.9375rem] 
+    max-w-[37.5rem] cursor-pointer overflow-hidden
+  `}
 >
   <figure class="relative overflow-hidden rounded-t-[0.9375rem]">
     <Image
-      class="w-full h-auto rounded-t-[0.9375rem] transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.4]"
+      class="w-full h-auto rounded-t-[0.9375rem] transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.5]"
       src={thumbnail as any}
       width={600}
       height={340}
@@ -29,13 +36,13 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
     />
 
     <div
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 z-10"
     >
       <a
         href={demoUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent transition-colors mt-4"
+        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
       >
         View project
       </a>
@@ -43,7 +50,7 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
         href={codeUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent transition-colors mt-4"
+        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-link-hover transition-colors mt-4"
       >
         View code
       </a>
@@ -51,9 +58,18 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
   </figure>
 
   <div
-    class="flex flex-col gap-[1.125rem] p-[0.625rem] font-display text-text-base transition-colors duration-300"
+    class="flex flex-col gap-[0.25rem] p-[0.625rem] font-display text-text-base transition-colors duration-300"
   >
-    <h2 class="text-[1.13rem] font-bold text-heading-accent">{title}</h2>
-    <span class="text-text-muted text-[1rem]">{technologies}</span>
+    <h3 class="text-[1.25rem] font-bold font-display ml-1 text-text-base">
+      {title}
+    </h3>
+    <div class="mt-auto">
+      <TechnologyIconList client:load technologies={technologies} />
+    </div>
   </div>
 </article>
+
+<script define:vars={{ title, thumbnail, technologies, demoUrl, codeUrl }}>
+  // Ensure variables are "used" for static analysis
+  console.debug("ProjectCard initialized");
+</script>

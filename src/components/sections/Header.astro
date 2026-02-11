@@ -1,22 +1,25 @@
 ---
-import { Image } from "astro:assets";
-import ThemeToggle from "../ui/ThemeToggle/ThemeToggle.astro";
-import { staticData } from "../../data/staticData";
+import { Image } from 'astro:assets';
+import ThemeToggle from '../ui/ThemeToggle/ThemeToggle.astro';
 
-interface Props {
-  name: { first: string; last: string };
-  title: string;
-  subtitle: string;
-  paragraph: string;
-  photo: ImageMetadata | string;
-  photo2x?: ImageMetadata;
-  linkedinUrl: string;
-  githubUrl: string;
-  cvUrl?: string;
+export interface Props {
+	name: { first: string; last: string };
+	title: string;
+	subtitle: string;
+	paragraph: string;
+	experience?: string;
+	location?: string;
+	photo: ImageMetadata | string;
+	photo2x?: ImageMetadata;
+	linkedinUrl: string;
+	githubUrl: string;
+	cvUrl?: string;
+	downloadCvText: string;
 }
 
-const { name, title, subtitle, photo, linkedinUrl, githubUrl, cvUrl } =
-  Astro.props;
+// biome-ignore lint/correctness/noUnusedVariables: Props are used in the template
+const { name, title, subtitle, paragraph, experience, location, photo, linkedinUrl, githubUrl, cvUrl, downloadCvText } =
+	Astro.props;
 ---
 
 <header
@@ -38,7 +41,7 @@ const { name, title, subtitle, photo, linkedinUrl, githubUrl, cvUrl } =
   </nav>
 
   <figure
-    class="rounded-full border-[3px] border-text-base mb-16 flex items-center justify-center transition-colors duration-300 overflow-hidden bg-white/5"
+    class="rounded-full border-[3px] border-text-base mb-6 flex items-center justify-center transition-colors duration-300 overflow-hidden bg-white/5"
   >
     {
       typeof photo === "string" ? (
@@ -64,7 +67,7 @@ const { name, title, subtitle, photo, linkedinUrl, githubUrl, cvUrl } =
     }
   </figure>
 
-  <div class="text-center mb-16 text-text-base transition-colors duration-300">
+  <div class="text-center mb-6 text-text-base transition-colors duration-300">
     <h1 class="text-[clamp(2.8rem,5vw,3.625rem)] font-bold leading-[1.2]">
       {title}
     </h1>
@@ -78,13 +81,14 @@ const { name, title, subtitle, photo, linkedinUrl, githubUrl, cvUrl } =
   </div>
 
   <div
-    class="text-[1.13rem] text-center leading-[1.5625rem] max-w-[40rem] font-sans text-text-muted mb-16"
+    class="text-[1.13rem] text-center leading-[1.5625rem] max-w-[40rem] font-sans text-text-muted mb-6"
   >
-    <p>{staticData.header.description.experience}</p>
-    <p>{staticData.header.description.location}</p>
+    <p>{paragraph}</p>
+    {experience && <p>{experience}</p>}
+    {location && <p>{location}</p>}
   </div>
 
-  <nav class="flex gap-4 mb-16" aria-label="Social media links">
+  <nav class="flex gap-4 mb-6" aria-label="Social media links">
     <a
       href={linkedinUrl}
       target="_blank"
@@ -130,12 +134,20 @@ const { name, title, subtitle, photo, linkedinUrl, githubUrl, cvUrl } =
         href={cvUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="px-5 py-3 bg-accent text-black font-bold rounded-md
-                 hover:bg-accent-hover hover:scale-110 transition-transform font-display text-[1.13rem]"
+        class={`
+          px-5 py-3 bg-accent text-black font-bold rounded-md
+          hover:bg-accent-hover hover:scale-110 transition-transform 
+          font-display text-[1.13rem]
+        `}
         aria-label="Download my CV (opens in new tab)"
       >
-        {staticData.header.nav.downloadCv}
+        {downloadCvText}
       </a>
     )
   }
 </header>
+
+<script define:vars={{ name, title, subtitle, paragraph, experience, location, linkedinUrl, githubUrl }}>
+  // Ensure variables are "used" for static analysis
+  console.debug("Header initialized");
+</script>

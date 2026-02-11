@@ -1,18 +1,18 @@
 ---
-import BlogPostContent from "../sections/BlogPostContent.astro";
-import Footer from "../sections/Footer.astro";
+import type { BlogPostDetail } from '../../lib/sanity/sanity.types';
 
-import type { BlogPostDetail } from "../../lib/sanity/sanity.types";
-
-interface Props {
-    post: BlogPostDetail;
+export interface Props {
+	post: BlogPostDetail;
 }
+
+import BlogPostContent from '../sections/BlogPostContent.astro';
+import Footer from '../sections/Footer.astro';
 
 const { post } = Astro.props;
 
 const heroData = {
-    linkedinUrl: "https://www.linkedin.com/in/johandercampos/",
-    githubUrl: "https://github.com/codingwithjae",
+	linkedinUrl: 'https://www.linkedin.com/in/johandercampos/',
+	githubUrl: 'https://github.com/codingwithjae',
 };
 ---
 

@@ -1,26 +1,28 @@
 ---
-import { PortableText } from "astro-portabletext";
-import { urlFor } from "../../lib/sanity/sanity";
+import { PortableText } from 'astro-portabletext';
+import { urlFor } from '../../lib/sanity/sanity';
 
 interface Props {
-  post: {
-    title: string;
-    excerpt?: string;
-    coverImage?: any;
-    body?: any;
-    categories?: string[];
-    author?: {
-      name: string;
-      image?: any;
-      bio?: string;
-    };
-    publishedAt?: string;
-  };
+	post: {
+		title: string;
+		excerpt?: string;
+		coverImage?: any;
+		body?: any;
+		categories?: string[];
+		author?: {
+			name: string;
+			image?: any;
+			bio?: string;
+		};
+		publishedAt?: string;
+	};
 }
 
 const { post } = Astro.props;
 
-let coverImageUrl = "https://placehold.co/1200x630";
+const coverImageUrl = post.coverImage
+	? urlFor(post.coverImage).width(1200).height(630).url()
+	: 'https://placehold.co/1200x630';
 ---
 
 <article
@@ -136,7 +138,7 @@ let coverImageUrl = "https://placehold.co/1200x630";
       class="prose dark:prose-invert prose-lg max-w-none reveal delay-200 relative z-10
                 prose-headings:font-display prose-headings:text-text-base prose-headings:font-bold
                 prose-p:text-text-base prose-p:leading-relaxed prose-p:text-[1.1rem] md:prose-p:text-[1.2rem]
-                prose-a:text-text-base prose-a:no-underline prose-a:underline prose-a:decoration-accent/30 prose-a:transition-all prose-a:hover:text-accent prose-a:hover:decoration-accent
+                prose-a:text-text-base prose-a:no-underline prose-a:underline prose-a:decoration-accent/30 prose-a:transition-all prose-a:hover:text-link-hover prose-a:hover:decoration-accent
                 prose-strong:text-text-base prose-strong:font-bold
                 prose-code:bg-secondary px-2 py-1 rounded-lg text-text-base before:content-none after:content-none font-mono text-[0.9em]
                 prose-pre:bg-[#0d1117] prose-pre:backdrop-blur-md prose-pre:border prose-pre:border-border-base prose-pre:rounded-2xl prose-pre:shadow-xl
