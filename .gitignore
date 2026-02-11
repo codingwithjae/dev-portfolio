@@ -127,6 +127,11 @@ exports
 dist
 build
 
+# Lock Files (Must be ignored per project rules)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
 ############################
 # Astro / Vercel / IDE
 ############################
@@ -134,3 +139,6 @@ build
 .astro
 .vercel
 .vscode
+.env
+.env.*
+!.env.example
