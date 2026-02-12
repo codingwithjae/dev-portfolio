@@ -2,10 +2,12 @@
 import type { ImageMetadata } from "astro";
 import Seo from "../components/seo/Seo.astro";
 import Toast from "../components/ui/Toast/Toast.astro";
+import { getSiteSettings } from "../lib/sanity/sanity";
+import type { SiteSettings } from "../lib/sanity/sanity.types";
 import "../styles/global.css";
 
 export interface Props {
-  title: string;
+  title?: string | undefined;
   description?: string | undefined;
   ogImage?: string | undefined;
   ogType?: "website" | "article" | "profile" | undefined;
@@ -17,28 +19,52 @@ export interface Props {
 
 const {
   title,
-  description = "Front End Developer skilled in creating responsive, interactive web designs using HTML, CSS, JavaScript, and React.",
-  ogImage = "/images/thumbnail-preview.webp",
+  description,
+  ogImage,
   ogType = "website",
   jsonLd,
   canonicalUrl,
   noindex = false,
   preloadHeroImage,
 } = Astro.props;
+
+let siteSettings: SiteSettings | null = null;
+try {
+  siteSettings = await getSiteSettings();
+} catch (fetchError) {
+  console.error("Sanity site settings fetch failed:", fetchError);
+}
+
+const defaultTitle = siteSettings?.defaultTitle || "Johander Campos | Software Engineer";
+const titleTemplate = siteSettings?.titleTemplate || "%s | Johander Campos";
+const resolvedTitle = title
+  ? titleTemplate.includes("%s") && !title.includes("|")
+    ? titleTemplate.replace("%s", title)
+    : title
+  : defaultTitle;
+const resolvedDescription =
+  description ||
+  siteSettings?.defaultDescription ||
+  "Front End Developer skilled in creating responsive, interactive web designs using HTML, CSS, JavaScript, and React.";
+const resolvedOgImage = ogImage || siteSettings?.defaultOgImageUrl || "/images/thumbnail-preview.webp";
+const resolvedSiteName = siteSettings?.siteName || "Johander Campos";
+const resolvedSiteUrl = siteSettings?.siteUrl || Astro.site?.href || "https://developer.johandercampos.com";
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <Seo
-      title={title}
-      description={description}
-      image={ogImage}
+      title={resolvedTitle}
+      description={resolvedDescription}
+      image={resolvedOgImage}
       type={ogType}
       jsonLd={jsonLd}
       canonicalUrl={canonicalUrl}
       noindex={noindex}
       preloadHeroImage={preloadHeroImage}
+      siteName={resolvedSiteName}
+      siteUrl={resolvedSiteUrl}
     />
   </head>
 
@@ -78,10 +104,11 @@ const {
   </body>
 </html>
 <script
+  is:inline
   define:vars={{
-    title,
-    description,
-    ogImage,
+    title: resolvedTitle,
+    description: resolvedDescription,
+    ogImage: resolvedOgImage,
     ogType,
     jsonLd,
     canonicalUrl,

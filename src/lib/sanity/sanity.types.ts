@@ -5,6 +5,7 @@ export interface SanityImage {
 		_type: 'reference';
 	};
 	alt?: string;
+	caption?: string;
 }
 
 export interface BlogPost {
@@ -20,7 +21,7 @@ export interface BlogPost {
 }
 
 export interface BlogPostDetail extends BlogPost {
-	body?: any[];
+	body?: unknown[];
 	author?: {
 		_id: string;
 		name: string;
@@ -68,7 +69,19 @@ export interface PageContent {
 		title?: string;
 		description?: string;
 		ogImage?: SanityImage;
+		noindex?: boolean;
 	};
+}
+
+export interface SiteSettings {
+	_id: string;
+	_type: 'siteSettings';
+	siteName?: string;
+	siteUrl?: string;
+	defaultTitle?: string;
+	titleTemplate?: string;
+	defaultDescription?: string;
+	defaultOgImageUrl?: string;
 }
 
 export interface Skill {
@@ -101,7 +114,8 @@ export interface HeaderAuthor {
 }
 
 export interface HomeSEO {
-	title: string;
-	description: string;
+	title?: string | undefined;
+	description?: string | undefined;
 	ogImage: string | undefined;
+	noindex?: boolean | undefined;
 }

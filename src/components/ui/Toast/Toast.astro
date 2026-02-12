@@ -124,7 +124,8 @@
         setTimeout(removeToast, 5000);
     };
 
-    window.addEventListener("toast-notify", (e: any) => {
-        createToast(e.detail);
+    window.addEventListener("toast-notify", (event: Event) => {
+        const customEvent = event as CustomEvent<ToastEventDetail>;
+        createToast(customEvent.detail);
     });
 </script>

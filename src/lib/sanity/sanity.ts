@@ -1,7 +1,7 @@
 import { sanityClient } from 'sanity:client';
 import type { SanityImageSource } from '@sanity/image-url';
 import { createImageUrlBuilder } from '@sanity/image-url';
-import type { BlogPost, BlogPostDetail, PageContent, SkillCategory } from './sanity.types';
+import type { BlogPost, BlogPostDetail, PageContent, SiteSettings, SkillCategory } from './sanity.types';
 
 const builder = createImageUrlBuilder(sanityClient);
 
@@ -78,4 +78,22 @@ export async function getSkills(): Promise<SkillCategory[]> {
     }
   `);
 	return data?.skills || [];
+}
+
+export async function getSiteSettings(): Promise<SiteSettings | null> {
+	return sanityClient.fetch(`
+    *[_type == "siteSettings"][0] {
+      _id,
+      _type,
+      siteName,
+      siteUrl,
+      defaultTitle,
+      titleTemplate,
+      defaultDescription,
+      "defaultOgImageUrl": select(
+        defined(defaultOgImage.asset) => defaultOgImage.asset->url,
+        null
+      )
+    }
+  `);
 }

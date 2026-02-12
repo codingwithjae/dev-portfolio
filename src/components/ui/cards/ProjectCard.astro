@@ -80,7 +80,7 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
   </div>
 </article>
 
-<script define:vars={{ title, thumbnail, technologies, demoUrl, codeUrl }}>
+<script is:inline define:vars={{ title, thumbnail, technologies, demoUrl, codeUrl }}>
   // Ensure variables are "used" for static analysis
   console.debug("ProjectCard initialized");
 </script>

@@ -11,7 +11,7 @@ import { FaqItem } from "../components/ui/FaqItem/FaqItem";
 import { staticData } from "../data/staticData";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getFeaturedBlogPosts, getPageContent } from "../lib/sanity/sanity";
-import type { BlogPost, PageContent } from "../lib/sanity/sanity.types";
+import type { BlogPost, PageContent, UIProject } from "../lib/sanity/sanity.types";
 import { getHomeSchema } from "../components/seo/sanity-seo";
 import {
   mapSanityProjectsToUI,
@@ -53,6 +53,7 @@ const {
   title: pageTitle,
   description: pageDescription,
   ogImage,
+  noindex: pageNoindex,
 } = extractHomeSEO(homePageContent);
 const headerData = extractAuthorHeader(homePageContent);
 
@@ -67,6 +68,7 @@ const combinedJsonLd = getHomeSchema(
   title={pageTitle}
   description={pageDescription}
   ogImage={ogImage}
+  noindex={pageNoindex}
   jsonLd={combinedJsonLd}
   preloadHeroImage={photoImage}
 >
@@ -92,12 +94,18 @@ const combinedJsonLd = getHomeSchema(
     >
       <h2 id="skills-heading" class="sr-only">{staticData.home.skillsTitle}</h2>
       {
-        skillCategories.map((skillCategory: any, index: number) => {
-          if (!skillCategory?.skills || !Array.isArray(skillCategory.skills))
+        skillCategories.map((skillCategory, index: number) => {
+          if (
+            !skillCategory?.skills ||
+            !Array.isArray(skillCategory.skills) ||
+            skillCategory.skills.length === 0
+          )
             return null;
+          const firstSkill = skillCategory.skills[0];
+          if (!firstSkill) return null;
           const skillsForTicker = [
             ...skillCategory.skills,
-            skillCategory.skills[0],
+            firstSkill,
           ];
           return (
             <div class={`reveal delay-${(index + 1) * 100}`}>
@@ -156,7 +164,7 @@ const combinedJsonLd = getHomeSchema(
                       : "grid grid-cols-1 md:grid-cols-2"
                   } gap-[1.5rem] w-full items-start`}
                 >
-                  {categoryProjects.map((project: any, index: number) => (
+                  {categoryProjects.map((project: UIProject, index: number) => (
                     <article
                       class={`reveal delay-${(index + 1) * 100} h-full ${
                         categoryProjects.length === 1 ? "w-full max-w-lg" : ""
@@ -238,7 +246,7 @@ const combinedJsonLd = getHomeSchema(
           </div>
           <div class="reveal">
             <div class="glassmorphism p-4 sm:p-[1.875rem] rounded-[1.25rem] sm:rounded-[1.875rem] mt-16 transition-all duration-300 cursor-pointer">
-              {frequentlyAskedQuestions.map((faq: any) => (
+              {frequentlyAskedQuestions.map((faq) => (
                 <FaqItem
                   client:visible
                   question={faq.question}

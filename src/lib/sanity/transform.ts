@@ -10,7 +10,6 @@ export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
 
 export const PROJECT_CATEGORIES_ORDER = ["frontend", "backend", "fullstack"] as const;
 
-
 export function mapSanityProjectsToUI(sanityProjects: PageContent['projects']): UIProject[] {
     if (!sanityProjects || sanityProjects.length === 0) {
         return staticData.home.projects.list.map((project) => ({
@@ -75,8 +74,9 @@ export function extractAuthorHeader(homePageContent: PageContent | null): Header
 export function extractHomeSEO(homePageContent: PageContent | null): HomeSEO {
     const seo = homePageContent?.seo;
     return {
-        title: seo?.title || "Johander Campos | Software Engineer",
-        description: seo?.description || "Portfolio of Johander Campos, a Software Engineer specializing in building scalable and efficient web applications.",
+        title: seo?.title,
+        description: seo?.description,
         ogImage: seo?.ogImage ? urlFor(seo.ogImage).url() : undefined,
+        noindex: seo?.noindex || false,
     };
 }

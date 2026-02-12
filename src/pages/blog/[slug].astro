@@ -42,7 +42,7 @@ const blogPostJsonLd = getBlogPostSchema(currentBlogPost);
 ---
 
 <BaseLayout
-	title={`${currentBlogPost.title} | Johander Campos`}
+	title={currentBlogPost.title}
 	description={currentBlogPost.excerpt ||
 		"Read this article by Johander Campos."}
 	ogType="article"

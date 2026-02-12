@@ -5,6 +5,16 @@ export const myStructure = (S: StructureBuilder) =>
 		.title('Website Management')
 		.items([
 			S.listItem()
+				.title('Site Settings')
+				.id('siteSettings')
+				.child(
+					S.editor()
+						.id('siteSettings')
+						.schemaType('siteSettings')
+						.documentId('siteSettings'),
+				),
+			S.divider(),
+			S.listItem()
 				.title('Page Content')
 				.id('pageContent')
 				.child(

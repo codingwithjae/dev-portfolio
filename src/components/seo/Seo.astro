@@ -10,6 +10,8 @@ export interface Props {
     canonicalUrl?: string | undefined;
     noindex?: boolean | undefined;
     preloadHeroImage?: ImageMetadata | string | undefined;
+    siteName?: string | undefined;
+    siteUrl?: string | undefined;
 }
 
 const {
@@ -21,11 +23,13 @@ const {
     canonicalUrl,
     noindex = false,
     preloadHeroImage,
+    siteName = "Johander Campos",
+    siteUrl,
 } = Astro.props;
 
-const siteUrl = Astro.site?.href || "https://developer.johandercampos.com";
+const resolvedSiteUrl = siteUrl || Astro.site?.href || "https://developer.johandercampos.com";
 const fullCanonicalUrl = canonicalUrl || Astro.url.href;
-const fullOgImage = image.startsWith("http") ? image : `${siteUrl}${image}`;
+const fullOgImage = image.startsWith("http") ? image : `${resolvedSiteUrl}${image}`;
 
 let optimizedHeroUrl = "";
 if (preloadHeroImage) {
@@ -53,7 +57,7 @@ if (preloadHeroImage) {
 <meta property="og:image" content={fullOgImage} />
 <meta property="og:url" content={fullCanonicalUrl} />
 <meta property="og:type" content={type} />
-<meta property="og:site_name" content="Johander Campos" />
+<meta property="og:site_name" content={siteName} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
@@ -93,7 +97,7 @@ if (preloadHeroImage) {
     />
 </noscript>
 
-{jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+{jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
 
 <script is:inline>
     const getTheme = () => {
@@ -110,6 +114,7 @@ if (preloadHeroImage) {
     document.documentElement.setAttribute("data-theme", theme);
 </script>
 <script
+    is:inline
     define:vars={{
         title,
         description,
@@ -119,6 +124,8 @@ if (preloadHeroImage) {
         canonicalUrl,
         noindex,
         preloadHeroImage,
+        siteName,
+        siteUrl,
         fullCanonicalUrl,
         fullOgImage,
         optimizedHeroUrl,

@@ -1,21 +1,10 @@
 ---
 import { PortableText } from 'astro-portabletext';
 import { urlFor } from '../../lib/sanity/sanity';
+import type { BlogPostDetail } from '../../lib/sanity/sanity.types';
 
 interface Props {
-	post: {
-		title: string;
-		excerpt?: string;
-		coverImage?: any;
-		body?: any;
-		categories?: string[];
-		author?: {
-			name: string;
-			image?: any;
-			bio?: string;
-		};
-		publishedAt?: string;
-	};
+	post: BlogPostDetail;
 }
 
 const { post } = Astro.props;
@@ -23,6 +12,7 @@ const { post } = Astro.props;
 const coverImageUrl = post.coverImage
 	? urlFor(post.coverImage).width(1200).height(630).url()
 	: 'https://placehold.co/1200x630';
+const portableBody = post.body as never;
 ---
 
 <article
@@ -145,7 +135,7 @@ const coverImageUrl = post.coverImage
                 prose-blockquote:border-l-[4px] prose-blockquote:border-l-accent prose-blockquote:bg-accent/5 prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:rounded-r-2xl prose-blockquote:italic prose-blockquote:text-text-base/90
                 prose-img:rounded-3xl prose-img:shadow-xl prose-img:border prose-img:border-border-base transition-colors"
     >
-      {post.body && <PortableText value={post.body} />}
+      {post.body && <PortableText value={portableBody} />}
     </div>
   </div>
 </article>

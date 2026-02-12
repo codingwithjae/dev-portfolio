@@ -74,7 +74,7 @@ const imageSrc = coverImage ? urlFor(coverImage).url() : null;
   </article>
 </a>
 
-<script define:vars={{ title, excerpt, slug, coverImage, imageSrc }}>
+<script is:inline define:vars={{ title, excerpt, slug, coverImage, imageSrc }}>
   // Ensure variables are "used" for static analysis
   console.debug("BlogCard initialized");
 </script>

@@ -79,7 +79,7 @@ export default defineType({
 								list: [
 									{ title: 'Frontend', value: 'frontend' },
 									{ title: 'Backend', value: 'backend' },
-									{ title: 'Full Stack', value: 'full stack' },
+									{ title: 'Full Stack', value: 'fullstack' },
 								],
 							},
 							initialValue: 'frontend',
@@ -111,6 +111,13 @@ export default defineType({
 					type: 'image',
 					description: 'Image shown when sharing the site on social media.',
 				}),
+				defineField({
+					name: 'noindex',
+					title: 'Noindex',
+					type: 'boolean',
+					description: 'If enabled, search engines will not index this page.',
+					initialValue: false,
+				}),
 			],
 		}),
 	],
@@ -118,7 +125,7 @@ export default defineType({
 		select: {
 			title: 'title',
 		},
-		prepare({ title }: any) {
+		prepare({ title }: { title?: string }) {
 			return {
 				title: title || 'Content',
 			};

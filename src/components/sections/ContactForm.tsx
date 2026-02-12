@@ -8,6 +8,15 @@ interface FormState {
 	message: string;
 }
 
+const getErrorMessage = (error: unknown): string => {
+	if (typeof error === 'object' && error !== null) {
+		const maybeError = error as { text?: unknown; message?: unknown };
+		if (typeof maybeError.text === 'string') return maybeError.text;
+		if (typeof maybeError.message === 'string') return maybeError.message;
+	}
+	return 'Failed to send message. Please try again.';
+};
+
 const useContactForm = () => {
 	const [formState, setFormState] = useState<FormState>({
 		name: '',
@@ -81,9 +90,9 @@ const useContactForm = () => {
 			} else {
 				toast('Something went wrong. Please try again.', 'error');
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error('Submission Error:', error);
-			const errorMessage = error?.text || error?.message || 'Failed to send message. Please try again.';
+			const errorMessage = getErrorMessage(error);
 			toast(errorMessage, 'error');
 		} finally {
 			setIsSubmitting(false);

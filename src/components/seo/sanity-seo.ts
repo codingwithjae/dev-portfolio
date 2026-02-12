@@ -1,6 +1,7 @@
 import type { ArticleSchemaConfig, BreadcrumbItem, PersonSchemaConfig, WebsiteSchemaConfig } from './types';
 import { urlFor } from '../../lib/sanity/sanity';
 import type { PageContent, BlogPostDetail } from '../../lib/sanity/sanity.types';
+type StaticData = typeof import('../../data/staticData').staticData;
 
 export function generateWebsiteSchema(config: WebsiteSchemaConfig): string {
 	return JSON.stringify({
@@ -60,7 +61,7 @@ export function mergeSchemas(schemas: string[]): string {
 	return `[${schemas.join(', ')}]`;
 }
 
-export function getHomeSchema(sanityData: PageContent | null, staticData: any, imageUrl?: string): string {
+export function getHomeSchema(sanityData: PageContent | null, staticData: StaticData, imageUrl?: string): string {
 	const websiteSchema = generateWebsiteSchema({
 		name: 'Johander Campos | Software Engineer',
 		url: SITE_URL,
