@@ -49,10 +49,11 @@ export interface PageContent {
 	projects?: Array<{
 		name: string;
 		thumbnail: SanityImage;
-		githubUrl: string;
-		demoUrl: string;
+		githubUrl?: string;
+		demoUrl?: string;
+		documentationUrl?: string;
 		techStack: string;
-		category?: 'frontend' | 'backend' | 'fullstack';
+		category?: 'frontend' | 'backend' | 'fullstack' | 'automation-integrations';
 	}>;
 	skills?: SkillCategory[];
 	faqs?: Array<{
@@ -96,13 +97,16 @@ export interface SkillCategory {
 	order?: number;
 }
 
+export type ProjectCategory = 'frontend' | 'backend' | 'fullstack' | 'automation-integrations';
+
 export interface UIProject {
 	title: string;
 	thumbnail: string;
 	technologies: string;
-	demoUrl: string;
-	codeUrl: string;
-	category: string;
+	demoUrl: string | undefined;
+	documentationUrl: string | undefined;
+	codeUrl: string | undefined;
+	category: ProjectCategory;
 }
 
 export interface HeaderAuthor {

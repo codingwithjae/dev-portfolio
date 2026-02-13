@@ -6,11 +6,13 @@ export interface Props {
   title: string;
   thumbnail: string | ImageMetadata;
   technologies: string;
-  demoUrl: string;
-  codeUrl: string;
+  demoUrl: string | undefined;
+  documentationUrl: string | undefined;
+  codeUrl: string | undefined;
 }
 
-const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
+const { title, thumbnail, technologies, demoUrl, documentationUrl, codeUrl } = Astro.props;
+const hasValidUrl = (url?: string) => Boolean(url && url !== "#");
 ---
 
 <article
@@ -49,22 +51,42 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
     <div
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 z-10"
     >
-      <a
-        href={demoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
-      >
-        View project
-      </a>
-      <a
-        href={codeUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-link-hover transition-colors mt-4"
-      >
-        View code
-      </a>
+      {
+        hasValidUrl(demoUrl) && (
+          <a
+            href={demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
+          >
+            View project
+          </a>
+        )
+      }
+      {
+        hasValidUrl(documentationUrl) && (
+          <a
+            href={documentationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
+          >
+            Documentation
+          </a>
+        )
+      }
+      {
+        hasValidUrl(codeUrl) && (
+          <a
+            href={codeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
+          >
+            View code
+          </a>
+        )
+      }
     </div>
   </figure>
 
@@ -80,7 +102,10 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
   </div>
 </article>
 
-<script is:inline define:vars={{ title, thumbnail, technologies, demoUrl, codeUrl }}>
+<script
+  is:inline
+  define:vars={{ title, thumbnail, technologies, demoUrl, documentationUrl, codeUrl }}
+>
   // Ensure variables are "used" for static analysis
   console.debug("ProjectCard initialized");
 </script>

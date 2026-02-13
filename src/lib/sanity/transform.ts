@@ -1,14 +1,17 @@
 import { urlFor } from './sanity';
-import type { PageContent, SkillCategory, UIProject, HeaderAuthor, HomeSEO } from './sanity.types';
+import type { PageContent, SkillCategory, UIProject, HeaderAuthor, HomeSEO, ProjectCategory } from './sanity.types';
 import { staticData } from '../../data/staticData';
 
 export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
     frontend: "Frontend",
     backend: "Backend",
     fullstack: "Full-Stack",
+    "automation-integrations": "Automation & Integrations",
 } as const;
 
-export const PROJECT_CATEGORIES_ORDER = ["frontend", "backend", "fullstack"] as const;
+export const PROJECT_CATEGORIES_ORDER = ["frontend", "backend", "fullstack", "automation-integrations"] as const;
+
+const DEFAULT_PROJECT_CATEGORY: ProjectCategory = 'frontend';
 
 export function mapSanityProjectsToUI(sanityProjects: PageContent['projects']): UIProject[] {
     if (!sanityProjects || sanityProjects.length === 0) {
@@ -16,9 +19,10 @@ export function mapSanityProjectsToUI(sanityProjects: PageContent['projects']): 
             title: project.name,
             thumbnail: project.thumbnail,
             technologies: project.techStack,
-            demoUrl: project.demoUrl || "#",
-            codeUrl: project.githubUrl || "#",
-            category: project.category || "frontend",
+            demoUrl: project.demoUrl,
+            documentationUrl: project.documentationUrl,
+            codeUrl: project.githubUrl,
+            category: (project.category as ProjectCategory) || DEFAULT_PROJECT_CATEGORY,
         }));
     }
 
@@ -28,16 +32,17 @@ export function mapSanityProjectsToUI(sanityProjects: PageContent['projects']): 
             ? urlFor(project.thumbnail).url()
             : "https://placehold.co/600x400",
         technologies: project.techStack,
-        demoUrl: project.demoUrl || "#",
-        codeUrl: project.githubUrl || "#",
-        category: project.category || "frontend",
+        demoUrl: project.demoUrl,
+        documentationUrl: project.documentationUrl,
+        codeUrl: project.githubUrl,
+        category: project.category || DEFAULT_PROJECT_CATEGORY,
     }));
 }
 
 export function groupProjectsByCategory(projects: UIProject[]): Record<string, UIProject[]> {
     return projects.reduce(
         (acc, project) => {
-            const category = project.category || "frontend";
+            const category = project.category || DEFAULT_PROJECT_CATEGORY;
             if (!acc[category]) acc[category] = [];
             acc[category].push(project);
             return acc;

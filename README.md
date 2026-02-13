@@ -7,34 +7,40 @@
 
 ```bash
 /
-├── public/                 # Static assets
+├── public/                 # Static assets (Favicons, images)
 ├── src/
-│   ├── assets/            # Optimized images and local assets
+│   ├── assets/            # Local images and icons
 │   ├── components/
-│   │   ├── head/          # Head elements (SEO, Meta)
-│   │   ├── pages/         # Page-specific components (Logic separation)
-│   │   ├── sections/      # Landing page sections (Hero, About, etc.)
-│   │   └── ui/            # Reusable UI components (Buttons, Cards, Toasts)
-│   ├── data/              # Static site data
-│   ├── layouts/           # Astro layouts
-│   ├── pages/             # File-based routing
-│   │   ├── blog/          # Blog routes
-│   │   └── index.astro    # Main entry point
-│   ├── sanity/            # Sanity CMS configuration and schemas
-│   ├── styles/            # Global styles
-│   └── types/             # TypeScript definitions
+│   │   ├── pages/         # Page-specific building blocks
+│   │   ├── sections/      # Large landing page sections (Hero, Footer, etc.)
+│   │   ├── seo/           # SEO and Metadata components
+│   │   └── ui/            # Reusable UI atoms (Buttons, Cards, Toasts)
+│   ├── data/              # Static data and configuration
+│   ├── layouts/           # Astro master layouts
+│   ├── lib/
+│   │   └── sanity/        # Sanity client, types, and data transforms
+│   ├── pages/             # File-based routing (including /blog)
+│   └── styles/            # Global Tailwind and CSS modules
 ├── astro.config.mjs       # Astro configuration
 ├── sanity.config.ts       # Sanity Studio configuration
-└── tailwind.config.mjs    # Tailwind configuration
-```
+└── package.json           # Dependencies and scripts
 
 ## 🛠️ Stack
 
-This project leverages a modern architecture:
+-   **Framework**: [Astro 5](https://astro.build/) - For performance-first island architecture.
+-   **Interactivity**: [React](https://reactjs.org/) - Selective hydration for interactive components.
+-   **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) - Modern utility-first CSS.
+-   **CMS**: [Sanity](https://www.sanity.io/) - Headless CMS for typed content management.
+-   **Language**: [TypeScript](https://www.typescriptlang.org/) - End-to-end type safety.
+-   **Deployment**: [Vercel](https://vercel.com/) - Edge computing and hosting.
+```
 
--   **Framework**: [Astro](https://astro.build/) - For performance-first static site generation.
--   **Interactivity**: [React](https://reactjs.org/) - Used in "Islands" for complex interactive components (Forms, Toasts).
--   **Styling**: [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework.
--   **CMS**: [Sanity](https://www.sanity.io/) - Headless CMS for managing dynamic content (Projects, Blog, Skills).
--   **Language**: [TypeScript](https://www.typescriptlang.org/) - For type safety and better developer experience.
--   **Deployment**: [Vercel](https://vercel.com/) - Hosting and CI/CD.
+## ⚡ Performance (PSI)
+
+- **Mobile**: [90+ Overall](https://pagespeed.web.dev/analysis/https-developer-johandercampos-com/siupgqhtui?form_factor=mobile)
+- **Desktop**: [100 Overall](https://pagespeed.web.dev/analysis/https-developer-johandercampos-com/siupgqhtui?form_factor=desktop)
+
+## 🚀 Recent Changes
+- **Modernized Architecture**: Migrated from a legacy Vanilla JS setup to Astro 5.
+- **Dynamic Content**: Integrated Sanity CMS for easy project and blog management.
+- **Enhanced Design**: Implemented a responsive, premium UI with Tailwind CSS 4 and glassmorphism.

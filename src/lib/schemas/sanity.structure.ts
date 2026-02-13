@@ -1,32 +1,38 @@
-import type { StructureBuilder } from 'sanity/structure';
+import type { StructureBuilder } from "sanity/structure";
 
 export const myStructure = (S: StructureBuilder) =>
 	S.list()
-		.title('Website Management')
+		.title("Website Management")
 		.items([
 			S.listItem()
-				.title('Site Settings')
-				.id('siteSettings')
+				.title("Settings")
+				.id("siteSettings")
 				.child(
 					S.editor()
-						.id('siteSettings')
-						.schemaType('siteSettings')
-						.documentId('siteSettings'),
+						.id("siteSettings")
+						.title("Settings")
+						.schemaType("siteSettings")
+						.documentId("siteSettings"),
 				),
 			S.divider(),
 			S.listItem()
-				.title('Page Content')
-				.id('pageContent')
+				.title("Page Content")
+				.id("pageContent")
 				.child(
 					S.list()
-						.title('Page Sections')
+						.title("Page Sections")
 						.items([
 							S.listItem()
-								.title('Main Page Settings')
-								.id('pageContentItem')
-								.child(S.editor().id('pageContent').schemaType('pageContent').documentId('pageContent')),
+								.title("Main Page Settings")
+								.id("pageContentItem")
+								.child(
+									S.editor().id("pageContent").schemaType("pageContent").documentId("pageContent"),
+								),
 						]),
 				),
 			S.divider(),
-			S.listItem().title('Blog Posts').id('blogPosts').child(S.documentTypeList('blogPost').title('All Articles')),
+			S.listItem()
+				.title("Blog Posts")
+				.id("blogPosts")
+				.child(S.documentTypeList("blogPost").title("All Articles")),
 		]);

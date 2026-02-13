@@ -1,11 +1,17 @@
-import { sanityClient } from 'sanity:client';
-import type { SanityImageSource } from '@sanity/image-url';
-import { createImageUrlBuilder } from '@sanity/image-url';
-import type { BlogPost, BlogPostDetail, PageContent, SiteSettings, SkillCategory } from './sanity.types';
+import { sanityClient } from "sanity:client";
+import type { SanityImageSource } from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
+import type {
+	BlogPost,
+	BlogPostDetail,
+	PageContent,
+	SiteSettings,
+	SkillCategory,
+} from "./sanity.types";
 
 const builder = createImageUrlBuilder(sanityClient);
 
-export const urlFor = (source: SanityImageSource) => builder.image(source).auto('format');
+export const urlFor = (source: SanityImageSource) => builder.image(source).auto("format");
 
 export async function getPageContent(): Promise<PageContent | null> {
 	return sanityClient.fetch(`*[_type == "pageContent"][0] {

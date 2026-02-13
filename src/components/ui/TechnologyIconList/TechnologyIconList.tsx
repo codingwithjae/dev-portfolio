@@ -18,6 +18,8 @@ import { RiSeoFill } from 'react-icons/ri';
 import {
 	SiExpress,
 	SiFramer,
+	SiN8N,
+	SiOpenai,
 	SiPostgresql,
 	SiPrisma,
 	SiSanity,
@@ -55,6 +57,11 @@ export const technologyIconMapping: Record<string, IconType> = {
 	Zod: FaCheckCircle,
 	JWT: FaKey,
 	'REST APIs': FaServer,
+	'RESTful API': FaServer,
+	'API Rest': FaServer,
+	n8n: SiN8N,
+	'Open AI API': SiOpenai,
+	'OpenAI API': SiOpenai,
 	Testing: FaVial,
 	Deployments: FaRocket,
 	Python: FaPython,
@@ -91,12 +98,15 @@ interface TechnologyIconListProps {
 
 /**
  * Renders a list of technology icons based on a provided tech stack string.
- * Technologies should be separated by a forward slash (/).
+ * Technologies should be separated by a forward slash (/) or comma (,).
  */
 export const TechnologyIconList: React.FC<TechnologyIconListProps> = ({ technologies }) => {
 	if (!technologies) return null;
 
-	const techArray = technologies.split('/').map((t) => t.trim());
+	const techArray = technologies
+		.split(/[/,]/)
+		.map((t) => t.trim())
+		.filter(Boolean);
 
 	return (
 		<div className="flex flex-wrap gap-2 mt-2">
@@ -105,7 +115,7 @@ export const TechnologyIconList: React.FC<TechnologyIconListProps> = ({ technolo
 				return (
 					<div
 						key={tech}
-						className="flex items-center gap-1 px-2 py-1 bg-background-base/50 border border-border-base/30 rounded-md text-[0.75rem] font-medium text-text-muted hover:text-accent-hover-text transition-colors"
+					className="flex items-center gap-1 px-2 py-1 bg-background-base/50 border border-transparent rounded-md text-[0.75rem] font-medium text-text-muted hover:text-accent-hover-text transition-colors"
 						title={tech}
 					>
 						{Icon && <Icon className="text-[0.9rem]" />}

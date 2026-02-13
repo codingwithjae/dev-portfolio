@@ -39,7 +39,7 @@ if (preloadHeroImage) {
         const optimizedHero = await getImage({
             src: preloadHeroImage,
             width: 375,
-            format: "avif",
+            format: "webp",
         });
         optimizedHeroUrl = optimizedHero.src;
     }
@@ -70,7 +70,7 @@ if (preloadHeroImage) {
             rel="preload"
             as="image"
             href={optimizedHeroUrl}
-            type="image/avif"
+            
             fetchpriority="high"
         />
     )

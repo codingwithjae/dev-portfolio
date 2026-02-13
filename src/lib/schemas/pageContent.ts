@@ -66,6 +66,11 @@ export default defineType({
 						}),
 						defineField({ name: 'demoUrl', title: 'Demo URL', type: 'url' }),
 						defineField({
+							name: 'documentationUrl',
+							title: 'Documentation URL',
+							type: 'url',
+						}),
+						defineField({
 							name: 'techStack',
 							title: 'Technologies (Slash separated)',
 							type: 'string',
@@ -80,6 +85,10 @@ export default defineType({
 									{ title: 'Frontend', value: 'frontend' },
 									{ title: 'Backend', value: 'backend' },
 									{ title: 'Full Stack', value: 'fullstack' },
+									{
+										title: 'Automation & Integrations',
+										value: 'automation-integrations',
+									},
 								],
 							},
 							initialValue: 'frontend',
