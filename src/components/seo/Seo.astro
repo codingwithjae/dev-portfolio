@@ -17,7 +17,7 @@ export interface Props {
 const {
     title,
     description,
-    image = "/images/thumbnail-preview.webp",
+    image = "/favicon.webp",
     type = "website",
     jsonLd,
     canonicalUrl,
@@ -27,9 +27,12 @@ const {
     siteUrl,
 } = Astro.props;
 
-const resolvedSiteUrl = siteUrl || Astro.site?.href || "https://developer.johandercampos.com";
+const resolvedSiteUrl =
+    siteUrl || Astro.site?.href || "https://developer.johandercampos.com";
 const fullCanonicalUrl = canonicalUrl || Astro.url.href;
-const fullOgImage = image.startsWith("http") ? image : `${resolvedSiteUrl}${image}`;
+const fullOgImage = image.startsWith("http")
+    ? image
+    : `${resolvedSiteUrl}${image}`;
 
 let optimizedHeroUrl = "";
 if (preloadHeroImage) {
@@ -39,7 +42,7 @@ if (preloadHeroImage) {
         const optimizedHero = await getImage({
             src: preloadHeroImage,
             width: 375,
-            format: "avif",
+            format: "webp",
         });
         optimizedHeroUrl = optimizedHero.src;
     }
@@ -70,32 +73,28 @@ if (preloadHeroImage) {
             rel="preload"
             as="image"
             href={optimizedHeroUrl}
-            type="image/avif"
+            type="image/webp"
             fetchpriority="high"
         />
     )
 }
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="preconnect" href="https://cdn.sanity.io" />
 <link
     rel="preload"
-    as="style"
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
+    href="/fonts/inter-400.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
 />
 <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
-    rel="stylesheet"
-    media="print"
-    onload="this.setAttribute('media', 'all')"
+    rel="preload"
+    href="/fonts/space-grotesk-700.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
 />
-<noscript>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
-        rel="stylesheet"
-    />
-</noscript>
+
+<link rel="preconnect" href="https://cdn.sanity.io" />
 
 {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
 

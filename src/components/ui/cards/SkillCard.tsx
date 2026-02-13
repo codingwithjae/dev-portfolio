@@ -1,6 +1,6 @@
-import type React from 'react';
-import { useEffect, useState } from 'react';
-import { technologyIconMapping } from '../TechnologyIconList/TechnologyIconList';
+import type React from "react";
+import { useEffect, useState } from "react";
+import { technologyIconMapping } from "../TechnologyIconList/TechnologyIconList";
 
 interface Skill {
 	name: string;
@@ -62,7 +62,7 @@ export const SkillCard: React.FC<SkillCardProps> = ({ category, skills }) => {
 					className="ticker-content flex flex-col h-full"
 					style={{
 						transform: `translateY(-${currentIndex * 100}%)`,
-						transition: isTransitioning ? 'transform 0.5s cubic-bezier(0.85, 0, 0.15, 1)' : 'none',
+						transition: isTransitioning ? "transform 0.5s cubic-bezier(0.85, 0, 0.15, 1)" : "none",
 					}}
 				>
 					{skills.map((skill, index) => {
@@ -79,9 +79,13 @@ export const SkillCard: React.FC<SkillCardProps> = ({ category, skills }) => {
 									{Icon && (
 										<Icon className="text-[1.5rem] text-text-muted group-hover:text-accent-hover-text transition-colors" />
 									)}
-									<h3 className="text-[2.2rem] font-bold font-display leading-tight text-text-base">{skill.name}</h3>
+									<h3 className="text-[2.2rem] font-bold font-display leading-tight text-text-base">
+										{skill.name}
+									</h3>
 								</div>
-								<p className="font-sans text-text-muted text-[1rem] tracking-wide uppercase">{skill.experience}</p>
+								<p className="font-sans text-text-muted text-[1rem] tracking-wide uppercase">
+									{skill.experience}
+								</p>
 							</div>
 						);
 					})}

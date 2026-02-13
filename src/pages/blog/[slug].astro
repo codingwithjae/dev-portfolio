@@ -36,7 +36,7 @@ if (!currentBlogPost) {
 
 const blogPostCoverImageUrl = currentBlogPost.coverImage
 	? urlFor(currentBlogPost.coverImage).width(1200).height(630).url()
-	: `${SITE_URL}/images/thumbnail-preview.webp`;
+	: `${SITE_URL}/favicon.webp`;
 
 const blogPostJsonLd = getBlogPostSchema(currentBlogPost);
 ---
