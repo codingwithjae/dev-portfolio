@@ -1,6 +1,6 @@
-import React, { type ChangeEvent, type FormEvent, useCallback, useEffect, useState } from 'react';
-import emailjs from '@emailjs/browser';
-import { toast } from '../ui/Toast/toast';
+import React, { type ChangeEvent, type FormEvent, useCallback, useEffect, useState } from "react";
+import emailjs from "@emailjs/browser";
+import { toast } from "../ui/Toast/toast";
 
 interface FormState {
 	name: string;
@@ -9,19 +9,19 @@ interface FormState {
 }
 
 const getErrorMessage = (error: unknown): string => {
-	if (typeof error === 'object' && error !== null) {
+	if (typeof error === "object" && error !== null) {
 		const maybeError = error as { text?: unknown; message?: unknown };
-		if (typeof maybeError.text === 'string') return maybeError.text;
-		if (typeof maybeError.message === 'string') return maybeError.message;
+		if (typeof maybeError.text === "string") return maybeError.text;
+		if (typeof maybeError.message === "string") return maybeError.message;
 	}
-	return 'Failed to send message. Please try again.';
+	return "Failed to send message. Please try again.";
 };
 
 const useContactForm = () => {
 	const [formState, setFormState] = useState<FormState>({
-		name: '',
-		email: '',
-		message: '',
+		name: "",
+		email: "",
+		message: "",
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,25 +47,25 @@ const useContactForm = () => {
 		const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
 
 		if (!serviceId || !templateId) {
-			console.error('EmailJS service ID or template ID is missing');
-			toast('Configuration error. Please try again later.', 'error');
+			console.error("EmailJS service ID or template ID is missing");
+			toast("Configuration error. Please try again later.", "error");
 			return;
 		}
 
 		if (!formState.name.trim()) {
-			toast('Please enter your name', 'error');
+			toast("Please enter your name", "error");
 			return;
 		}
 		if (!formState.email.trim()) {
-			toast('Please enter your email', 'error');
+			toast("Please enter your email", "error");
 			return;
 		}
 		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
-			toast('Please enter a valid email address', 'error');
+			toast("Please enter a valid email address", "error");
 			return;
 		}
 		if (!formState.message.trim()) {
-			toast('Please enter your message', 'error');
+			toast("Please enter your message", "error");
 			return;
 		}
 
@@ -76,7 +76,7 @@ const useContactForm = () => {
 				from_name: formState.name,
 				from_email: formState.email,
 				message: formState.message,
-				to_name: 'Johander',
+				to_name: "Johander",
 			};
 
 			const publicKey = import.meta.env.PUBLIC_EMAILJS_API_KEY;
@@ -85,15 +85,15 @@ const useContactForm = () => {
 			});
 
 			if (result.status === 200) {
-				toast('Thanks for your message!', 'success');
-				setFormState({ name: '', email: '', message: '' });
+				toast("Thanks for your message!", "success");
+				setFormState({ name: "", email: "", message: "" });
 			} else {
-				toast('Something went wrong. Please try again.', 'error');
+				toast("Something went wrong. Please try again.", "error");
 			}
 		} catch (error: unknown) {
-			console.error('Submission Error:', error);
+			console.error("Submission Error:", error);
 			const errorMessage = getErrorMessage(error);
-			toast(errorMessage, 'error');
+			toast(errorMessage, "error");
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -126,8 +126,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 						onClick={() => {
 							navigator.clipboard
 								.writeText(email)
-								.then(() => toast('Email copied to clipboard!', 'success'))
-								.catch(() => toast('Failed to copy email', 'error'));
+								.then(() => toast("Email copied to clipboard!", "success"))
+								.catch(() => toast("Failed to copy email", "error"));
 						}}
 					>
 						<svg
@@ -166,7 +166,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 						required
 						value={formState.name}
 						onChange={handleChange}
-						className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base outline-none placeholder:text-text-muted/50 dark:focus:border-accent-hover transition-colors"
+						className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base outline-none focus:ring-0 focus:border-[var(--color-input-focus-border)] placeholder:text-text-muted/50 transition-colors"
 					/>
 				</div>
 				<div className="mb-6">
@@ -182,7 +182,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 						required
 						value={formState.email}
 						onChange={handleChange}
-						className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base outline-none placeholder:text-text-muted/50 dark:focus:border-accent-hover transition-colors"
+						className="w-full p-[0.625rem] rounded-[0.3125rem] bg-transparent border border-border-base text-text-base outline-none focus:ring-0 focus:border-[var(--color-input-focus-border)] placeholder:text-text-muted/50 transition-colors"
 					/>
 				</div>
 				<div className="mb-6">
@@ -197,16 +197,16 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 						required
 						value={formState.message}
 						onChange={handleChange}
-						className="w-full p-[0.625rem] bg-transparent border border-border-base text-text-base h-[6.25rem] resize-none outline-none placeholder:text-text-muted/50 dark:focus:border-accent-hover transition-colors"
+						className="w-full p-[0.625rem] bg-transparent border border-border-base text-text-base h-[6.25rem] resize-none outline-none focus:ring-0 focus:border-[var(--color-input-focus-border)] placeholder:text-text-muted/50 transition-colors"
 					></textarea>
 				</div>
 				<div className="flex pt-4 md:pt-6">
 					<button
 						type="submit"
 						disabled={isSubmitting}
-						className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-accent-hover text-black rounded-[0.5rem] hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+						className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-accent-hover text-black rounded-[0.5rem] hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
 					>
-						{isSubmitting ? 'Sending...' : 'Send Message'}
+						{isSubmitting ? "Sending..." : "Send Message"}
 					</button>
 				</div>
 			</form>

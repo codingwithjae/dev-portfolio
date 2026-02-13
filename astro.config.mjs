@@ -1,13 +1,13 @@
-import react from '@astrojs/react';
-import vercel from '@astrojs/vercel';
-import sanity from '@sanity/astro';
-import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'astro/config';
+import react from "@astrojs/react";
+import vercel from "@astrojs/vercel";
+import sanity from "@sanity/astro";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
-	site: 'https://developer.johandercampos.com',
+	site: "https://developer.johandercampos.com",
 
-	output: 'server',
+	output: "server",
 
 	vite: {
 		plugins: [tailwindcss()],
@@ -19,19 +19,19 @@ export default defineConfig({
 
 	image: {
 		remotePatterns: [
-			{ protocol: 'https', hostname: 'cdn.sanity.io' },
-			{ protocol: 'https', hostname: 'images.sanity.io' },
+			{ protocol: "https", hostname: "cdn.sanity.io" },
+			{ protocol: "https", hostname: "images.sanity.io" },
 		],
 	},
 
 	integrations: [
 		react(),
 		sanity({
-			projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'hismgx2i',
-			dataset: import.meta.env.PUBLIC_SANITY_DATASET || 'production',
+			projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID || "hismgx2i",
+			dataset: import.meta.env.PUBLIC_SANITY_DATASET || "production",
 			useCdn: true,
-			apiVersion: '2024-01-18',
-			studioBasePath: '/admin',
+			apiVersion: "2024-01-18",
+			studioBasePath: "/admin",
 		}),
 	],
 

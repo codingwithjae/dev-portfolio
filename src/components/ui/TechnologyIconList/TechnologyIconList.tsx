@@ -1,5 +1,5 @@
-import type { IconType } from 'react-icons';
-import { FaCheckCircle, FaSearch } from 'react-icons/fa';
+import type { IconType } from "react-icons";
+import { FaCheckCircle, FaSearch } from "react-icons/fa";
 import {
 	FaCss3Alt,
 	FaFigma,
@@ -13,11 +13,12 @@ import {
 	FaRocket,
 	FaServer,
 	FaVial,
-} from 'react-icons/fa6';
-import { RiSeoFill } from 'react-icons/ri';
+} from "react-icons/fa6";
+import { RiSeoFill } from "react-icons/ri";
 import {
 	SiExpress,
 	SiFramer,
+	SiOpenai,
 	SiPostgresql,
 	SiPrisma,
 	SiSanity,
@@ -25,7 +26,7 @@ import {
 	SiTailwindcss,
 	SiTypescript,
 	SiVitest,
-} from 'react-icons/si';
+} from "react-icons/si";
 
 /**
  * Mapping of technology names to their respective React Icons.
@@ -38,26 +39,31 @@ export const technologyIconMapping: Record<string, IconType> = {
 	JavaScript: FaJs,
 	TypeScript: SiTypescript,
 	Figma: FaFigma,
-	'Tailwind CSS': SiTailwindcss,
+	"Tailwind CSS": SiTailwindcss,
 	Tailwind: SiTailwindcss,
 	Framer: SiFramer,
-	'Node JS': FaNodeJs,
-	'Node.js': FaNodeJs,
+	"Node JS": FaNodeJs,
+	"Node.js": FaNodeJs,
 	Express: SiExpress,
 	Prisma: SiPrisma,
 	PostgreSQL: SiPostgresql,
 	Postgres: SiPostgresql,
-	'Git/Github': FaGitAlt,
-	'Git/GitHub': FaGitAlt,
+	"Git/Github": FaGitAlt,
+	"Git/GitHub": FaGitAlt,
 	Vitest: SiVitest,
 	Sanity: SiSanity,
 	SEO: FaSearch,
 	Zod: FaCheckCircle,
 	JWT: FaKey,
-	'REST APIs': FaServer,
+	"REST APIs": FaServer,
 	Testing: FaVial,
 	Deployments: FaRocket,
 	Python: FaPython,
+	OpenAI: SiOpenai,
+	"Open AI": SiOpenai,
+	"OpenAI API": SiOpenai,
+	"Open AI API": SiOpenai,
+	"OpenAI API Integration": SiOpenai,
 	Storybook: SiStorybook,
 	FaReact: FaReact,
 	FaHtml5: FaHtml5,
@@ -82,6 +88,7 @@ export const technologyIconMapping: Record<string, IconType> = {
 	FaSearch: FaSearch,
 	SiPostgres: SiPostgresql,
 	SiSanity: SiSanity,
+	SiOpenai: SiOpenai,
 	RiSeoFill: RiSeoFill,
 };
 
@@ -96,7 +103,7 @@ interface TechnologyIconListProps {
 export const TechnologyIconList: React.FC<TechnologyIconListProps> = ({ technologies }) => {
 	if (!technologies) return null;
 
-	const techArray = technologies.split('/').map((t) => t.trim());
+	const techArray = technologies.split("/").map((t) => t.trim());
 
 	return (
 		<div className="flex flex-wrap gap-2 mt-2">

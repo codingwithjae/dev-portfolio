@@ -8,9 +8,11 @@ export interface Props {
   technologies: string;
   demoUrl: string;
   codeUrl: string;
+  documentationUrl?: string | undefined;
 }
 
-const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
+const { title, thumbnail, technologies, demoUrl, codeUrl, documentationUrl } = Astro.props;
+const hasDocumentationLink = documentationUrl && documentationUrl !== "#";
 ---
 
 <article
@@ -57,11 +59,23 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
       >
         View project
       </a>
+      {
+        hasDocumentationLink && (
+          <a
+            href={documentationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
+          >
+            Documentation
+          </a>
+        )
+      }
       <a
         href={codeUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-link-hover transition-colors mt-4"
+        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
       >
         View code
       </a>
@@ -80,7 +94,10 @@ const { title, thumbnail, technologies, demoUrl, codeUrl } = Astro.props;
   </div>
 </article>
 
-<script is:inline define:vars={{ title, thumbnail, technologies, demoUrl, codeUrl }}>
+<script
+  is:inline
+  define:vars={{ title, thumbnail, technologies, demoUrl, codeUrl, documentationUrl }}
+>
   // Ensure variables are "used" for static analysis
   console.debug("ProjectCard initialized");
 </script>

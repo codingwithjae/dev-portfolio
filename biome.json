@@ -1,0 +1,27 @@
+{
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineWidth": 100
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	},
+	"files": {
+		"ignoreUnknown": true,
+		"includes": [
+			"src/**/*.ts",
+			"src/**/*.tsx",
+			"src/**/*.js",
+			"src/**/*.jsx",
+			"*.ts",
+			"*.js",
+			"*.mjs",
+			"*.cjs",
+			"*.json"
+		]
+	}
+}

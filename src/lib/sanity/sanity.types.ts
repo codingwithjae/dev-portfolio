@@ -1,8 +1,8 @@
 export interface SanityImage {
-	_type: 'image';
+	_type: "image";
 	asset: {
 		_ref: string;
-		_type: 'reference';
+		_type: "reference";
 	};
 	alt?: string;
 	caption?: string;
@@ -10,7 +10,7 @@ export interface SanityImage {
 
 export interface BlogPost {
 	_id: string;
-	_type: 'blogPost';
+	_type: "blogPost";
 	title: string;
 	slug: string;
 	coverImage?: SanityImage;
@@ -32,7 +32,7 @@ export interface BlogPostDetail extends BlogPost {
 
 export interface PageContent {
 	_id: string;
-	_type: 'pageContent';
+	_type: "pageContent";
 	portrait?: string;
 	hero?: {
 		title: string;
@@ -51,8 +51,9 @@ export interface PageContent {
 		thumbnail: SanityImage;
 		githubUrl: string;
 		demoUrl: string;
+		documentationUrl?: string;
 		techStack: string;
-		category?: 'frontend' | 'backend' | 'fullstack';
+		category?: "frontend" | "backend" | "fullstack";
 	}>;
 	skills?: SkillCategory[];
 	faqs?: Array<{
@@ -75,7 +76,7 @@ export interface PageContent {
 
 export interface SiteSettings {
 	_id: string;
-	_type: 'siteSettings';
+	_type: "siteSettings";
 	siteName?: string;
 	siteUrl?: string;
 	defaultTitle?: string;
@@ -102,6 +103,7 @@ export interface UIProject {
 	technologies: string;
 	demoUrl: string;
 	codeUrl: string;
+	documentationUrl?: string;
 	category: string;
 }
 
