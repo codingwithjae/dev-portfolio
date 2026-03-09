@@ -40,6 +40,17 @@ try {
 const skillCategories = resolveSkillCategories(homePageContent);
 const portfolioProjects = mapSanityProjectsToUI(homePageContent?.projects);
 const projectsByCategory = groupProjectsByCategory(portfolioProjects);
+const orderedCategorySet = new Set<string>(PROJECT_CATEGORIES_ORDER);
+const categoriesToRender = [
+  ...PROJECT_CATEGORIES_ORDER.filter(
+    (category) => (projectsByCategory[category] || []).length > 0,
+  ),
+  ...Object.keys(projectsByCategory).filter(
+    (category) =>
+      !orderedCategorySet.has(category) &&
+      (projectsByCategory[category] || []).length > 0,
+  ),
+];
 const frequentlyAskedQuestions = staticData.home.faq.questions;
 
 const optimizedPersonImage = await getImage({
@@ -138,7 +149,7 @@ const combinedJsonLd = getHomeSchema(
             </p>
           </div>
 
-          {PROJECT_CATEGORIES_ORDER.map((cat) => {
+          {categoriesToRender.map((cat) => {
             const categoryProjects = projectsByCategory[cat] || [];
             if (categoryProjects.length === 0) return null;
 
@@ -177,7 +188,6 @@ const combinedJsonLd = getHomeSchema(
                         demoUrl={project.demoUrl}
                         documentationUrl={project.documentationUrl}
                         codeUrl={project.codeUrl}
-                        documentationUrl={project.documentationUrl}
                       />
                     </article>
                   ))}
