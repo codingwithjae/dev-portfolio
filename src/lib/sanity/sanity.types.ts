@@ -30,6 +30,27 @@ export interface BlogPostDetail extends BlogPost {
 	};
 }
 
+export interface AboutContent {
+	title: string;
+	intro: string;
+	details: string;
+}
+
+export interface ExperienceItem {
+	title: string;
+	role: string;
+	period: string;
+	thumbnail?: SanityImage | string;
+	summary: string;
+	highlights: string[];
+	stack: string[];
+	demoUrl?: string;
+	docsUrl?: string;
+	codeUrl?: string;
+	featured?: boolean;
+	order?: number;
+}
+
 export interface PageContent {
 	_id: string;
 	_type: "pageContent";
@@ -55,7 +76,11 @@ export interface PageContent {
 		techStack: string;
 		category?: "frontend" | "backend" | "fullstack";
 	}>;
+	about?: AboutContent;
+	experience?: ExperienceItem[];
 	skills?: SkillCategory[];
+	faqTitle?: string;
+	faqIntro?: string;
 	faqs?: Array<{
 		question: string;
 		answer: string;

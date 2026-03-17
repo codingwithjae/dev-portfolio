@@ -1,0 +1,69 @@
+---
+import Footer from "../components/sections/Footer.astro";
+import ExperienceSection from "../components/sections/ExperienceSection.astro";
+import ThemeToggle from "../components/ui/ThemeToggle/ThemeToggle.astro";
+import { staticData } from "../data/staticData";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getPageContent } from "../lib/sanity/sanity";
+import type { PageContent } from "../lib/sanity/sanity.types";
+import { resolveAboutContent, resolveExperience } from "../lib/sanity/transform";
+
+let homePageContent: PageContent | null = null;
+
+try {
+	homePageContent = await getPageContent();
+} catch (fetchError) {
+	console.error("Sanity data fetch failed:", fetchError);
+}
+
+const aboutContent = resolveAboutContent(homePageContent);
+const experience = resolveExperience(homePageContent);
+
+const aboutParagraphs = aboutContent.details
+	.split("\n")
+	.map((paragraph) => paragraph.trim())
+	.filter(Boolean);
+---
+
+<BaseLayout
+	title="About"
+	description="Background, independent projects, and writing by Johander Campos."
+>
+	<header class="p-5 flex flex-col items-center justify-center mb-[3rem]" role="banner">
+		<nav class="w-full max-w-[50rem] mb-5 flex justify-between items-center" aria-label="About navigation">
+			<a href="/" class="text-text-base font-sans text-[1.13rem] hover:opacity-80 transition-opacity">
+				Johander <span class="font-bold">Campos.</span>
+			</a>
+			<div class="flex items-center gap-4">
+				<a href="/" class="font-bold hover:text-link-hover transition-colors">Home</a>
+				<a href="/blog" class="font-bold hover:text-link-hover transition-colors">Blog</a>
+				<ThemeToggle />
+			</div>
+		</nav>
+	</header>
+
+	<main class="p-5 flex flex-col justify-center items-center text-text-base overflow-x-hidden transition-colors" id="main-content">
+		<section class="w-full max-w-[50rem] mb-16" aria-labelledby="about-heading">
+			<div class="w-full mb-10 reveal">
+				<h1 id="about-heading" class="text-[clamp(2.5rem,5vw,3.625rem)] font-display font-bold">
+					{aboutContent.title}
+				</h1>
+				<p class="text-text-muted mt-2 font-sans">{aboutContent.intro}</p>
+			</div>
+
+			<div class="glassmorphism rounded-[1.25rem] p-6 md:p-8 reveal delay-100">
+				{aboutParagraphs.map((paragraph) => (
+					<p class="font-sans text-text-base leading-relaxed mb-4 last:mb-0">{paragraph}</p>
+				))}
+			</div>
+		</section>
+
+		<ExperienceSection items={experience} />
+	</main>
+
+	<Footer
+		linkedinUrl={staticData.header.socials.linkedin}
+		githubUrl={staticData.header.socials.github}
+		repoUrl={staticData.header.repoUrl}
+	/>
+</BaseLayout>

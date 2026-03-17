@@ -1,0 +1,33 @@
+<button
+	type="button"
+	id="back-to-top"
+	class="glassmorphism fixed right-5 bottom-6 z-50 h-12 w-12 rounded-full flex items-center justify-center text-text-base opacity-0 pointer-events-none transition-all duration-300"
+	aria-label="Back to top"
+	aria-hidden="true"
+>
+	<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+		<path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path>
+	</svg>
+</button>
+
+<script>
+	const backToTopButton = document.getElementById("back-to-top");
+
+	if (backToTopButton) {
+		const onScroll = () => {
+			const shouldShow = window.scrollY > 360;
+			backToTopButton.classList.toggle("opacity-100", shouldShow);
+			backToTopButton.classList.toggle("pointer-events-auto", shouldShow);
+			backToTopButton.classList.toggle("opacity-0", !shouldShow);
+			backToTopButton.classList.toggle("pointer-events-none", !shouldShow);
+			backToTopButton.setAttribute("aria-hidden", String(!shouldShow));
+		};
+
+		onScroll();
+		window.addEventListener("scroll", onScroll, { passive: true });
+
+		backToTopButton.addEventListener("click", () => {
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		});
+	}
+</script>

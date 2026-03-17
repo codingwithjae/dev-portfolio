@@ -1,6 +1,14 @@
-import { urlFor } from "./sanity";
-import type { PageContent, SkillCategory, UIProject, HeaderAuthor, HomeSEO } from "./sanity.types";
 import { staticData } from "../../data/staticData";
+import { urlFor } from "./sanity";
+import type {
+	AboutContent,
+	ExperienceItem,
+	HeaderAuthor,
+	HomeSEO,
+	PageContent,
+	SkillCategory,
+	UIProject,
+} from "./sanity.types";
 
 export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
 	frontend: "Frontend",
@@ -50,7 +58,48 @@ export function resolveSkillCategories(homePageContent: PageContent | null): Ski
 	if (homePageContent?.skills && homePageContent.skills.length > 0) {
 		return homePageContent.skills;
 	}
-	return staticData.home.skills as unknown as SkillCategory[];
+	return staticData.home.skills as SkillCategory[];
+}
+
+export function resolveAboutContent(homePageContent: PageContent | null): AboutContent {
+	const fallback = staticData.home.about;
+	const about = homePageContent?.about;
+
+	return {
+		title: about?.title || fallback.title,
+		intro: about?.intro || fallback.intro,
+		details: about?.details || fallback.details,
+	};
+}
+
+export function resolveExperience(homePageContent: PageContent | null): ExperienceItem[] {
+	const fallback = staticData.home.experience as ExperienceItem[];
+	const experience = homePageContent?.experience;
+
+	if (!experience || experience.length === 0) {
+		return fallback;
+	}
+
+	return experience
+		.map((item) => ({
+			title: item.title,
+			role: item.role,
+			period: item.period,
+			...(item.thumbnail ? { thumbnail: item.thumbnail } : {}),
+			summary: item.summary,
+			highlights: item.highlights || [],
+			stack: item.stack || [],
+			...(item.demoUrl ? { demoUrl: item.demoUrl } : {}),
+			...(item.docsUrl ? { docsUrl: item.docsUrl } : {}),
+			...(item.codeUrl ? { codeUrl: item.codeUrl } : {}),
+			...(typeof item.featured === "boolean" ? { featured: item.featured } : {}),
+			...(typeof item.order === "number" ? { order: item.order } : {}),
+		}))
+		.sort((a, b) => {
+			const featuredDiff = Number(b.featured) - Number(a.featured);
+			if (featuredDiff !== 0) return featuredDiff;
+			return (a.order ?? 9999) - (b.order ?? 9999);
+		});
 }
 
 export function extractAuthorHeader(homePageContent: PageContent | null): HeaderAuthor {

@@ -1,0 +1,33 @@
+---
+import type { ExperienceItem } from "../../lib/sanity/sanity.types";
+import ExperienceCard from "../ui/cards/ExperienceCard.astro";
+
+export interface Props {
+	title?: string;
+	description?: string;
+	items: ExperienceItem[];
+}
+
+const {
+	title = "Experience",
+	description = "Independent projects focused on backend architecture, integrations, and delivery quality.",
+	items,
+} = Astro.props as Props;
+---
+
+<section class="w-full max-w-[50rem] mb-16" aria-labelledby="experience-heading" id="experience">
+	<div class="w-full mb-10 reveal">
+		<h2 id="experience-heading" class="text-[clamp(2.5rem,5vw,3.625rem)] font-display font-bold">
+			{title}
+		</h2>
+		<p class="text-text-muted mt-2 font-sans">{description}</p>
+	</div>
+
+	<div class="grid grid-cols-1 gap-6 w-full">
+		{items.map((item, index) => (
+			<article class={`reveal delay-${((index % 3) + 1) * 100}`}>
+				<ExperienceCard item={item} />
+			</article>
+		))}
+	</div>
+</section>

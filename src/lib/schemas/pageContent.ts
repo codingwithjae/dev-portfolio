@@ -96,6 +96,155 @@ export default defineType({
 			],
 		}),
 		defineField({
+			name: "about",
+			title: "About",
+			type: "object",
+			fields: [
+				defineField({
+					name: "title",
+					title: "About Title",
+					type: "string",
+					initialValue: "About Me",
+				}),
+				defineField({
+					name: "intro",
+					title: "Intro",
+					type: "text",
+					rows: 3,
+				}),
+				defineField({
+					name: "details",
+					title: "Details",
+					type: "text",
+					rows: 6,
+				}),
+			],
+		}),
+		defineField({
+			name: "experience",
+			title: "Experience",
+			type: "array",
+			of: [
+				defineField({
+					name: "experienceItem",
+					title: "Experience Item",
+					type: "object",
+					fields: [
+						defineField({
+							name: "title",
+							title: "Project / Experience Title",
+							type: "string",
+						}),
+						defineField({
+							name: "role",
+							title: "Role",
+							type: "string",
+							initialValue: "Independent Project",
+						}),
+						defineField({
+							name: "period",
+							title: "Period",
+							type: "string",
+						}),
+						defineField({
+							name: "thumbnail",
+							title: "Thumbnail Image",
+							type: "image",
+							options: {
+								hotspot: true,
+							},
+						}),
+						defineField({
+							name: "summary",
+							title: "Summary",
+							type: "text",
+							rows: 3,
+						}),
+						defineField({
+							name: "highlights",
+							title: "Highlights",
+							type: "array",
+							of: [{ type: "string" }],
+							options: { layout: "tags" },
+						}),
+						defineField({
+							name: "stack",
+							title: "Stack",
+							type: "array",
+							of: [{ type: "string" }],
+							options: { layout: "tags" },
+						}),
+						defineField({
+							name: "demoUrl",
+							title: "Demo URL",
+							type: "url",
+						}),
+						defineField({
+							name: "docsUrl",
+							title: "Documentation URL",
+							type: "url",
+						}),
+						defineField({
+							name: "codeUrl",
+							title: "Code URL",
+							type: "url",
+						}),
+						defineField({
+							name: "featured",
+							title: "Featured",
+							type: "boolean",
+							initialValue: false,
+						}),
+						defineField({
+							name: "order",
+							title: "Order",
+							type: "number",
+							initialValue: 10,
+						}),
+					],
+				}),
+			],
+		}),
+		defineField({
+			name: "faqTitle",
+			title: "FAQ Section Title",
+			type: "string",
+			initialValue: "About",
+		}),
+		defineField({
+			name: "faqIntro",
+			title: "FAQ Section Intro",
+			type: "text",
+			rows: 3,
+			initialValue:
+				"Quick answers about how I work, what I focus on, and the kind of team environment where I can contribute best.",
+		}),
+		defineField({
+			name: "faqs",
+			title: "FAQ Items",
+			type: "array",
+			of: [
+				defineField({
+					name: "faqItem",
+					title: "FAQ Item",
+					type: "object",
+					fields: [
+						defineField({
+							name: "question",
+							title: "Question",
+							type: "string",
+						}),
+						defineField({
+							name: "answer",
+							title: "Answer",
+							type: "text",
+							rows: 4,
+						}),
+					],
+				}),
+			],
+		}),
+		defineField({
 			name: "seo",
 			title: "SEO Settings",
 			type: "object",

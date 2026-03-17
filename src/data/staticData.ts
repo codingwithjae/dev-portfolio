@@ -14,6 +14,70 @@ export const staticData = {
 
 	home: {
 		skillsTitle: "Core Skills",
+		about: {
+			title: "About",
+			intro:
+				"I am a backend-leaning software engineer focused on TypeScript systems that are easy to maintain, secure by default, and documented clearly for teams.",
+			details:
+				"Most of my recent work comes from independent product builds where I own architecture, API design, and delivery. I enjoy translating product goals into reliable services, then validating decisions with tests and practical documentation.\n\nI value clean module boundaries, predictable error handling, and steady iteration over large risky rewrites. The result is software that can scale from a portfolio proof into production-ready workflows.",
+		},
+		experience: [
+			{
+				title: "Korta",
+				role: "Independent Project",
+				period: "2025 - Present",
+				thumbnail: "/korta-thumbnail.webp",
+				summary:
+					"Link shortener platform built with a full-stack TypeScript architecture and product-grade documentation.",
+				highlights: [
+					"Designed a clean API layer for creating and resolving shortened links.",
+					"Published project documentation to support onboarding and usage.",
+					"Shipped a public demo for end-to-end validation of the product flow.",
+				],
+				stack: ["React", "TypeScript", "Tailwind CSS", "Express"],
+				demoUrl: "https://korta.click/",
+				docsUrl: "https://docs.korta.click/",
+				codeUrl: "https://github.com/codingwithjae/clean-cut",
+				featured: true,
+				order: 1,
+			},
+			{
+				title: "Budgeti Backend",
+				role: "Independent Project",
+				period: "2024 - 2025",
+				thumbnail: "/budgeti-thumbnail.webp",
+				summary:
+					"Backend service for a personal finance mobile app workflow, including API architecture and technical docs.",
+				highlights: [
+					"Implemented TypeScript backend modules with a Prisma-powered data layer.",
+					"Exposed a live backend demo endpoint for integration testing.",
+					"Maintained dedicated documentation covering setup and API usage.",
+				],
+				stack: ["Node.js", "Express", "TypeScript", "Prisma", "OpenAI API"],
+				demoUrl: "https://budgeti-backend.johandercampos.site/",
+				docsUrl: "https://budgeti-docs.johandercampos.site/",
+				codeUrl: "https://github.com/codingwithjae/budgeti",
+				featured: true,
+				order: 2,
+			},
+			{
+				title: "Node Lab Studio",
+				role: "Independent Project",
+				period: "2024 - Present",
+				thumbnail: "/node-lab-studio-thumbnail.webp",
+				summary:
+					"Automation workspace focused on workflow orchestration and practical documentation for integration patterns.",
+				highlights: [
+					"Structured automation workflows around API-first integration patterns.",
+					"Documented automation guides to make workflows easier to reproduce.",
+					"Used n8n-based tooling to speed up repetitive backend tasks.",
+				],
+				stack: ["n8n", "REST API", "TypeScript"],
+				docsUrl: "https://docs.nodelabstudio.site/",
+				featured: false,
+				order: 3,
+			},
+		],
 
 		projects: {
 			title: "Featured Projects",
@@ -77,7 +141,9 @@ export const staticData = {
 		},
 
 		faq: {
-			title: "A bit more about me",
+			title: "About",
+			intro:
+				"Quick answers about how I work, what I focus on, and the kind of team environment where I can contribute best.",
 			questions: [
 				{
 					question: "What kind of roles am I looking for?",

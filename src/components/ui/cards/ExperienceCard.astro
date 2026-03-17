@@ -1,0 +1,105 @@
+---
+import { urlFor } from "../../../lib/sanity/sanity";
+import type { ExperienceItem } from "../../../lib/sanity/sanity.types";
+
+export interface Props {
+	item: ExperienceItem;
+}
+
+type ExperienceLink = {
+	href: string;
+	label: string;
+};
+
+const { item } = Astro.props as Props;
+const placeholderThumbnail = "https://placehold.co/1200x680?text=Experience";
+
+const thumbnailSrc = (() => {
+	if (!item.thumbnail) return placeholderThumbnail;
+
+	if (typeof item.thumbnail === "string") {
+		return item.thumbnail;
+	}
+
+	if (item.thumbnail._type === "image" && item.thumbnail.asset?._ref) {
+		return urlFor(item.thumbnail).width(1200).height(680).fit("crop").auto("format").url();
+	}
+
+	return placeholderThumbnail;
+})();
+
+const links: ExperienceLink[] = [];
+if (item.demoUrl && item.demoUrl !== "#") links.push({ href: item.demoUrl, label: "Demo" });
+if (item.docsUrl && item.docsUrl !== "#") links.push({ href: item.docsUrl, label: "Docs" });
+if (item.codeUrl && item.codeUrl !== "#") links.push({ href: item.codeUrl, label: "Code" });
+---
+
+<article class="glassmorphism group relative overflow-hidden rounded-[0.9375rem]">
+	<figure class="relative overflow-hidden rounded-t-[0.9375rem] border-b border-border-base/40">
+		<img
+			class="h-[12.5rem] w-full object-cover transition-all duration-500 group-hover:scale-105 group-hover:brightness-[0.72] md:h-[14rem]"
+			src={thumbnailSrc}
+			width={1200}
+			height={680}
+			alt={`${item.title} thumbnail`}
+			loading="lazy"
+			decoding="async"
+		/>
+	</figure>
+
+	<div class="border-b border-border-base/40 px-5 py-5 md:px-6 md:py-6">
+		<div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+			<div>
+				<h3 class="text-[1.35rem] font-display font-bold text-text-base leading-tight">{item.title}</h3>
+				<p class="mt-1 font-sans text-text-muted">{item.role}</p>
+			</div>
+			<p class="text-[0.75rem] font-mono uppercase tracking-[0.14rem] text-text-muted">{item.period}</p>
+		</div>
+	</div>
+
+	<div class="p-5 md:p-6">
+		<p class="mb-4 font-sans leading-relaxed text-text-base">{item.summary}</p>
+
+		{
+			item.highlights.length > 0 && (
+				<ul class="mb-5 space-y-2">
+					{item.highlights.map((highlight: string) => (
+						<li class="flex gap-2 font-sans text-text-muted">
+							<span class="text-text-base">•</span>
+							<span>{highlight}</span>
+						</li>
+					))}
+				</ul>
+			)
+		}
+
+		{
+			item.stack.length > 0 && (
+				<div class="mb-5 flex flex-wrap gap-2">
+					{item.stack.map((tech: string) => (
+						<span class="rounded-full border border-border-base px-3 py-1 text-[0.75rem] font-mono uppercase tracking-[0.08rem] text-text-muted">
+							{tech}
+						</span>
+					))}
+				</div>
+			)
+		}
+
+		{
+			links.length > 0 && (
+				<div class="flex flex-wrap gap-4 font-sans font-bold uppercase tracking-[0.08rem]">
+					{links.map((link) => (
+						<a
+							href={link.href}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="transition-colors hover:text-link-hover"
+						>
+							{link.label}
+						</a>
+					))}
+				</div>
+			)
+		}
+	</div>
+</article>

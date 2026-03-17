@@ -8,6 +8,7 @@ import BlogCard from "../components/ui/cards/BlogCard.astro";
 import ProjectCard from "../components/ui/cards/ProjectCard.astro";
 import { SkillCard } from "../components/ui/cards/SkillCard";
 import { FaqItem } from "../components/ui/FaqItem/FaqItem";
+import BackToTop from "../components/ui/BackToTop/BackToTop.astro";
 import { staticData } from "../data/staticData";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getFeaturedBlogPosts, getPageContent } from "../lib/sanity/sanity";
@@ -40,7 +41,12 @@ try {
 const skillCategories = resolveSkillCategories(homePageContent);
 const portfolioProjects = mapSanityProjectsToUI(homePageContent?.projects);
 const projectsByCategory = groupProjectsByCategory(portfolioProjects);
-const frequentlyAskedQuestions = staticData.home.faq.questions;
+const faqTitle = homePageContent?.faqTitle || staticData.home.faq.title;
+const faqIntro = homePageContent?.faqIntro || staticData.home.faq.intro;
+const frequentlyAskedQuestions =
+  homePageContent?.faqs && homePageContent.faqs.length > 0
+    ? homePageContent.faqs
+    : staticData.home.faq.questions;
 
 const optimizedPersonImage = await getImage({
   src: photoImage,
@@ -82,6 +88,7 @@ const combinedJsonLd = getHomeSchema(
     githubUrl={staticData.header.socials.github}
     cvUrl={homePageContent?.cvUrl || "#"}
     downloadCvText={staticData.header.downloadCv}
+    hasBlogPosts={featuredBlogPosts.length > 0}
   />
 
   <main
@@ -89,6 +96,7 @@ const combinedJsonLd = getHomeSchema(
     id="main-content"
   >
     <section
+      id="skills"
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-[1.25rem] max-w-[50rem] w-full mb-16 lg:self-center"
       aria-labelledby="skills-heading"
     >
@@ -123,6 +131,7 @@ const combinedJsonLd = getHomeSchema(
     {
       portfolioProjects.length > 0 && (
         <section
+          id="projects"
           class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-16"
           aria-labelledby="projects-heading"
         >
@@ -191,6 +200,7 @@ const combinedJsonLd = getHomeSchema(
     {
       featuredBlogPosts.length > 0 && (
         <section
+          id="blog"
           class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-16"
           aria-labelledby="blog-heading"
         >
@@ -226,7 +236,7 @@ const combinedJsonLd = getHomeSchema(
       )
     }
 
-    <section class="w-full reveal mb-16" aria-labelledby="contact-heading">
+    <section id="contact" class="w-full reveal mb-16" aria-labelledby="contact-heading">
       <h2 id="contact-heading" class="sr-only">Contact Me</h2>
       <ContactForm client:visible email="connect@johandercampos.com" />
     </section>
@@ -234,6 +244,7 @@ const combinedJsonLd = getHomeSchema(
     {
       frequentlyAskedQuestions.length > 0 && (
         <section
+          id="faq"
           class="text-center p-2 sm:p-5 w-full md:max-w-[45rem] font-display mt-0 mb-16"
           aria-labelledby="faq-heading"
         >
@@ -242,8 +253,11 @@ const combinedJsonLd = getHomeSchema(
               id="faq-heading"
               class="text-[clamp(2.5rem,5vw,3.625rem)] font-bold tracking-[0.0625rem] sm:tracking-[0.125rem]"
             >
-              {staticData.home.faq.title}
+              {faqTitle}
             </h2>
+            <p class="mt-4 mx-auto max-w-2xl font-sans text-text-muted leading-relaxed">
+              {faqIntro}
+            </p>
           </div>
           <div class="reveal">
             <div class="glassmorphism p-4 sm:p-[1.875rem] rounded-[1.25rem] sm:rounded-[1.875rem] mt-16 transition-all duration-300 cursor-pointer">
@@ -266,6 +280,7 @@ const combinedJsonLd = getHomeSchema(
     githubUrl={staticData.header.socials.github}
     repoUrl={staticData.header.repoUrl}
   />
+  <BackToTop />
 </BaseLayout>
 <script
   is:inline

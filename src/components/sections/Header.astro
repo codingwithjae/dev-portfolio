@@ -15,6 +15,7 @@ export interface Props {
     githubUrl: string;
     cvUrl?: string;
     downloadCvText: string;
+    hasBlogPosts?: boolean;
 }
 
 const {
@@ -29,15 +30,28 @@ const {
     githubUrl,
     cvUrl,
     downloadCvText,
+    hasBlogPosts = true,
 } = Astro.props;
+
+const sectionLinks = [
+	{ href: "#skills", label: "Skills" },
+	{ href: "#projects", label: "Projects" },
+	...(hasBlogPosts ? [{ href: "#blog", label: "Blog" }] : []),
+	{ href: "#contact", label: "Contact" },
+	{ href: "#faq", label: "About" },
+];
+
+const mobileMenuId = "header-mobile-menu";
+const mobileMenuButtonId = "header-mobile-menu-button";
 ---
 
 <header
-    class="p-5 flex flex-col items-center justify-center mb-16"
+    class="relative z-20 p-5 flex flex-col items-center justify-center mb-16"
     role="banner"
 >
+    <div class="relative z-40 w-full max-w-[50rem] mb-16">
     <nav
-        class="w-full max-w-[50rem] mb-16 flex justify-between items-center"
+        class="w-full flex justify-between items-center"
         aria-label="Primary navigation"
     >
         <a
@@ -47,8 +61,53 @@ const {
             {name.first}
             <span class="font-bold">{name.last}.</span>
         </a>
-        <ThemeToggle />
+        <div class="flex items-center gap-4">
+			<ul class="hidden md:flex flex-wrap items-center justify-end gap-5 lg:gap-8 text-[0.65rem] sm:text-[0.75rem] font-mono uppercase tracking-[0.12rem] max-w-[18rem] sm:max-w-none">
+				{sectionLinks.map((link) => (
+					<li>
+						<a href={link.href} class="inline-flex items-center gap-1.5 hover:text-link-hover transition-colors">
+							<span>{link.label}</span>
+						</a>
+					</li>
+				))}
+			</ul>
+			<button
+				type="button"
+				id={mobileMenuButtonId}
+				class="md:hidden cursor-pointer rounded-md border border-border-base bg-white/20 dark:bg-white/5 p-2 text-text-base shadow-sm backdrop-blur-xl transition-colors"
+				aria-expanded="false"
+				aria-controls={mobileMenuId}
+				aria-label="Toggle primary navigation menu"
+			>
+				<span class="sr-only">Toggle menu</span>
+				<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<line class="menu-icon-line menu-icon-line-top" x1="4" y1="7" x2="20" y2="7" stroke-linecap="round" />
+					<line class="menu-icon-line menu-icon-line-middle" x1="4" y1="12" x2="20" y2="12" stroke-linecap="round" />
+					<line class="menu-icon-line menu-icon-line-bottom" x1="4" y1="17" x2="20" y2="17" stroke-linecap="round" />
+				</svg>
+			</button>
+			<ThemeToggle />
+		</div>
     </nav>
+
+	<div
+		id={mobileMenuId}
+		class="md:hidden absolute top-full mt-6 left-4 right-4 mx-auto z-[70] origin-top scale-y-0 transform-gpu transition-transform duration-300 ease-out pointer-events-none"
+	>
+		<div class="mobile-menu-panel relative isolate overflow-hidden rounded-xl text-text-base shadow-2xl p-4">
+			<div class="mobile-menu-tint pointer-events-none absolute inset-0"></div>
+			<ul class="relative z-10 flex flex-col gap-3 text-[0.7rem] font-mono uppercase tracking-[0.12rem]">
+				{sectionLinks.map((link) => (
+					<li>
+						<a href={link.href} class="mobile-nav-link inline-flex items-center gap-2 py-1 hover:text-link-hover transition-colors">
+							<span>{link.label}</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</div>
+	</div>
+    </div>
 
     <figure
         class="rounded-full border-[3px] border-text-base mb-6 flex items-center justify-center transition-colors duration-300 overflow-hidden bg-white/5"
@@ -173,8 +232,64 @@ const {
         location,
         linkedinUrl,
         githubUrl,
+        mobileMenuId,
+        mobileMenuButtonId,
     }}
 >
+    const setupHeaderMobileMenu = () => {
+        const menuButton = document.getElementById(mobileMenuButtonId);
+        const menu = document.getElementById(mobileMenuId);
+
+        if (!(menuButton instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) {
+            return;
+        }
+
+        if (menuButton.dataset.menuReady === "true") {
+            return;
+        }
+        menuButton.dataset.menuReady = "true";
+
+        const setMenuState = (isOpen) => {
+            menuButton.setAttribute("aria-expanded", String(isOpen));
+            menu.classList.toggle("scale-y-100", isOpen);
+            menu.classList.toggle("pointer-events-auto", isOpen);
+            menu.classList.toggle("scale-y-0", !isOpen);
+            menu.classList.toggle("pointer-events-none", !isOpen);
+        };
+
+        menuButton.addEventListener("click", () => {
+            const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+            setMenuState(!isExpanded);
+        });
+
+        menu.querySelectorAll(".mobile-nav-link").forEach((link) => {
+            link.addEventListener("click", () => setMenuState(false));
+        });
+    };
+
+    setupHeaderMobileMenu();
+    document.addEventListener("astro:after-swap", setupHeaderMobileMenu);
+
     // Ensure variables are "used" for static analysis
     console.debug("Header initialized");
 </script>
+
+<style>
+	#header-mobile-menu-button .menu-icon-line {
+		transform-box: fill-box;
+		transform-origin: center;
+		transition: transform 200ms ease, opacity 200ms ease;
+	}
+
+	#header-mobile-menu-button[aria-expanded="true"] .menu-icon-line-top {
+		transform: translateY(5px) rotate(45deg);
+	}
+
+	#header-mobile-menu-button[aria-expanded="true"] .menu-icon-line-middle {
+		opacity: 0;
+	}
+
+	#header-mobile-menu-button[aria-expanded="true"] .menu-icon-line-bottom {
+		transform: translateY(-5px) rotate(-45deg);
+	}
+</style>
