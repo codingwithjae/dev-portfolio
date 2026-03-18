@@ -1,13 +1,16 @@
 ---
-import { staticData } from "../data/staticData";
+import { getStaticData } from "../data/staticData";
+import { resolveLocaleFromRequest } from "../i18n/utils";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 export const prerender = true;
 
-const { notFound } = staticData;
+const locale = resolveLocaleFromRequest(Astro.url);
+const { notFound } = getStaticData(locale);
+const localeHomePath = locale === "es" ? "/es" : "/";
 ---
 
-<BaseLayout title={notFound.title} description={notFound.description}>
+<BaseLayout locale={locale} title={notFound.title} description={notFound.description}>
     <main
         class="flex flex-col items-center justify-center min-h-screen text-center px-4 relative z-10 w-full"
     >
@@ -32,7 +35,7 @@ const { notFound } = staticData;
 
         <div class="reveal delay-200">
             <a
-                href="/"
+                href={localeHomePath}
                 class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 font-bold text-black transition-all duration-300 bg-accent rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(214,234,46,0.5)] hover:scale-110 active:scale-95 text-lg leading-none"
             >
                 <i

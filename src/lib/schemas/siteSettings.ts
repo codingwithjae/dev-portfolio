@@ -27,7 +27,7 @@ export default defineType({
 			name: "siteUrl",
 			title: "Site URL",
 			type: "url",
-			initialValue: "https://developer.johandercampos.com",
+			initialValue: "https://developer.johandercampos.site/",
 		}),
 		defineField({
 			name: "defaultTitle",

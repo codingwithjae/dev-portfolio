@@ -3,19 +3,69 @@ import BlogListPage from "../../components/pages/BlogListPage.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getBlogPosts } from "../../lib/sanity/sanity";
 import { generateBreadcrumbSchema } from "../../components/seo/sanity-seo";
+import { resolveLocaleFromRequest } from "../../i18n/utils";
+import { getStaticData } from "../../data/staticData";
 
-const posts = await getBlogPosts();
-const siteUrl = "https://developer.johandercampos.com";
+const locale = resolveLocaleFromRequest(Astro.url);
+const localizedStaticData = getStaticData(locale);
+const localeHomePath = locale === "es" ? "/es" : "/";
+const localeBlogPath = locale === "es" ? "/es/blog" : "/blog";
+const blogLanguageSwitch = {
+	currentLocale: locale,
+	enHref: "/blog",
+	esHref: "/es/blog",
+	enLabel: "EN",
+	esLabel: "ES",
+	ariaLabel: locale === "es" ? "Cambiar idioma" : "Switch language",
+} as const;
+
+const posts = await getBlogPosts(locale);
+const siteUrl = "https://developer.johandercampos.site";
 const breadcrumbJsonLd = generateBreadcrumbSchema([
-  { name: "Home", url: siteUrl },
-  { name: "Blog", url: `${siteUrl}/blog` },
+	{ name: locale === "es" ? "Inicio" : "Home", url: `${siteUrl}${locale === "es" ? "/es" : ""}` },
+	{ name: "Blog", url: `${siteUrl}${localeBlogPath}` },
 ]);
 ---
 
 <BaseLayout
-  title="Blog"
-  description="Thoughts, tutorials, and insights on frontend development by Johander Campos."
-  jsonLd={breadcrumbJsonLd}
+	locale={locale}
+	title="Blog"
+	description={
+		locale === "es"
+			? "Ideas, tutoriales y notas sobre desarrollo frontend de Johander Campos."
+			: "Thoughts, tutorials, and insights on frontend development by Johander Campos."
+	}
+	jsonLd={breadcrumbJsonLd}
 >
-  <BlogListPage posts={posts} />
+	<BlogListPage
+		posts={posts}
+		homePath={localeHomePath}
+		blogBasePath={localeBlogPath}
+		languageSwitch={blogLanguageSwitch}
+		labels={{
+			navigationAriaLabel: locale === "es" ? "Navegacion del blog" : "Blog navigation",
+			backToHome: locale === "es" ? "<- Volver al inicio" : "<- Back to Home",
+			pageTitle: "Blog",
+			pageDescription:
+				locale === "es"
+					? "Ideas, tutoriales y notas sobre desarrollo frontend."
+					: "Thoughts, tutorials, and insights on frontend development.",
+			emptyState:
+				locale === "es"
+					? "Aun no hay articulos. Pronto habra novedades."
+					: "No blog posts yet. Coming soon!",
+			feedAriaLabel: locale === "es" ? "Publicaciones del blog" : "Blog posts",
+			readMore: localizedStaticData.home.blog.readMore,
+		}}
+		footer={{
+			authorName: localizedStaticData.footer.author,
+			copyrightText: localizedStaticData.footer.copyright,
+			repoText: localizedStaticData.footer.repoText,
+		}}
+		socialLinks={{
+			linkedinUrl: localizedStaticData.header.socials.linkedin,
+			githubUrl: localizedStaticData.header.socials.github,
+			repoUrl: localizedStaticData.header.repoUrl,
+		}}
+	/>
 </BaseLayout>

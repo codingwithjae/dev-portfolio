@@ -20,7 +20,16 @@ export default defineType({
 			title: "CV Download URL",
 			type: "url",
 			initialValue:
-				"https://drive.google.com/uc?export=download&id=19VztvpXXoDmiCYehy0xenuqowLVIWNYa",
+				"https://drive.google.com/file/d/1hFZmIRvL9rnfFACMt16BVlmdjt3WXfbJ/view?usp=drive_link",
+			description: "English CV download URL. If empty, the default CV URL will be used."
+		}),
+		defineField({
+			name: "cvUrlEs",
+			title: "CV Download URL (ES)",
+			type: "url",
+			initialValue:
+				"https://drive.google.com/file/d/1QDPNXCZXzEw5TYXWU1p9btOlBwAG3uPr/view?usp=drive_link",
+			description: "Spanish CV download URL. If empty, the default CV URL will be used.",
 		}),
 		defineField({
 			name: "socials",
@@ -56,6 +65,11 @@ export default defineType({
 							type: "string",
 						}),
 						defineField({
+							name: "nameEs",
+							title: "Project Name (ES)",
+							type: "string",
+						}),
+						defineField({
 							name: "thumbnail",
 							title: "Thumbnail Image",
 							type: "image",
@@ -79,6 +93,12 @@ export default defineType({
 							description: "e.g. 'React / CSS / JavaScript'",
 						}),
 						defineField({
+							name: "techStackEs",
+							title: "Technologies (Slash separated) (ES)",
+							type: "string",
+							description: "e.g. 'React / CSS / JavaScript'",
+						}),
+						defineField({
 							name: "category",
 							title: "Category",
 							type: "string",
@@ -87,6 +107,7 @@ export default defineType({
 									{ title: "Frontend", value: "frontend" },
 									{ title: "Backend", value: "backend" },
 									{ title: "Full Stack", value: "fullstack" },
+									{ title: "Automation & Integrations", value: "automation-integrations" },
 								],
 							},
 							initialValue: "frontend",
@@ -107,16 +128,29 @@ export default defineType({
 					initialValue: "About Me",
 				}),
 				defineField({
+					name: "titleEs",
+					title: "About Title (ES)",
+					type: "string",
+				}),
+				defineField({
 					name: "intro",
 					title: "Intro",
 					type: "text",
-					rows: 3,
+				}),
+				defineField({
+					name: "introEs",
+					title: "Intro (ES)",
+					type: "text",
 				}),
 				defineField({
 					name: "details",
 					title: "Details",
 					type: "text",
-					rows: 6,
+				}),
+				defineField({
+					name: "detailsEs",
+					title: "Details (ES)",
+					type: "text",
 				}),
 			],
 		}),
@@ -136,14 +170,29 @@ export default defineType({
 							type: "string",
 						}),
 						defineField({
+							name: "titleEs",
+							title: "Project / Experience Title (ES)",
+							type: "string",
+						}),
+						defineField({
 							name: "role",
 							title: "Role",
 							type: "string",
 							initialValue: "Independent Project",
 						}),
 						defineField({
+							name: "roleEs",
+							title: "Role (ES)",
+							type: "string",
+						}),
+						defineField({
 							name: "period",
 							title: "Period",
+							type: "string",
+						}),
+						defineField({
+							name: "periodEs",
+							title: "Period (ES)",
 							type: "string",
 						}),
 						defineField({
@@ -158,7 +207,11 @@ export default defineType({
 							name: "summary",
 							title: "Summary",
 							type: "text",
-							rows: 3,
+						}),
+						defineField({
+							name: "summaryEs",
+							title: "Summary (ES)",
+							type: "text",
 						}),
 						defineField({
 							name: "highlights",
@@ -168,8 +221,22 @@ export default defineType({
 							options: { layout: "tags" },
 						}),
 						defineField({
+							name: "highlightsEs",
+							title: "Highlights (ES)",
+							type: "array",
+							of: [{ type: "string" }],
+							options: { layout: "tags" },
+						}),
+						defineField({
 							name: "stack",
 							title: "Stack",
+							type: "array",
+							of: [{ type: "string" }],
+							options: { layout: "tags" },
+						}),
+						defineField({
+							name: "stackEs",
+							title: "Stack (ES)",
 							type: "array",
 							of: [{ type: "string" }],
 							options: { layout: "tags" },
@@ -206,18 +273,74 @@ export default defineType({
 			],
 		}),
 		defineField({
+			name: "author",
+			title: "Author",
+			type: "object",
+			fields: [
+				defineField({
+					name: "name",
+					title: "Name",
+					type: "string",
+				}),
+				defineField({
+					name: "nameEs",
+					title: "Name (ES)",
+					type: "string",
+				}),
+				defineField({
+					name: "title",
+					title: "Title",
+					type: "string",
+				}),
+				defineField({
+					name: "titleEs",
+					title: "Title (ES)",
+					type: "string",
+				}),
+				defineField({
+					name: "subtitle",
+					title: "Subtitle",
+					type: "string",
+				}),
+				defineField({
+					name: "subtitleEs",
+					title: "Subtitle (ES)",
+					type: "string",
+				}),
+				defineField({
+					name: "bio",
+					title: "Bio",
+					type: "text",
+				}),
+				defineField({
+					name: "bioEs",
+					title: "Bio (ES)",
+					type: "text",
+				}),
+			],
+		}),
+		defineField({
 			name: "faqTitle",
 			title: "FAQ Section Title",
 			type: "string",
 			initialValue: "About",
 		}),
 		defineField({
+			name: "faqTitleEs",
+			title: "FAQ Section Title (ES)",
+			type: "string",
+		}),
+		defineField({
 			name: "faqIntro",
 			title: "FAQ Section Intro",
 			type: "text",
-			rows: 3,
 			initialValue:
 				"Quick answers about how I work, what I focus on, and the kind of team environment where I can contribute best.",
+		}),
+		defineField({
+			name: "faqIntroEs",
+			title: "FAQ Section Intro (ES)",
+			type: "text",
 		}),
 		defineField({
 			name: "faqs",
@@ -235,10 +358,19 @@ export default defineType({
 							type: "string",
 						}),
 						defineField({
+							name: "questionEs",
+							title: "Question (ES)",
+							type: "string",
+						}),
+						defineField({
 							name: "answer",
 							title: "Answer",
 							type: "text",
-							rows: 4,
+						}),
+						defineField({
+							name: "answerEs",
+							title: "Answer (ES)",
+							type: "text",
 						}),
 					],
 				}),
@@ -256,10 +388,22 @@ export default defineType({
 					description: "The title shown in browser tabs and search results.",
 				}),
 				defineField({
+					name: "titleEs",
+					title: "SEO Title (ES)",
+					type: "string",
+					description: "The title shown in browser tabs and search results for Spanish pages.",
+				}),
+				defineField({
 					name: "description",
 					title: "SEO Description",
 					type: "text",
 					description: "The description shown in search results.",
+				}),
+				defineField({
+					name: "descriptionEs",
+					title: "SEO Description (ES)",
+					type: "text",
+					description: "The description shown in search results for Spanish pages.",
 				}),
 				defineField({
 					name: "ogImage",

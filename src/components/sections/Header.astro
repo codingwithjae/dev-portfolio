@@ -16,6 +16,30 @@ export interface Props {
     cvUrl?: string;
     downloadCvText: string;
     hasBlogPosts?: boolean;
+    homePath?: string;
+    navigationLabels?: {
+        skills: string;
+        projects: string;
+        blog: string;
+        contact: string;
+        about: string;
+    };
+    mobileMenuAriaLabel?: string;
+    toggleMenuText?: string;
+    socialAriaLabels?: {
+        linkedin: string;
+        github: string;
+    };
+    downloadCvAriaLabel?: string;
+    portraitAltText?: string;
+    languageSwitch?: {
+        currentLocale: "en" | "es";
+        enHref: string;
+        esHref: string;
+        enLabel: string;
+        esLabel: string;
+        ariaLabel: string;
+    };
 }
 
 const {
@@ -31,15 +55,45 @@ const {
     cvUrl,
     downloadCvText,
     hasBlogPosts = true,
+    homePath = "/",
+    navigationLabels = {
+        skills: "Skills",
+        projects: "Projects",
+        blog: "Blog",
+        contact: "Contact",
+        about: "About",
+    },
+    mobileMenuAriaLabel = "Toggle primary navigation menu",
+    toggleMenuText = "Toggle menu",
+    socialAriaLabels = {
+        linkedin: "Visit my LinkedIn profile",
+        github: "Visit my GitHub profile",
+    },
+    downloadCvAriaLabel = "Download my CV (opens in new tab)",
+    portraitAltText = `Portrait of ${name.first} ${name.last}`,
+    languageSwitch = {
+        currentLocale: "en",
+        enHref: "/",
+        esHref: "/es",
+        enLabel: "EN",
+        esLabel: "ES",
+        ariaLabel: "Language switch",
+    },
 } = Astro.props;
 
 const sectionLinks = [
-	{ href: "#skills", label: "Skills" },
-	{ href: "#projects", label: "Projects" },
-	...(hasBlogPosts ? [{ href: "#blog", label: "Blog" }] : []),
-	{ href: "#contact", label: "Contact" },
-	{ href: "#faq", label: "About" },
+	{ href: "#skills", label: navigationLabels.skills },
+	{ href: "#projects", label: navigationLabels.projects },
+	...(hasBlogPosts ? [{ href: "#blog", label: navigationLabels.blog }] : []),
+	{ href: "#contact", label: navigationLabels.contact },
+	{ href: "#faq", label: navigationLabels.about },
 ];
+
+const languageSwitchHref =
+	languageSwitch.currentLocale === "en" ? languageSwitch.esHref : languageSwitch.enHref;
+const languageSwitchTargetLocaleLabel =
+	languageSwitch.currentLocale === "en" ? languageSwitch.esLabel : languageSwitch.enLabel;
+const languageSwitchIconAriaLabel = `${languageSwitch.ariaLabel}: ${languageSwitchTargetLocaleLabel}`;
 
 const mobileMenuId = "header-mobile-menu";
 const mobileMenuButtonId = "header-mobile-menu-button";
@@ -54,14 +108,24 @@ const mobileMenuButtonId = "header-mobile-menu-button";
         class="w-full flex justify-between items-center"
         aria-label="Primary navigation"
     >
-        <a
-            href="/"
-            class="text-text-base font-sans text-[1.13rem] hover:opacity-80 transition-opacity"
-        >
-            {name.first}
-            <span class="font-bold">{name.last}.</span>
-        </a>
-        <div class="flex items-center gap-4">
+		<div class="flex items-center gap-3 md:gap-4">
+			<a
+				href={languageSwitchHref}
+				class="hidden md:inline-flex h-9 min-w-9 px-2 items-center justify-center border border-text-base text-text-base text-[0.7rem] leading-none font-mono uppercase tracking-[0.08rem] transition-colors hover:text-link-hover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-text-base/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-sm"
+				aria-label={languageSwitchIconAriaLabel}
+				title={languageSwitchTargetLocaleLabel}
+			>
+				{languageSwitchTargetLocaleLabel}
+			</a>
+			<a
+				href={homePath}
+				class="text-text-base font-sans text-[1.13rem] hover:opacity-80 transition-opacity"
+			>
+				{name.first}
+				<span class="font-bold">{name.last}.</span>
+			</a>
+		</div>
+		<div class="flex items-center gap-4 md:gap-0">
 			<ul class="hidden md:flex flex-wrap items-center justify-end gap-5 lg:gap-8 text-[0.65rem] sm:text-[0.75rem] font-mono uppercase tracking-[0.12rem] max-w-[18rem] sm:max-w-none">
 				{sectionLinks.map((link) => (
 					<li>
@@ -77,16 +141,18 @@ const mobileMenuButtonId = "header-mobile-menu-button";
 				class="md:hidden cursor-pointer rounded-md border border-border-base bg-white/20 dark:bg-white/5 p-2 text-text-base shadow-sm backdrop-blur-xl transition-colors"
 				aria-expanded="false"
 				aria-controls={mobileMenuId}
-				aria-label="Toggle primary navigation menu"
+				aria-label={mobileMenuAriaLabel}
 			>
-				<span class="sr-only">Toggle menu</span>
+				<span class="sr-only">{toggleMenuText}</span>
 				<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 					<line class="menu-icon-line menu-icon-line-top" x1="4" y1="7" x2="20" y2="7" stroke-linecap="round" />
 					<line class="menu-icon-line menu-icon-line-middle" x1="4" y1="12" x2="20" y2="12" stroke-linecap="round" />
 					<line class="menu-icon-line menu-icon-line-bottom" x1="4" y1="17" x2="20" y2="17" stroke-linecap="round" />
 				</svg>
 			</button>
-			<ThemeToggle />
+			<div class="md:ml-4">
+				<ThemeToggle />
+			</div>
 		</div>
     </nav>
 
@@ -104,6 +170,16 @@ const mobileMenuButtonId = "header-mobile-menu-button";
 						</a>
 					</li>
 				))}
+				<li class="pt-2 border-t border-border-base/40">
+					<a
+						href={languageSwitchHref}
+						class="mobile-nav-link inline-flex h-10 min-w-10 px-3 items-center justify-center border border-text-base text-text-base text-[0.75rem] leading-none font-mono uppercase tracking-[0.08rem] transition-colors hover:text-link-hover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-text-base/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-sm"
+						aria-label={languageSwitchIconAriaLabel}
+						title={languageSwitchTargetLocaleLabel}
+					>
+						{languageSwitchTargetLocaleLabel}
+					</a>
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -117,7 +193,7 @@ const mobileMenuButtonId = "header-mobile-menu-button";
                 <img
                     class="rounded-full w-[200px] h-[200px] md:w-[375px] md:h-[375px] object-cover aspect-square"
                     src={photo}
-                    alt={`Portrait of ${name.first} ${name.last}, Software Engineer"`}
+                    alt={portraitAltText}
                     loading="eager"
                     decoding="async"
                 />
@@ -127,7 +203,7 @@ const mobileMenuButtonId = "header-mobile-menu-button";
                     src={photo}
                     width={375}
                     height={375}
-                    alt={`Portrait of ${name.first} ${name.last}, Front End Developer`}
+                    alt={portraitAltText}
                     loading="eager"
                     fetchpriority="high"
                     decoding="async"
@@ -136,18 +212,18 @@ const mobileMenuButtonId = "header-mobile-menu-button";
         }
     </figure>
 
-    <div class="text-center mb-6 text-text-base transition-colors duration-300">
-        <h1
-            class="hero-title-intro text-[clamp(2.4rem,6vw,3.625rem)] font-bold leading-tight"
-        >
-            {title}
-        </h1>
-        {
-            subtitle && !title.includes(subtitle) && (
-                <p class="text-[clamp(2.4rem,6vw,3.625rem)] font-bold leading-tight mt-1">
-                    <span class="hero-subtitle-wrap">
-                        <span class="hero-subtitle-typed">{subtitle}</span>
-                    </span>
+	<div class="text-center mb-6 text-text-base transition-colors duration-300 max-w-[min(95vw,48rem)] sm:max-w-[56rem] mx-auto px-0 sm:px-0">
+		<h1
+			class="hero-title-intro text-[clamp(1.72rem,8.15vw,3.5rem)] sm:text-[clamp(2.4rem,6vw,3.5rem)] font-bold leading-[1.05] sm:leading-tight tracking-[-0.01em] break-words sm:whitespace-nowrap"
+		>
+			{title}
+		</h1>
+		{
+			subtitle && !title.includes(subtitle) && (
+				<p class="text-[clamp(1.72rem,8.15vw,3.625rem)] sm:text-[clamp(2.4rem,6vw,3.625rem)] font-bold leading-[1.05] sm:leading-tight tracking-[-0.01em] mt-1 break-words">
+					<span class="hero-subtitle-wrap">
+						<span class="hero-subtitle-typed">{subtitle}</span>
+					</span>
                 </p>
             )
         }
@@ -168,7 +244,7 @@ const mobileMenuButtonId = "header-mobile-menu-button";
             target="_blank"
             rel="noopener noreferrer"
             class="text-text-base hover:scale-125 transition-transform inline-block"
-            aria-label="Visit my LinkedIn profile"
+            aria-label={socialAriaLabels.linkedin}
         >
             <svg
                 class="w-6 h-6"
@@ -186,7 +262,7 @@ const mobileMenuButtonId = "header-mobile-menu-button";
             target="_blank"
             rel="noopener noreferrer"
             class="text-text-base hover:scale-125 transition-transform inline-block"
-            aria-label="Visit my GitHub profile"
+            aria-label={socialAriaLabels.github}
         >
             <svg
                 class="w-6 h-6"
@@ -209,11 +285,11 @@ const mobileMenuButtonId = "header-mobile-menu-button";
                 target="_blank"
                 rel="noopener noreferrer"
                 class={`
-          px-5 py-3 bg-accent text-black font-bold rounded-md
-          hover:bg-accent-hover hover:scale-110 transition-transform
+          px-5 py-3 bg-accent-hover text-black dark:text-black font-bold rounded-md
+          hover:scale-110 transition-transform
           font-display text-[1.13rem]
         `}
-                aria-label="Download my CV (opens in new tab)"
+                aria-label={downloadCvAriaLabel}
             >
                 {downloadCvText}
             </a>

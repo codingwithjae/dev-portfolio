@@ -1,27 +1,69 @@
 ---
 import type { BlogPostDetail } from '../../lib/sanity/sanity.types';
+import type { Locale } from '../../i18n/config';
 
 export interface Props {
 	post: BlogPostDetail;
+	homePath?: string;
+	footer: {
+		authorName: string;
+		copyrightText: string;
+		repoText: {
+			pre: string;
+			link: string;
+			post: string;
+		};
+	};
+	socialLinks: {
+		linkedinUrl: string;
+		githubUrl: string;
+		repoUrl: string;
+	};
+	labels?: {
+		backNavigationAriaLabel: string;
+		backToHome: string;
+	};
+	languageSwitch?: {
+		currentLocale: "en" | "es";
+		enHref: string;
+		esHref: string;
+		enLabel: string;
+		esLabel: string;
+		ariaLabel: string;
+	};
+	locale?: Locale;
 }
 
 import BlogPostContent from '../sections/BlogPostContent.astro';
 import Footer from '../sections/Footer.astro';
 
-const { post } = Astro.props;
-
-const heroData = {
-	linkedinUrl: 'https://www.linkedin.com/in/johandercampos/',
-	githubUrl: 'https://github.com/codingwithjae',
-};
+const {
+	post,
+	homePath = '/',
+	footer,
+	socialLinks,
+	labels = {
+		backNavigationAriaLabel: 'Back navigation',
+		backToHome: 'Back to Home',
+	},
+	languageSwitch = {
+		currentLocale: "en",
+		enHref: "/blog",
+		esHref: "/es/blog",
+		enLabel: "EN",
+		esLabel: "ES",
+		ariaLabel: "Language switch",
+	},
+	locale = 'en',
+} = Astro.props;
 ---
 
 <nav
-    class="max-w-[50rem] mx-auto px-5 pt-12 reveal"
-    aria-label="Back navigation"
+    class="max-w-200 mx-auto px-5 pt-12 reveal flex items-center justify-between gap-4"
+    aria-label={labels.backNavigationAriaLabel}
 >
     <a
-        href="/"
+        href={homePath}
         class="glassmorphism inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold font-display text-text-base hover:text-text-muted transition-all hover:scale-105 active:scale-95 group"
     >
         <svg
@@ -37,18 +79,51 @@ const heroData = {
                 stroke-linejoin="round"
                 d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
         </svg>
-        Back to Home
+        {labels.backToHome}
     </a>
+	<div class="inline-flex items-center gap-1 text-[0.68rem] font-mono uppercase tracking-[0.12rem]" aria-label={languageSwitch.ariaLabel}>
+		<a
+			href={languageSwitch.enHref}
+			class={`px-2 py-1 rounded border transition-colors ${
+				languageSwitch.currentLocale === "en"
+					? "border-border-base bg-white/20 dark:bg-white/10 text-text-base"
+					: "border-border-base/40 text-text-muted hover:text-link-hover"
+			}`}
+		>
+			{languageSwitch.enLabel}
+		</a>
+		<span class="text-text-muted">/</span>
+		<a
+			href={languageSwitch.esHref}
+			class={`px-2 py-1 rounded border transition-colors ${
+				languageSwitch.currentLocale === "es"
+					? "border-border-base bg-white/20 dark:bg-white/10 text-text-base"
+					: "border-border-base/40 text-text-muted hover:text-link-hover"
+			}`}
+		>
+			{languageSwitch.esLabel}
+		</a>
+	</div>
 </nav>
 
 <main class="py-10" id="main-content">
     <article>
-        <BlogPostContent post={post} />
+        <BlogPostContent
+            post={post}
+            locale={locale}
+            labels={{
+                author: locale === 'es' ? 'Autor' : 'Author',
+                publishedOn: locale === 'es' ? 'Publicado el' : 'Published on',
+            }}
+        />
     </article>
 </main>
 
 <Footer
-    linkedinUrl={heroData.linkedinUrl}
-    githubUrl={heroData.githubUrl}
-    repoUrl="https://github.com/codingwithjae/dev-portfolio"
+    linkedinUrl={socialLinks.linkedinUrl}
+    githubUrl={socialLinks.githubUrl}
+    repoUrl={socialLinks.repoUrl}
+    authorName={footer.authorName}
+    copyrightText={footer.copyrightText}
+    repoText={footer.repoText}
 />

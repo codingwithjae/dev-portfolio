@@ -1,5 +1,6 @@
 import blogPost from "./blogPost";
+import localizedText from "./localizedText";
 import pageContent from "./pageContent";
 import siteSettings from "./siteSettings";
 
-export const schemaTypes = [siteSettings, pageContent, blogPost];
+export const schemaTypes = [localizedText, siteSettings, pageContent, blogPost];

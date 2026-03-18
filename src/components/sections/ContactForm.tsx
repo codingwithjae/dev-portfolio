@@ -1,5 +1,5 @@
-import React, { type ChangeEvent, type FormEvent, useCallback, useEffect, useState } from "react";
 import emailjs from "@emailjs/browser";
+import React, { type ChangeEvent, type FormEvent, useCallback, useEffect, useState } from "react";
 import { toast } from "../ui/Toast/toast";
 
 interface FormState {
@@ -8,16 +8,64 @@ interface FormState {
 	message: string;
 }
 
-const getErrorMessage = (error: unknown): string => {
+export interface ContactFormLabels {
+	heading: string;
+	subheading: string;
+	copyEmailAriaLabel: string;
+	copyEmailSuccess: string;
+	copyEmailError: string;
+	nameLabel: string;
+	namePlaceholder: string;
+	emailLabel: string;
+	emailPlaceholder: string;
+	messageLabel: string;
+	messagePlaceholder: string;
+	submitButton: string;
+	sendingButton: string;
+	configurationError: string;
+	nameRequired: string;
+	emailRequired: string;
+	emailInvalid: string;
+	messageRequired: string;
+	submissionSuccess: string;
+	submissionError: string;
+	unexpectedError: string;
+}
+
+const defaultContactFormLabels: ContactFormLabels = {
+	heading: "Got a project?",
+	subheading: "Lets Talk!",
+	copyEmailAriaLabel: "Copy email to clipboard",
+	copyEmailSuccess: "Email copied to clipboard!",
+	copyEmailError: "Failed to copy email",
+	nameLabel: "Name",
+	namePlaceholder: "Your Name",
+	emailLabel: "Email",
+	emailPlaceholder: "Your email",
+	messageLabel: "Message",
+	messagePlaceholder: "Your message",
+	submitButton: "Send Message",
+	sendingButton: "Sending...",
+	configurationError: "Configuration error. Please try again later.",
+	nameRequired: "Please enter your name",
+	emailRequired: "Please enter your email",
+	emailInvalid: "Please enter a valid email address",
+	messageRequired: "Please enter your message",
+	submissionSuccess: "Thanks for your message!",
+	submissionError: "Something went wrong. Please try again.",
+	unexpectedError: "Failed to send message. Please try again.",
+};
+
+const getErrorMessage = (error: unknown, labels: ContactFormLabels): string => {
 	if (typeof error === "object" && error !== null) {
 		const maybeError = error as { text?: unknown; message?: unknown };
 		if (typeof maybeError.text === "string") return maybeError.text;
 		if (typeof maybeError.message === "string") return maybeError.message;
 	}
-	return "Failed to send message. Please try again.";
+	return labels.unexpectedError;
 };
 
-const useContactForm = () => {
+const useContactForm = (labels: ContactFormLabels) => {
 	const [formState, setFormState] = useState<FormState>({
 		name: "",
 		email: "",
@@ -48,24 +96,24 @@ const useContactForm = () => {
 
 		if (!serviceId || !templateId) {
 			console.error("EmailJS service ID or template ID is missing");
-			toast("Configuration error. Please try again later.", "error");
+			toast(labels.configurationError, "error");
 			return;
 		}
 
 		if (!formState.name.trim()) {
-			toast("Please enter your name", "error");
+			toast(labels.nameRequired, "error");
 			return;
 		}
 		if (!formState.email.trim()) {
-			toast("Please enter your email", "error");
+			toast(labels.emailRequired, "error");
 			return;
 		}
 		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
-			toast("Please enter a valid email address", "error");
+			toast(labels.emailInvalid, "error");
 			return;
 		}
 		if (!formState.message.trim()) {
-			toast("Please enter your message", "error");
+			toast(labels.messageRequired, "error");
 			return;
 		}
 
@@ -85,14 +133,14 @@ const useContactForm = () => {
 			});
 
 			if (result.status === 200) {
-				toast("Thanks for your message!", "success");
+				toast(labels.submissionSuccess, "success");
 				setFormState({ name: "", email: "", message: "" });
 			} else {
-				toast("Something went wrong. Please try again.", "error");
+				toast(labels.submissionError, "error");
 			}
 		} catch (error: unknown) {
 			console.error("Submission Error:", error);
-			const errorMessage = getErrorMessage(error);
+			const errorMessage = getErrorMessage(error, labels);
 			toast(errorMessage, "error");
 		} finally {
 			setIsSubmitting(false);
@@ -104,30 +152,36 @@ const useContactForm = () => {
 
 interface ContactFormProps {
 	email: string;
+	labels?: ContactFormLabels;
 }
 
-export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
-	const { formState, isSubmitting, handleChange, handleSubmit } = useContactForm();
+export const ContactForm: React.FC<ContactFormProps> = ({
+	email,
+	labels = defaultContactFormLabels,
+}) => {
+	const { formState, isSubmitting, handleChange, handleSubmit } = useContactForm(labels);
 
 	return (
 		<section className="group p-5 flex flex-col md:flex-row md:justify-between md:gap-[9.375rem] items-center bg-transparent font-display w-full transition-all duration-300 hover:scale-[1.01] cursor-pointer">
 			<div className="text-center md:text-left mb-7 md:ml-auto">
 				<h2 className="text-[clamp(2.2rem,5vw,2.8rem)] font-bold mb-[0.625rem] text-text-base transition-colors">
-					Got a project?
+					{labels.heading}
 				</h2>
-				<h3 className="text-heading-accent text-[2rem] mb-[1.25rem] font-bold">Lets Talk!</h3>
+				<h3 className="text-heading-accent text-[2rem] mb-[1.25rem] font-bold">
+					{labels.subheading}
+				</h3>
 				<p className="text-text-base text-[1.13rem] transition-colors flex items-center justify-center md:justify-start gap-3 w-full">
 					<span className="truncate max-w-[calc(100vw-100px)] sm:max-w-none">{email}</span>
 					<button
 						id="copy-email"
 						type="button"
 						className="cursor-pointer hover:text-link-hover transition-colors inline-flex items-center"
-						aria-label="Copy email to clipboard"
+						aria-label={labels.copyEmailAriaLabel}
 						onClick={() => {
 							navigator.clipboard
 								.writeText(email)
-								.then(() => toast("Email copied to clipboard!", "success"))
-								.catch(() => toast("Failed to copy email", "error"));
+								.then(() => toast(labels.copyEmailSuccess, "success"))
+								.catch(() => toast(labels.copyEmailError, "error"));
 						}}
 					>
 						<svg
@@ -155,13 +209,13 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 			>
 				<div className="mb-6">
 					<label htmlFor="name" className="block text-text-base font-bold mb-2 ml-1">
-						Name
+						{labels.nameLabel}
 					</label>
 					<input
 						id="name"
 						type="text"
 						name="name"
-						placeholder="Your Name"
+						placeholder={labels.namePlaceholder}
 						autoComplete="name"
 						required
 						value={formState.name}
@@ -171,13 +225,13 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 				</div>
 				<div className="mb-6">
 					<label htmlFor="email" className="block text-text-base font-bold mb-2 ml-1">
-						Email
+						{labels.emailLabel}
 					</label>
 					<input
 						id="email"
 						type="email"
 						name="email"
-						placeholder="Your email"
+						placeholder={labels.emailPlaceholder}
 						autoComplete="email"
 						required
 						value={formState.email}
@@ -187,12 +241,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 				</div>
 				<div className="mb-6">
 					<label htmlFor="message" className="block text-text-base font-bold mb-2 ml-1">
-						Message
+						{labels.messageLabel}
 					</label>
 					<textarea
 						id="message"
 						name="message"
-						placeholder="Your message"
+						placeholder={labels.messagePlaceholder}
 						rows={4}
 						required
 						value={formState.message}
@@ -206,7 +260,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ email }) => {
 						disabled={isSubmitting}
 						className={`px-[1.5rem] py-[0.75rem] font-bold text-[1.13rem] bg-accent-hover text-black rounded-[0.5rem] hover:scale-105 transition-all ml-auto shadow-[0_4px_14px_0_rgba(214,234,46,0.39)] ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
 					>
-						{isSubmitting ? "Sending..." : "Send Message"}
+						{isSubmitting ? labels.sendingButton : labels.submitButton}
 					</button>
 				</div>
 			</form>

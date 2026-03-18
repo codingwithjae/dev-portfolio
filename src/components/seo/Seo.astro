@@ -28,7 +28,7 @@ const {
 } = Astro.props;
 
 const resolvedSiteUrl =
-    siteUrl || Astro.site?.href || "https://developer.johandercampos.com";
+    siteUrl || Astro.site?.href || "https://developer.johandercampos.site/";
 const fullCanonicalUrl = canonicalUrl || Astro.url.href;
 const fullOgImage = image.startsWith("http")
     ? image

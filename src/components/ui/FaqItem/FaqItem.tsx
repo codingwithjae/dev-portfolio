@@ -71,7 +71,7 @@ export const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
 				className="overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
 			>
 				<div className="pt-[0.9375rem] pb-[0.625rem]">
-					<p className="leading-[1.5625rem] text-text-muted text-left text-[18px] font-display transition-colors">
+					<p className="leading-[1.5625rem] text-text-muted text-left text-[18px] font-sans font-normal transition-colors">
 						{answer}
 					</p>
 				</div>

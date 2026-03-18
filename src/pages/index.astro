@@ -9,7 +9,8 @@ import ProjectCard from "../components/ui/cards/ProjectCard.astro";
 import { SkillCard } from "../components/ui/cards/SkillCard";
 import { FaqItem } from "../components/ui/FaqItem/FaqItem";
 import BackToTop from "../components/ui/BackToTop/BackToTop.astro";
-import { staticData } from "../data/staticData";
+import { getStaticData } from "../data/staticData";
+import { resolveLocaleFromRequest } from "../i18n/utils";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getFeaturedBlogPosts, getPageContent } from "../lib/sanity/sanity";
 import type { BlogPost, PageContent, UIProject } from "../lib/sanity/sanity.types";
@@ -20,33 +21,40 @@ import {
   resolveSkillCategories,
   extractHomeSEO,
   extractAuthorHeader,
+  resolveFaqContent,
   PROJECT_CATEGORIES_ORDER,
   CATEGORY_DISPLAY_NAMES,
 } from "../lib/sanity/transform";
+
+const locale = resolveLocaleFromRequest(Astro.url);
+const localizedStaticData = getStaticData(locale);
 
 let homePageContent: PageContent | null = null;
 let featuredBlogPosts: BlogPost[] = [];
 
 try {
   const [content, posts] = await Promise.all([
-    getPageContent(),
-    getFeaturedBlogPosts(),
+		getPageContent(locale),
+		getFeaturedBlogPosts(locale),
   ]);
   homePageContent = content;
   featuredBlogPosts = posts;
 } catch (fetchError) {
   console.error("Sanity data fetch failed:", fetchError);
 }
-
-const skillCategories = resolveSkillCategories(homePageContent);
-const portfolioProjects = mapSanityProjectsToUI(homePageContent?.projects);
+const skillCategories = resolveSkillCategories(homePageContent, locale);
+const portfolioProjects = mapSanityProjectsToUI(homePageContent?.projects, locale);
 const projectsByCategory = groupProjectsByCategory(portfolioProjects);
-const faqTitle = homePageContent?.faqTitle || staticData.home.faq.title;
-const faqIntro = homePageContent?.faqIntro || staticData.home.faq.intro;
-const frequentlyAskedQuestions =
-  homePageContent?.faqs && homePageContent.faqs.length > 0
-    ? homePageContent.faqs
-    : staticData.home.faq.questions;
+const orderedProjectCategories = [
+  ...PROJECT_CATEGORIES_ORDER,
+  ...Object.keys(projectsByCategory).filter(
+    (category) =>
+      !PROJECT_CATEGORIES_ORDER.includes(
+        category as (typeof PROJECT_CATEGORIES_ORDER)[number],
+      ),
+  ),
+];
+const faqContent = resolveFaqContent(homePageContent, locale);
 
 const optimizedPersonImage = await getImage({
   src: photoImage,
@@ -60,35 +68,79 @@ const {
   description: pageDescription,
   ogImage,
   noindex: pageNoindex,
-} = extractHomeSEO(homePageContent);
-const headerData = extractAuthorHeader(homePageContent);
+} = extractHomeSEO(homePageContent, locale);
+const headerData = extractAuthorHeader(homePageContent, locale);
+const heroPhoto = headerData.portrait || photoImage;
 
 const combinedJsonLd = getHomeSchema(
   homePageContent,
-  staticData,
+  localizedStaticData,
   optimizedPersonImage.src,
+  locale,
 );
+
+const localeHomePath = locale === "es" ? "/es" : "/";
+const localeBlogPath = locale === "es" ? "/es/blog" : "/blog";
+const resolvedCvUrl =
+  locale === "es"
+    ? homePageContent?.cvUrlEs || homePageContent?.cvUrl || localizedStaticData.header.cvUrl
+    : homePageContent?.cvUrl || localizedStaticData.header.cvUrl;
+const homeLanguageSwitch = {
+  currentLocale: locale,
+  enHref: "/",
+  esHref: "/es",
+  enLabel: "EN",
+  esLabel: "ES",
+  ariaLabel: locale === "es" ? "Cambiar idioma" : "Switch language",
+} as const;
 ---
 
 <BaseLayout
+  locale={locale}
   title={pageTitle}
   description={pageDescription}
   ogImage={ogImage}
   noindex={pageNoindex}
   jsonLd={combinedJsonLd}
-  preloadHeroImage={photoImage}
+  {...(!headerData.portrait ? { preloadHeroImage: photoImage } : {})}
 >
   <Header
     name={headerData.name}
     title={headerData.title}
     subtitle={headerData.subtitle}
     paragraph={headerData.bio}
-    photo={headerData.portrait || photoImage}
-    linkedinUrl={staticData.header.socials.linkedin}
-    githubUrl={staticData.header.socials.github}
-    cvUrl={homePageContent?.cvUrl || "#"}
-    downloadCvText={staticData.header.downloadCv}
+    photo={heroPhoto}
+    linkedinUrl={localizedStaticData.header.socials.linkedin}
+    githubUrl={localizedStaticData.header.socials.github}
+    cvUrl={resolvedCvUrl}
+    downloadCvText={localizedStaticData.header.downloadCv}
+    homePath={localeHomePath}
+    navigationLabels={{
+      skills: locale === "es" ? "Habilidades" : "Skills",
+      projects: locale === "es" ? "Proyectos" : "Projects",
+      blog: "Blog",
+      contact: locale === "es" ? "Contacto" : "Contact",
+      about: localizedStaticData.home.faq.title,
+    }}
+    mobileMenuAriaLabel={
+      locale === "es" ? "Abrir menu de navegacion principal" : "Toggle primary navigation menu"
+    }
+    toggleMenuText={locale === "es" ? "Abrir menu" : "Toggle menu"}
+    socialAriaLabels={{
+      linkedin:
+        locale === "es" ? "Visitar mi perfil de LinkedIn" : "Visit my LinkedIn profile",
+      github: locale === "es" ? "Visitar mi perfil de GitHub" : "Visit my GitHub profile",
+    }}
+    downloadCvAriaLabel={
+      locale === "es" ? "Descargar mi CV (se abre en una nueva pestana)" : "Download my CV (opens in new tab)"
+    }
+    portraitAltText={
+      locale === "es"
+        ? `Retrato de ${headerData.name.first} ${headerData.name.last}`
+        : `Portrait of ${headerData.name.first} ${headerData.name.last}`
+    }
     hasBlogPosts={featuredBlogPosts.length > 0}
+    languageSwitch={homeLanguageSwitch}
   />
 
   <main
@@ -97,10 +149,10 @@ const combinedJsonLd = getHomeSchema(
   >
     <section
       id="skills"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-[1.25rem] max-w-[50rem] w-full mb-16 lg:self-center"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5 max-w-200 w-full mb-16 lg:self-center"
       aria-labelledby="skills-heading"
     >
-      <h2 id="skills-heading" class="sr-only">{staticData.home.skillsTitle}</h2>
+      <h2 id="skills-heading" class="sr-only">{localizedStaticData.home.skillsTitle}</h2>
       {
         skillCategories.map((skillCategory, index: number) => {
           if (
@@ -121,6 +173,7 @@ const combinedJsonLd = getHomeSchema(
                 client:visible
                 category={skillCategory.category}
                 skills={skillsForTicker}
+                locale={locale}
               />
             </div>
           );
@@ -132,7 +185,7 @@ const combinedJsonLd = getHomeSchema(
       portfolioProjects.length > 0 && (
         <section
           id="projects"
-          class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-16"
+          class="flex flex-col justify-center items-center w-full max-w-200 mb-16"
           aria-labelledby="projects-heading"
         >
           <div class="w-full mb-16 reveal">
@@ -140,14 +193,14 @@ const combinedJsonLd = getHomeSchema(
               id="projects-heading"
               class="text-[clamp(2.5rem,5vw,3.625rem)] font-display font-bold"
             >
-              {staticData.home.projects.title}
+              {localizedStaticData.home.projects.title}
             </h2>
             <p class="text-text-muted mt-2 font-sans">
-              {staticData.home.projects.description}
+              {localizedStaticData.home.projects.description}
             </p>
           </div>
 
-          {PROJECT_CATEGORIES_ORDER.map((cat) => {
+          {orderedProjectCategories.map((cat) => {
             const categoryProjects = projectsByCategory[cat] || [];
             if (categoryProjects.length === 0) return null;
 
@@ -157,12 +210,12 @@ const combinedJsonLd = getHomeSchema(
                   <h3 class="text-2xl font-display font-bold text-text-base">
                     {CATEGORY_DISPLAY_NAMES[cat] || cat}
                   </h3>
-                  <div class="h-[1px] flex-1 bg-border-base/30" />
+                  <div class="h-px flex-1 bg-border-base/30" />
                   <span class="text-[10px] font-mono text-text-base font-bold uppercase tracking-[0.2em]">
                     {categoryProjects.length}{" "}
                     {categoryProjects.length === 1
-                      ? staticData.home.projects.projectCount
-                      : staticData.home.projects.projectsCount}
+                      ? localizedStaticData.home.projects.projectCount
+                      : localizedStaticData.home.projects.projectsCount}
                   </span>
                 </div>
 
@@ -171,7 +224,7 @@ const combinedJsonLd = getHomeSchema(
                     categoryProjects.length === 1
                       ? "flex justify-center"
                       : "grid grid-cols-1 md:grid-cols-2"
-                  } gap-[1.5rem] w-full items-start`}
+                  } gap-6 w-full items-start`}
                 >
                   {categoryProjects.map((project: UIProject, index: number) => (
                     <article
@@ -186,6 +239,9 @@ const combinedJsonLd = getHomeSchema(
                         demoUrl={project.demoUrl}
                         codeUrl={project.codeUrl}
                         documentationUrl={project.documentationUrl}
+                        viewProjectText={localizedStaticData.home.projects.viewProject}
+                        viewDocumentationText={localizedStaticData.home.projects.viewDocumentation}
+                        viewCodeText={localizedStaticData.home.projects.viewCode}
                       />
                     </article>
                   ))}
@@ -201,7 +257,7 @@ const combinedJsonLd = getHomeSchema(
       featuredBlogPosts.length > 0 && (
         <section
           id="blog"
-          class="flex flex-col justify-center items-center w-full max-w-[50rem] mb-16"
+          class="flex flex-col justify-center items-center w-full max-w-200 mb-16"
           aria-labelledby="blog-heading"
         >
           <div class="w-full flex justify-between items-center mb-16 reveal">
@@ -209,7 +265,7 @@ const combinedJsonLd = getHomeSchema(
               id="blog-heading"
               class="text-[clamp(2.8rem,5vw,3.625rem)] font-display font-bold text-left w-full"
             >
-              {staticData.home.blog.title}
+              {localizedStaticData.home.blog.title}
             </h2>
           </div>
           <div class="flex flex-col justify-center items-center gap-16 w-full">
@@ -219,16 +275,18 @@ const combinedJsonLd = getHomeSchema(
                   title={post.title}
                   excerpt={post.excerpt || ""}
                   slug={post.slug || ""}
+                  blogBasePath={localeBlogPath}
+                  readMoreText={localizedStaticData.home.blog.readMore}
                   coverImage={post.coverImage}
                 />
               </article>
             ))}
             <div class="reveal delay-300">
               <a
-                href="/blog"
+                href={localeBlogPath}
                 class="font-bold hover:text-link-hover transition-all mt-4"
               >
-                {staticData.home.blog.viewAll}
+                {localizedStaticData.home.blog.viewAll}
               </a>
             </div>
           </div>
@@ -237,15 +295,61 @@ const combinedJsonLd = getHomeSchema(
     }
 
     <section id="contact" class="w-full reveal mb-16" aria-labelledby="contact-heading">
-      <h2 id="contact-heading" class="sr-only">Contact Me</h2>
-      <ContactForm client:visible email="connect@johandercampos.com" />
+      <h2 id="contact-heading" class="sr-only">{locale === "es" ? "Contacto" : "Contact"}</h2>
+      <ContactForm
+        client:visible
+        email="connect@johandercampos.site"
+        labels={{
+          heading: localizedStaticData.home.contact.title,
+          subheading: localizedStaticData.home.contact.subtitle,
+          copyEmailAriaLabel:
+            locale === "es" ? "Copiar correo al portapapeles" : "Copy email to clipboard",
+          copyEmailSuccess:
+            locale === "es" ? "Correo copiado al portapapeles" : "Email copied to clipboard!",
+          copyEmailError: locale === "es" ? "No se pudo copiar el correo" : "Failed to copy email",
+          nameLabel: localizedStaticData.home.contact.form.nameLabel,
+          namePlaceholder: localizedStaticData.home.contact.form.namePlaceholder,
+          emailLabel: localizedStaticData.home.contact.form.emailLabel,
+          emailPlaceholder: localizedStaticData.home.contact.form.emailPlaceholder,
+          messageLabel: localizedStaticData.home.contact.form.messageLabel,
+          messagePlaceholder: localizedStaticData.home.contact.form.messagePlaceholder,
+          submitButton: localizedStaticData.home.contact.form.submitButton,
+          sendingButton: localizedStaticData.home.contact.form.sendingButton,
+          configurationError:
+            locale === "es"
+              ? "Error de configuracion. Intentalo mas tarde."
+              : "Configuration error. Please try again later.",
+          nameRequired:
+            locale === "es" ? "Por favor ingresa tu nombre" : "Please enter your name",
+          emailRequired:
+            locale === "es" ? "Por favor ingresa tu correo" : "Please enter your email",
+          emailInvalid:
+            locale === "es"
+              ? "Por favor ingresa un correo valido"
+              : "Please enter a valid email address",
+          messageRequired:
+            locale === "es" ? "Por favor ingresa tu mensaje" : "Please enter your message",
+          submissionSuccess:
+            locale === "es"
+              ? "Gracias por tu mensaje"
+              : "Thanks for your message!",
+          submissionError:
+            locale === "es"
+              ? "Algo salio mal. Intentalo nuevamente."
+              : "Something went wrong. Please try again.",
+          unexpectedError:
+            locale === "es"
+              ? "No se pudo enviar el mensaje. Intentalo nuevamente."
+              : "Failed to send message. Please try again.",
+        }}
+      />
     </section>
 
     {
-      frequentlyAskedQuestions.length > 0 && (
+      faqContent.questions.length > 0 && (
         <section
           id="faq"
-          class="text-center p-2 sm:p-5 w-full md:max-w-[45rem] font-display mt-0 mb-16"
+          class="text-center p-2 sm:p-5 w-full md:max-w-180 font-display mt-0 mb-16"
           aria-labelledby="faq-heading"
         >
           <div class="reveal">
@@ -253,15 +357,15 @@ const combinedJsonLd = getHomeSchema(
               id="faq-heading"
               class="text-[clamp(2.5rem,5vw,3.625rem)] font-bold tracking-[0.0625rem] sm:tracking-[0.125rem]"
             >
-              {faqTitle}
+              {faqContent.title}
             </h2>
-            <p class="mt-4 mx-auto max-w-2xl font-sans text-text-muted leading-relaxed">
-              {faqIntro}
+            <p class="mt-4 mx-auto max-w-2xl text-left font-sans text-text-muted leading-relaxed">
+              {faqContent.intro}
             </p>
           </div>
           <div class="reveal">
-            <div class="glassmorphism p-4 sm:p-[1.875rem] rounded-[1.25rem] sm:rounded-[1.875rem] mt-16 transition-all duration-300 cursor-pointer">
-              {frequentlyAskedQuestions.map((faq) => (
+            <div class="glassmorphism p-4 sm:p-7.5 rounded-[1.25rem] sm:rounded-[1.875rem] mt-16 transition-all duration-300 cursor-pointer">
+              {faqContent.questions.map((faq: { question: string; answer: string }) => (
                 <FaqItem
                   client:visible
                   question={faq.question}
@@ -276,9 +380,14 @@ const combinedJsonLd = getHomeSchema(
   </main>
 
   <Footer
-    linkedinUrl={staticData.header.socials.linkedin}
-    githubUrl={staticData.header.socials.github}
-    repoUrl={staticData.header.repoUrl}
+    linkedinUrl={localizedStaticData.header.socials.linkedin}
+    githubUrl={localizedStaticData.header.socials.github}
+    repoUrl={localizedStaticData.header.repoUrl}
+    authorName={localizedStaticData.footer.author}
+    copyrightText={localizedStaticData.footer.copyright}
+    repoText={localizedStaticData.footer.repoText}
+    linkedInAriaLabel={locale === "es" ? "Perfil de LinkedIn" : "LinkedIn Profile"}
+    gitHubAriaLabel={locale === "es" ? "Perfil de GitHub" : "GitHub Profile"}
   />
   <BackToTop />
 </BaseLayout>
@@ -288,7 +397,7 @@ const combinedJsonLd = getHomeSchema(
     pageTitle,
     pageDescription,
     projectsByCategory,
-    frequentlyAskedQuestions,
+    faqContent,
     combinedJsonLd,
     featuredBlogPosts,
   }}></script>

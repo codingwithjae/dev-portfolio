@@ -4,9 +4,14 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getBlogPost, getBlogPosts, urlFor } from "../../lib/sanity/sanity";
 import type { BlogPost, BlogPostDetail } from "../../lib/sanity/sanity.types";
 import { getBlogPostSchema, SITE_URL } from "../../components/seo/sanity-seo";
+import { resolveLocaleFromRequest } from "../../i18n/utils";
+import { getStaticData } from "../../data/staticData";
 
 const { post: staticPost } = Astro.props;
 const { slug: blogPostSlug } = Astro.params;
+const locale = resolveLocaleFromRequest(Astro.url);
+const localizedStaticData = getStaticData(locale);
+const localeHomePath = locale === "es" ? "/es" : "/";
 
 export async function getStaticPaths() {
 	const posts = await getBlogPosts();
@@ -20,7 +25,7 @@ let currentBlogPost: BlogPost | BlogPostDetail | null = staticPost;
 
 if (!currentBlogPost) {
 	try {
-		currentBlogPost = await getBlogPost(blogPostSlug!);
+		currentBlogPost = await getBlogPost(blogPostSlug!, locale);
 	} catch (fetchError) {
 		console.error(
 			"Sanity fetch failed for slug:",
@@ -31,23 +36,53 @@ if (!currentBlogPost) {
 }
 
 if (!currentBlogPost) {
-	return Astro.redirect("/404");
+	return Astro.redirect(locale === "es" ? "/es/404" : "/404");
 }
+
+const resolvedBlogPostSlug = blogPostSlug ?? currentBlogPost.slug;
+const blogPostLanguageSwitch = {
+	currentLocale: locale,
+	enHref: `/blog/${resolvedBlogPostSlug}`,
+	esHref: `/es/blog/${resolvedBlogPostSlug}`,
+	enLabel: "EN",
+	esLabel: "ES",
+	ariaLabel: locale === "es" ? "Cambiar idioma" : "Switch language",
+} as const;
 
 const blogPostCoverImageUrl = currentBlogPost.coverImage
 	? urlFor(currentBlogPost.coverImage).width(1200).height(630).url()
 	: `${SITE_URL}/favicon.webp`;
 
-const blogPostJsonLd = getBlogPostSchema(currentBlogPost);
+const blogPostJsonLd = getBlogPostSchema(currentBlogPost, locale);
 ---
 
 <BaseLayout
+	locale={locale}
 	title={currentBlogPost.title}
 	description={currentBlogPost.excerpt ||
-		"Read this article by Johander Campos."}
+		(locale === "es" ? "Lee este articulo de Johander Campos." : "Read this article by Johander Campos.")}
 	ogType="article"
 	ogImage={blogPostCoverImageUrl}
 	jsonLd={blogPostJsonLd}
 >
-	<BlogPostPage post={currentBlogPost} />
+	<BlogPostPage
+		post={currentBlogPost}
+		homePath={localeHomePath}
+		locale={locale}
+		labels={{
+			backNavigationAriaLabel: locale === "es" ? "Navegacion de retorno" : "Back navigation",
+			backToHome: locale === "es" ? "Volver al inicio" : "Back to Home",
+		}}
+		languageSwitch={blogPostLanguageSwitch}
+		footer={{
+			authorName: localizedStaticData.footer.author,
+			copyrightText: localizedStaticData.footer.copyright,
+			repoText: localizedStaticData.footer.repoText,
+		}}
+		socialLinks={{
+			linkedinUrl: localizedStaticData.header.socials.linkedin,
+			githubUrl: localizedStaticData.header.socials.github,
+			repoUrl: localizedStaticData.header.repoUrl,
+		}}
+	/>
 </BaseLayout>

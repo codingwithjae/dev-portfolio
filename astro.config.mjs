@@ -5,9 +5,17 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-	site: "https://developer.johandercampos.com",
+	site: "https://developer.johandercampos.site/",
 
 	output: "server",
+
+	i18n: {
+		locales: ["en", "es"],
+		defaultLocale: "en",
+		routing: {
+			prefixDefaultLocale: false,
+		},
+	},
 
 	vite: {
 		plugins: [tailwindcss()],

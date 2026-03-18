@@ -1,6 +1,7 @@
 import { sanityClient } from "sanity:client";
 import type { SanityImageSource } from "@sanity/image-url";
 import { createImageUrlBuilder } from "@sanity/image-url";
+import type { Locale } from "../../i18n/config";
 import type {
 	BlogPost,
 	BlogPostDetail,
@@ -13,18 +14,24 @@ const builder = createImageUrlBuilder(sanityClient);
 
 export const urlFor = (source: SanityImageSource) => builder.image(source).auto("format");
 
-export async function getPageContent(): Promise<PageContent | null> {
-	return sanityClient.fetch(`*[_type == "pageContent"][0] {
+export async function getPageContent(requestedLocale?: Locale): Promise<PageContent | null> {
+	return sanityClient.fetch(
+		`*[_type == "pageContent"][0] {
     ...,
     "portrait": select(
       defined(portrait.asset) => portrait.asset->url,
       null
     )
-  }`);
+  }`,
+		{
+			locale: requestedLocale,
+		},
+	);
 }
 
-export async function getBlogPosts(): Promise<BlogPost[]> {
-	return sanityClient.fetch(`
+export async function getBlogPosts(requestedLocale?: Locale): Promise<BlogPost[]> {
+	return sanityClient.fetch(
+		`
     *[_type == "blogPost"] | order(publishedAt desc) {
       _id,
       _type,
@@ -37,10 +44,17 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
       featured,
       "author": author->{ _id, name, image }
     }
-  `);
+  `,
+		{
+			locale: requestedLocale,
+		},
+	);
 }
 
-export async function getBlogPost(slug: string): Promise<BlogPostDetail | null> {
+export async function getBlogPost(
+	slug: string,
+	requestedLocale?: Locale,
+): Promise<BlogPostDetail | null> {
 	return sanityClient.fetch(
 		`
     *[_type == "blogPost" && slug.current == $slug][0] {
@@ -56,12 +70,13 @@ export async function getBlogPost(slug: string): Promise<BlogPostDetail | null> 
       "author": author->{ _id, name, image, bio }
     }
   `,
-		{ slug },
+		{ slug, locale: requestedLocale },
 	);
 }
 
-export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {
-	return sanityClient.fetch(`
+export async function getFeaturedBlogPosts(requestedLocale?: Locale): Promise<BlogPost[]> {
+	return sanityClient.fetch(
+		`
     *[_type == "blogPost" && featured == true] | order(publishedAt desc)[0...3] {
       _id,
       _type,
@@ -74,20 +89,30 @@ export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {
       featured,
       "author": author->{ _id, name, image }
     }
-  `);
+  `,
+		{
+			locale: requestedLocale,
+		},
+	);
 }
 
-export async function getSkills(): Promise<SkillCategory[]> {
-	const data = await sanityClient.fetch(`
+export async function getSkills(requestedLocale?: Locale): Promise<SkillCategory[]> {
+	const data = await sanityClient.fetch(
+		`
     *[_type == "pageContent"][0] {
       skills
     }
-  `);
+	`,
+		{
+			locale: requestedLocale,
+		},
+	);
 	return data?.skills || [];
 }
 
-export async function getSiteSettings(): Promise<SiteSettings | null> {
-	return sanityClient.fetch(`
+export async function getSiteSettings(requestedLocale?: Locale): Promise<SiteSettings | null> {
+	return sanityClient.fetch(
+		`
     *[_type == "siteSettings"][0] {
       _id,
       _type,
@@ -101,5 +126,9 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
         null
       )
     }
-  `);
+  `,
+		{
+			locale: requestedLocale,
+		},
+	);
 }

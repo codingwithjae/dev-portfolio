@@ -1,12 +1,14 @@
+import type { StaticData } from "../../data/staticData";
+import { DEFAULT_LOCALE, type Locale } from "../../i18n/config";
+import { pickLocalizedValue } from "../../i18n/utils";
+import { urlFor } from "../../lib/sanity/sanity";
+import type { BlogPostDetail, PageContent } from "../../lib/sanity/sanity.types";
 import type {
 	ArticleSchemaConfig,
 	BreadcrumbItem,
 	PersonSchemaConfig,
 	WebsiteSchemaConfig,
 } from "./types";
-import { urlFor } from "../../lib/sanity/sanity";
-import type { PageContent, BlogPostDetail } from "../../lib/sanity/sanity.types";
-type StaticData = typeof import("../../data/staticData").staticData;
 
 export function generateWebsiteSchema(config: WebsiteSchemaConfig): string {
 	return JSON.stringify({
@@ -60,7 +62,15 @@ export function generateBreadcrumbSchema(items: BreadcrumbItem[]): string {
 	});
 }
 
-export const SITE_URL = "https://developer.johandercampos.com";
+export const SITE_URL = "https://developer.johandercampos.site/";
+
+function getSiteUrlWithoutTrailingSlash(): string {
+	return SITE_URL.endsWith("/") ? SITE_URL.slice(0, -1) : SITE_URL;
+}
+
+function getLocalePathPrefix(locale: Locale): string {
+	return locale === "es" ? "/es" : "";
+}
 
 export function mergeSchemas(schemas: string[]): string {
 	return `[${schemas.join(", ")}]`;
@@ -70,12 +80,24 @@ export function getHomeSchema(
 	sanityData: PageContent | null,
 	staticData: StaticData,
 	imageUrl?: string,
+	locale: Locale = DEFAULT_LOCALE,
 ): string {
+	const localizedSeoDescription =
+		typeof sanityData?.seo?.description === "string"
+			? sanityData.seo.description
+			: pickLocalizedValue(sanityData?.seo?.description, locale);
+	const localizedAuthorTitle =
+		typeof sanityData?.author?.title === "string"
+			? sanityData.author.title
+			: pickLocalizedValue(sanityData?.author?.title, locale);
+	const siteUrlWithoutTrailingSlash = getSiteUrlWithoutTrailingSlash();
+	const localePathPrefix = getLocalePathPrefix(locale);
+
 	const websiteSchema = generateWebsiteSchema({
 		name: "Johander Campos | Software Engineer",
-		url: SITE_URL,
+		url: `${siteUrlWithoutTrailingSlash}${localePathPrefix}`,
 		description:
-			sanityData?.seo?.description ||
+			localizedSeoDescription ||
 			"Portfolio of Johander Campos, a Software Engineer specializing in building scalable and efficient web applications.",
 	});
 
@@ -84,20 +106,22 @@ export function getHomeSchema(
 
 	const personSchema = generatePersonSchema({
 		name: "Johander Campos",
-		jobTitle: sanityData?.author?.title || "Software Engineer",
-		url: SITE_URL,
+		jobTitle: localizedAuthorTitle || staticData.header.subtitle || "Software Engineer",
+		url: `${siteUrlWithoutTrailingSlash}${localePathPrefix}`,
 		sameAs: [linkedin, github].filter(Boolean) as string[],
-		image: imageUrl || `${SITE_URL}/images/portrait.webp`,
+		image: imageUrl || `${siteUrlWithoutTrailingSlash}/images/portrait.webp`,
 	});
 
 	return mergeSchemas([websiteSchema, personSchema]);
 }
 
-export function getBlogPostSchema(post: BlogPostDetail): string {
-	const postUrl = `${SITE_URL}/blog/${post.slug}`;
+export function getBlogPostSchema(post: BlogPostDetail, locale: Locale = DEFAULT_LOCALE): string {
+	const siteUrlWithoutTrailingSlash = getSiteUrlWithoutTrailingSlash();
+	const localePathPrefix = getLocalePathPrefix(locale);
+	const postUrl = `${siteUrlWithoutTrailingSlash}${localePathPrefix}/blog/${post.slug}`;
 	const postImage = post.coverImage
 		? urlFor(post.coverImage).width(1200).height(630).url()
-		: `${SITE_URL}/favicon.webp`;
+		: `${siteUrlWithoutTrailingSlash}/favicon.webp`;
 
 	const articleSchema = generateArticleSchema({
 		headline: post.title,
@@ -109,8 +133,14 @@ export function getBlogPostSchema(post: BlogPostDetail): string {
 	});
 
 	const breadcrumbSchema = generateBreadcrumbSchema([
-		{ name: "Home", url: SITE_URL },
-		{ name: "Blog", url: `${SITE_URL}/blog` },
+		{
+			name: locale === "es" ? "Inicio" : "Home",
+			url: `${siteUrlWithoutTrailingSlash}${localePathPrefix}`,
+		},
+		{
+			name: locale === "es" ? "Blog" : "Blog",
+			url: `${siteUrlWithoutTrailingSlash}${localePathPrefix}/blog`,
+		},
 		{ name: post.title, url: postUrl },
 	]);
 

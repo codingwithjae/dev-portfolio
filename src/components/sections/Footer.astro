@@ -3,18 +3,34 @@ export interface Props {
 	linkedinUrl: string;
 	githubUrl: string;
 	repoUrl: string;
+	authorName: string;
+	copyrightText: string;
+	repoText: {
+		pre: string;
+		link: string;
+		post: string;
+	};
+	linkedInAriaLabel?: string;
+	gitHubAriaLabel?: string;
 }
 
-import { staticData } from '../../data/staticData';
-
-const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
+const {
+	linkedinUrl,
+	githubUrl,
+	repoUrl,
+	authorName,
+	copyrightText,
+	repoText,
+	linkedInAriaLabel = "LinkedIn Profile",
+	gitHubAriaLabel = "GitHub Profile",
+} = Astro.props;
 ---
 
 <footer
   class="relative text-text-base text-center py-12 px-4 font-display transition-colors duration-300"
 >
   <div class="max-w-[75rem] mx-auto">
-    <h2 class="mb-2 font-bold text-xl">{staticData.footer.author}</h2>
+    <h2 class="mb-2 font-bold text-xl">{authorName}</h2>
 
     <div class="my-4 flex justify-center gap-4">
       <a
@@ -22,7 +38,7 @@ const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
         target="_blank"
         rel="noopener noreferrer"
         class="text-text-base hover:text-link-hover hover:scale-110 transition-all inline-block"
-        aria-label="LinkedIn Profile"
+        aria-label={linkedInAriaLabel}
       >
         <svg
           class="w-6 h-6"
@@ -40,7 +56,7 @@ const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
         target="_blank"
         rel="noopener noreferrer"
         class="text-text-base hover:text-link-hover hover:scale-110 transition-all inline-block"
-        aria-label="GitHub Profile"
+        aria-label={gitHubAriaLabel}
       >
         <svg
           class="w-6 h-6"
@@ -58,19 +74,19 @@ const { linkedinUrl, githubUrl, repoUrl } = Astro.props;
 
     <p class="my-2">
       © {new Date().getFullYear()}
-      {staticData.footer.copyright}
+      {copyrightText}
     </p>
     <p class="my-2">
-      {staticData.footer.repoText.pre}
+      {repoText.pre}
       <a
         href={repoUrl}
         target="_blank"
         rel="noopener noreferrer"
         class="text-text-base hover:text-link-hover font-bold transition-colors"
       >
-        {staticData.footer.repoText.link}
+        {repoText.link}
       </a>
-      {staticData.footer.repoText.post}
+      {repoText.post}
     </p>
   </div>
 </footer>

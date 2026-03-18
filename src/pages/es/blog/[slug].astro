@@ -1,0 +1,9 @@
+---
+import BlogPostRoute, { getStaticPaths as getEnglishBlogStaticPaths } from "../../blog/[slug].astro";
+
+export const getStaticPaths = getEnglishBlogStaticPaths;
+
+const { post } = Astro.props;
+---
+
+<BlogPostRoute post={post} />

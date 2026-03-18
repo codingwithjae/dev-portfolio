@@ -6,16 +6,25 @@ export interface Props {
   excerpt: string;
   slug: string;
   coverImage?: { asset: { _ref: string } } | undefined | null;
+  blogBasePath?: string;
+  readMoreText?: string;
 }
 
-const { title, excerpt, slug, coverImage } = Astro.props;
+const {
+  title,
+  excerpt,
+  slug,
+  coverImage,
+  blogBasePath = "/blog",
+  readMoreText = "Read more",
+} = Astro.props;
 
 const imageSrc = coverImage ? urlFor(coverImage).url() : null;
 ---
 
 <a
-  href={`/blog/${slug}`}
-  class="block w-full max-w-[50rem] group hover:scale-[1.01] transition-transform duration-300"
+  href={`${blogBasePath}/${slug}`}
+  class="block w-full max-w-200 group hover:scale-[1.01] transition-transform duration-300"
 >
   <article
     class="glassmorphism rounded-[1.25rem] overflow-hidden w-full h-full cursor-pointer transition-colors"
@@ -55,7 +64,7 @@ const imageSrc = coverImage ? urlFor(coverImage).url() : null;
         <div
           class="flex items-center gap-2 text-text-base font-bold text-[1.1rem] group-hover:text-link-hover transition-colors"
         >
-          <span>Read more</span>
+          <span>{readMoreText}</span>
           <svg
             class="w-4 h-4 transition-transform group-hover:translate-x-1"
             fill="none"

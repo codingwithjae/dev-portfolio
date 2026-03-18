@@ -6,13 +6,26 @@ export interface Props {
   title: string;
   thumbnail: string | ImageMetadata;
   technologies: string;
-  demoUrl: string;
-  codeUrl: string;
+  demoUrl?: string | undefined;
+  codeUrl?: string | undefined;
   documentationUrl?: string | undefined;
+  viewProjectText?: string;
+  viewDocumentationText?: string;
+  viewCodeText?: string;
 }
 
-const { title, thumbnail, technologies, demoUrl, codeUrl, documentationUrl } = Astro.props;
-const hasDocumentationLink = documentationUrl && documentationUrl !== "#";
+const {
+  title,
+  thumbnail,
+  technologies,
+  demoUrl,
+  codeUrl,
+  documentationUrl,
+  viewProjectText = "View project",
+  viewDocumentationText = "Documentation",
+  viewCodeText = "View code",
+} = Astro.props;
+const hasValidUrl = (url?: string) => Boolean(url && url.trim() !== "" && url !== "#");
 ---
 
 <article
@@ -51,34 +64,42 @@ const hasDocumentationLink = documentationUrl && documentationUrl !== "#";
     <div
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 z-10"
     >
-      <a
-        href={demoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
-      >
-        View project
-      </a>
       {
-        hasDocumentationLink && (
+        hasValidUrl(demoUrl) && (
+          <a
+            href={demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
+          >
+            {viewProjectText}
+          </a>
+        )
+      }
+      {
+        hasValidUrl(documentationUrl) && (
           <a
             href={documentationUrl}
             target="_blank"
             rel="noopener noreferrer"
             class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
           >
-            Documentation
+            {viewDocumentationText}
           </a>
         )
       }
-      <a
-        href={codeUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
-      >
-        View code
-      </a>
+      {
+        hasValidUrl(codeUrl) && (
+          <a
+            href={codeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="uppercase tracking-[0.14rem] text-[1.13rem] text-white hover:text-accent-hover transition-colors mt-4"
+          >
+            {viewCodeText}
+          </a>
+        )
+      }
     </div>
   </figure>
 

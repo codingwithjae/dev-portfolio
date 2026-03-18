@@ -2,17 +2,31 @@
 import { PortableText } from 'astro-portabletext';
 import { urlFor } from '../../lib/sanity/sanity';
 import type { BlogPostDetail } from '../../lib/sanity/sanity.types';
+import { type Locale } from '../../i18n/config';
 
 interface Props {
 	post: BlogPostDetail;
+	locale?: Locale;
+	labels?: {
+		author: string;
+		publishedOn: string;
+	};
 }
 
-const { post } = Astro.props;
+const {
+	post,
+	locale = 'en',
+	labels = {
+		author: 'Author',
+		publishedOn: 'Published on',
+	},
+} = Astro.props;
 
 const coverImageUrl = post.coverImage
 	? urlFor(post.coverImage).width(1200).height(630).url()
 	: 'https://placehold.co/1200x630';
 const portableBody = post.body as never;
+const localeForDateFormatting = locale === 'es' ? 'es-ES' : 'en-US';
 ---
 
 <article
@@ -74,7 +88,7 @@ const portableBody = post.body as never;
                   {post.author.name}
                 </span>
                 <span class="text-xs uppercase tracking-widest text-text-muted/70">
-                  Author
+                  {labels.author}
                 </span>
               </div>
             </div>
@@ -88,14 +102,14 @@ const portableBody = post.body as never;
                 datetime={post.publishedAt}
                 class="text-text-base font-bold text-lg transition-colors"
               >
-                {new Date(post.publishedAt).toLocaleDateString("es-ES", {
+                {new Date(post.publishedAt).toLocaleDateString(localeForDateFormatting, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </time>
               <span class="text-xs uppercase tracking-widest text-text-muted/70">
-                Published on
+                {labels.publishedOn}
               </span>
             </div>
           )

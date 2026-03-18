@@ -1,5 +1,6 @@
 import type React from "react";
 import { useEffect, useState } from "react";
+import type { Locale } from "../../../i18n/config";
 import { technologyIconMapping } from "../TechnologyIconList/TechnologyIconList";
 
 interface Skill {
@@ -11,6 +12,36 @@ interface Skill {
 interface SkillCardProps {
 	category: string;
 	skills: Skill[];
+	locale: Locale;
+}
+
+const SKILL_EXPERIENCE_TRANSLATIONS = {
+	"1 year": {
+		en: "1 year",
+		es: "1 año",
+	},
+	"2 years": {
+		en: "2 years",
+		es: "2 años",
+	},
+	Learning: {
+		en: "Learning",
+		es: "Aprendiendo",
+	},
+} as const;
+
+type SkillExperienceTranslationKey = keyof typeof SKILL_EXPERIENCE_TRANSLATIONS;
+
+function isSkillExperienceTranslationKey(value: string): value is SkillExperienceTranslationKey {
+	return value in SKILL_EXPERIENCE_TRANSLATIONS;
+}
+
+function resolveLocalizedSkillExperienceLabel(experienceLabel: string, locale: Locale): string {
+	if (!isSkillExperienceTranslationKey(experienceLabel)) {
+		return experienceLabel;
+	}
+
+	return SKILL_EXPERIENCE_TRANSLATIONS[experienceLabel][locale];
 }
 
 const useSkillTicker = (itemCount: number, intervalMs: number = 2400) => {
@@ -19,31 +50,72 @@ const useSkillTicker = (itemCount: number, intervalMs: number = 2400) => {
 	const [isTransitioning, setIsTransitioning] = useState(true);
 
 	useEffect(() => {
+		if (itemCount <= 0) {
+			setCurrentIndex(0);
+			return;
+		}
+
+		setCurrentIndex((prev) => {
+			if (prev < 0 || prev >= itemCount) {
+				return 0;
+			}
+
+			return prev;
+		});
+	}, [itemCount]);
+
+	useEffect(() => {
 		if (isHovering || itemCount <= 1) return;
 
 		const interval = setInterval(() => {
 			setIsTransitioning(true);
-			setCurrentIndex((prev) => prev + 1);
+			setCurrentIndex((prev) => {
+				const lastIndex = itemCount - 1;
+
+				if (prev >= lastIndex) {
+					return lastIndex;
+				}
+
+				return prev + 1;
+			});
 		}, intervalMs);
 
 		return () => clearInterval(interval);
 	}, [isHovering, itemCount, intervalMs]);
 
 	useEffect(() => {
-		if (currentIndex === itemCount - 1) {
+		if (itemCount <= 1) {
+			return undefined;
+		}
+
+		const lastIndex = itemCount - 1;
+
+		if (currentIndex >= lastIndex) {
+			let rafOne = 0;
+			let rafTwo = 0;
 			const timeout = setTimeout(() => {
 				setIsTransitioning(false);
 				setCurrentIndex(0);
+				rafOne = requestAnimationFrame(() => {
+					rafTwo = requestAnimationFrame(() => {
+						setIsTransitioning(true);
+					});
+				});
 			}, 500);
-			return () => clearTimeout(timeout);
+			return () => {
+				clearTimeout(timeout);
+				cancelAnimationFrame(rafOne);
+				cancelAnimationFrame(rafTwo);
+			};
 		}
+
 		return undefined;
 	}, [currentIndex, itemCount]);
 
 	return { currentIndex, isHovering, setIsHovering, isTransitioning };
 };
 
-export const SkillCard: React.FC<SkillCardProps> = ({ category, skills }) => {
+export const SkillCard: React.FC<SkillCardProps> = ({ category, skills, locale }) => {
 	const { currentIndex, setIsHovering, isTransitioning } = useSkillTicker(skills.length);
 
 	return (
@@ -66,6 +138,10 @@ export const SkillCard: React.FC<SkillCardProps> = ({ category, skills }) => {
 					}}
 				>
 					{skills.map((skill, index) => {
+						const localizedExperienceLabel = resolveLocalizedSkillExperienceLabel(
+							skill.experience,
+							locale,
+						);
 						const Icon = skill.logo
 							? technologyIconMapping[skill.logo] || technologyIconMapping[skill.name]
 							: technologyIconMapping[skill.name];
@@ -84,7 +160,7 @@ export const SkillCard: React.FC<SkillCardProps> = ({ category, skills }) => {
 									</h3>
 								</div>
 								<p className="font-sans text-text-muted text-[1rem] tracking-wide uppercase">
-									{skill.experience}
+									{localizedExperienceLabel}
 								</p>
 							</div>
 						);

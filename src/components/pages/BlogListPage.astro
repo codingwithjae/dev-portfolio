@@ -5,28 +5,109 @@ import BlogCard from "../ui/cards/BlogCard.astro";
 
 export interface Props {
     posts: BlogPost[];
+    homePath?: string;
+    blogBasePath?: string;
+    labels?: {
+        navigationAriaLabel: string;
+        backToHome: string;
+        pageTitle: string;
+        pageDescription: string;
+        emptyState: string;
+        feedAriaLabel: string;
+        readMore: string;
+    };
+    footer: {
+        authorName: string;
+        copyrightText: string;
+        repoText: {
+            pre: string;
+            link: string;
+            post: string;
+        };
+    };
+    socialLinks: {
+        linkedinUrl: string;
+        githubUrl: string;
+        repoUrl: string;
+    };
+    languageSwitch?: {
+        currentLocale: "en" | "es";
+        enHref: string;
+        esHref: string;
+        enLabel: string;
+        esLabel: string;
+        ariaLabel: string;
+    };
 }
 
-const { posts } = Astro.props;
+const {
+    posts,
+    homePath = "/",
+    blogBasePath = "/blog",
+    labels = {
+        navigationAriaLabel: "Blog navigation",
+        backToHome: "← Back to Home",
+        pageTitle: "Blog",
+        pageDescription: "Thoughts, tutorials, and insights on frontend development.",
+        emptyState: "No blog posts yet. Coming soon!",
+        feedAriaLabel: "Blog posts",
+        readMore: "Read more",
+    },
+    footer,
+    socialLinks,
+    languageSwitch = {
+        currentLocale: "en",
+        enHref: "/blog",
+        esHref: "/es/blog",
+        enLabel: "EN",
+        esLabel: "ES",
+        ariaLabel: "Language switch",
+    },
+} = Astro.props;
 ---
 
 <header
-    class="p-5 flex flex-col items-center justify-center mb-[3rem]"
+    class="p-5 flex flex-col items-center justify-center mb-12"
     role="banner"
 >
     <nav
         class="w-full max-w-4xl mb-5 flex justify-between items-center"
-        aria-label="Blog navigation"
+        aria-label={labels.navigationAriaLabel}
     >
         <a
-            href="/"
+            href={homePath}
             class="text-text-base font-sans text-[1.13rem] hover:opacity-80 transition-opacity"
         >
             Johander <span class="font-bold">Campos.</span>
         </a>
-        <a href="/" class="font-bold hover:text-link-hover transition-colors"
-            >← Back to Home</a
-        >
+        <div class="flex items-center gap-4">
+            <a href={homePath} class="font-bold hover:text-link-hover transition-colors"
+                >{labels.backToHome}</a
+            >
+            <div class="inline-flex items-center gap-1 text-[0.68rem] font-mono uppercase tracking-[0.12rem]" aria-label={languageSwitch.ariaLabel}>
+                <a
+                    href={languageSwitch.enHref}
+                    class={`px-2 py-1 rounded border transition-colors ${
+                        languageSwitch.currentLocale === "en"
+                            ? "border-border-base bg-white/20 dark:bg-white/10 text-text-base"
+                            : "border-border-base/40 text-text-muted hover:text-link-hover"
+                    }`}
+                >
+                    {languageSwitch.enLabel}
+                </a>
+                <span class="text-text-muted">/</span>
+                <a
+                    href={languageSwitch.esHref}
+                    class={`px-2 py-1 rounded border transition-colors ${
+                        languageSwitch.currentLocale === "es"
+                            ? "border-border-base bg-white/20 dark:bg-white/10 text-text-base"
+                            : "border-border-base/40 text-text-muted hover:text-link-hover"
+                    }`}
+                >
+                    {languageSwitch.esLabel}
+                </a>
+            </div>
+        </div>
     </nav>
 </header>
 
@@ -38,20 +119,20 @@ const { posts } = Astro.props;
         <h1
             class="text-[clamp(2.5rem,5vw,3.625rem)] font-display font-bold text-text-base"
         >
-            Blog
+            {labels.pageTitle}
         </h1>
         <p class="text-text-base mt-2 text-lg">
-            Thoughts, tutorials, and insights on frontend development.
+            {labels.pageDescription}
         </p>
     </div>
 
     {
         posts.length === 0 ? (
             <p class="text-text-muted text-center py-20 reveal">
-                No blog posts yet. Coming soon!
+                {labels.emptyState}
             </p>
         ) : (
-            <div class="grid gap-8" role="feed" aria-label="Blog posts">
+            <div class="grid gap-8" role="feed" aria-label={labels.feedAriaLabel}>
                 {posts.map((post, index) => (
                     <article
                         class={`reveal delay-${((index % 4) + 1) * 100} w-full`}
@@ -60,6 +141,8 @@ const { posts } = Astro.props;
                             title={post.title}
                             excerpt={post.excerpt || ""}
                             slug={post.slug}
+                            blogBasePath={blogBasePath}
+                            readMoreText={labels.readMore}
                             coverImage={post.coverImage}
                         />
                     </article>
@@ -70,7 +153,10 @@ const { posts } = Astro.props;
 </main>
 
 <Footer
-    linkedinUrl="https://www.linkedin.com/in/johandercampos/"
-    githubUrl="https://github.com/codingwithjae"
-    repoUrl="https://github.com/codingwithjae/dev-portfolio"
+    linkedinUrl={socialLinks.linkedinUrl}
+    githubUrl={socialLinks.githubUrl}
+    repoUrl={socialLinks.repoUrl}
+    authorName={footer.authorName}
+    copyrightText={footer.copyrightText}
+    repoText={footer.repoText}
 />

@@ -1,3 +1,5 @@
+import type { Locale } from "../../i18n/config";
+
 export interface SanityImage {
 	_type: "image";
 	asset: {
@@ -7,6 +9,15 @@ export interface SanityImage {
 	alt?: string;
 	caption?: string;
 }
+
+export type LocalizedField<TValue extends string = string> = Partial<Record<Locale, TValue>>;
+
+export type LocalizedString = LocalizedField<string>;
+
+export type LocalizedText = LocalizedField<string>;
+
+export type TranslatableStringValue = string | LocalizedString;
+export type TranslatableTextValue = string | LocalizedText;
 
 export interface BlogPost {
 	_id: string;
@@ -36,6 +47,15 @@ export interface AboutContent {
 	details: string;
 }
 
+export interface SanityAboutContent {
+	title?: TranslatableStringValue;
+	titleEs?: TranslatableStringValue;
+	intro?: TranslatableTextValue;
+	introEs?: TranslatableTextValue;
+	details?: TranslatableTextValue;
+	detailsEs?: TranslatableTextValue;
+}
+
 export interface ExperienceItem {
 	title: string;
 	role: string;
@@ -51,6 +71,57 @@ export interface ExperienceItem {
 	order?: number;
 }
 
+export interface SanityExperienceItem {
+	title: TranslatableStringValue;
+	titleEs?: TranslatableStringValue;
+	role: TranslatableStringValue;
+	roleEs?: TranslatableStringValue;
+	period: TranslatableStringValue;
+	periodEs?: TranslatableStringValue;
+	thumbnail?: SanityImage | string;
+	summary: TranslatableTextValue;
+	summaryEs?: TranslatableTextValue;
+	highlights?: TranslatableStringValue[];
+	highlightsEs?: TranslatableStringValue[];
+	stack?: TranslatableStringValue[];
+	stackEs?: TranslatableStringValue[];
+	demoUrl?: string;
+	docsUrl?: string;
+	codeUrl?: string;
+	featured?: boolean;
+	order?: number;
+}
+
+export interface SanityPageProject {
+	name: TranslatableStringValue;
+	nameEs?: TranslatableStringValue;
+	thumbnail: SanityImage;
+	githubUrl?: string;
+	demoUrl?: string;
+	documentationUrl?: string;
+	techStack: TranslatableStringValue;
+	techStackEs?: TranslatableStringValue;
+	category?: "frontend" | "backend" | "fullstack" | "automation-integrations";
+}
+
+export interface SanityFAQItem {
+	question: TranslatableStringValue;
+	questionEs?: TranslatableStringValue;
+	answer: TranslatableTextValue;
+	answerEs?: TranslatableTextValue;
+}
+
+export interface SanityAuthorContent {
+	name: TranslatableStringValue;
+	nameEs?: TranslatableStringValue;
+	title: TranslatableStringValue;
+	titleEs?: TranslatableStringValue;
+	subtitle: TranslatableStringValue;
+	subtitleEs?: TranslatableStringValue;
+	bio: TranslatableTextValue;
+	bioEs?: TranslatableTextValue;
+}
+
 export interface PageContent {
 	_id: string;
 	_type: "pageContent";
@@ -63,37 +134,26 @@ export interface PageContent {
 		location: string;
 	};
 	cvUrl?: string;
+	cvUrlEs?: string;
 	socials?: {
 		linkedin: string;
 		github: string;
 	};
-	projects?: Array<{
-		name: string;
-		thumbnail: SanityImage;
-		githubUrl: string;
-		demoUrl: string;
-		documentationUrl?: string;
-		techStack: string;
-		category?: "frontend" | "backend" | "fullstack";
-	}>;
-	about?: AboutContent;
-	experience?: ExperienceItem[];
+	projects?: SanityPageProject[];
+	about?: SanityAboutContent;
+	experience?: SanityExperienceItem[];
 	skills?: SkillCategory[];
-	faqTitle?: string;
-	faqIntro?: string;
-	faqs?: Array<{
-		question: string;
-		answer: string;
-	}>;
-	author?: {
-		name: string;
-		title: string;
-		subtitle: string;
-		bio: string;
-	};
+	faqTitle?: TranslatableStringValue;
+	faqTitleEs?: TranslatableStringValue;
+	faqIntro?: TranslatableTextValue;
+	faqIntroEs?: TranslatableTextValue;
+	faqs?: SanityFAQItem[];
+	author?: SanityAuthorContent;
 	seo?: {
-		title?: string;
-		description?: string;
+		title?: TranslatableStringValue;
+		titleEs?: TranslatableStringValue;
+		description?: TranslatableTextValue;
+		descriptionEs?: TranslatableTextValue;
 		ogImage?: SanityImage;
 		noindex?: boolean;
 	};
@@ -126,8 +186,8 @@ export interface UIProject {
 	title: string;
 	thumbnail: string;
 	technologies: string;
-	demoUrl: string;
-	codeUrl: string;
+	demoUrl?: string;
+	codeUrl?: string;
 	documentationUrl?: string;
 	category: string;
 }
